@@ -5156,6 +5156,12 @@
     let aiDilateTempHoriz = null;
     let aiDilatedBarrier = null;
     let aiProcessedAlpha = null;
+    let aiErodeBufferA = null;
+    let aiErodeBufferB = null;
+    let aiEdgeDecontamMask = null;
+    let aiHermiteLUT = new Uint8Array(256);
+    let enableAutoDucking = true;
+    let currentDuckingFactor = 1.0;
     let smoothedAutoLumaFactor = 1.0;
     let aiMaskCanvas = document.createElement('canvas');
     let aiMaskCtx = aiMaskCanvas.getContext('2d', { willReadFrequently: true });
@@ -7467,8 +7473,21 @@
       const cutoutBadgeColor = isAiMatting ? '#34D399' : '#94A3B8';
       const cutoutBadgeBg = isAiMatting ? 'rgba(16,185,129,0.3)' : 'rgba(0,0,0,0.35)';
 
+      // High-resolution Speech Waveform Track Graphic (CapCut Pro Standard)
+      let waveSvgBars = '';
+      const numBars = Math.max(14, Math.min(160, Math.floor(widthPx / 3.8)));
+      for (let bi = 0; bi < numBars; bi++) {
+        const phase = (bi / numBars) * 28;
+        const envelope = Math.abs(Math.sin(phase * 0.72) * Math.cos(phase * 1.35));
+        const barH = Math.max(2, Math.min(14, Math.round(2.5 + envelope * 11.5 + (bi % 4 === 0 ? 2 : 0))));
+        waveSvgBars += `<rect x="${bi * 3.8}" y="${15 - barH}" width="2.2" height="${barH}" rx="1" fill="rgba(52, 211, 153, 0.48)"/>`;
+      }
+
       block.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; pointer-events: none; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 4px;">
+        <div style="position: absolute; bottom: 2px; left: 4px; right: 4px; height: 16px; pointer-events: none; overflow: hidden; opacity: 0.85;">
+          <svg width="100%" height="16" style="overflow: visible;">${waveSvgBars}</svg>
+        </div>
+        <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; width: 100%; pointer-events: none; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 4px;">
           <span style="font-weight: 800; font-size: 10.5px; color: #FFFFFF;">🎙️ ${anchorName || 'BTV Nhí'} (${studentTimeOffset}s - ${Math.round(studentTimeOffset + dur)}s)</span>
           <div style="display: flex; gap: 4px; align-items: center;">
             <span style="font-size: 8px; color: ${cutoutBadgeColor}; font-weight: 800; background: ${cutoutBadgeBg}; padding: 1px 4px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15);">${cutoutBadgeText}</span>
@@ -11550,15 +11569,48 @@
 
       currentSubBox = { x: boxX, y: boxY, w: boxW, h: boxH, subId: currentSub.id };
 
+      // DYNAMIC WORD-BY-WORD HIGHLIGHT & SPRING BOUNCE (CapCut TikTok / Karaoke Style)
+      const words = subText.trim().split(/\s+/);
+      const subDuration = Math.max(0.2, currentSub.endSec - currentSub.startSec);
+      const subElapsed = Math.max(0, Math.min(subDuration, timeSec - currentSub.startSec));
+      const subProgress = subElapsed / subDuration;
+      const activeWordIdx = Math.min(words.length - 1, Math.floor(subProgress * words.length));
+      const activeWordNorm = (subProgress * words.length) - activeWordIdx;
+      const activeBounce = (activeWordNorm < 0.32) ? (1.0 + Math.sin(activeWordNorm / 0.32 * Math.PI) * 0.16) : 1.0;
+
+      const spaceW = ctx.measureText(' ').width;
+      let wordMetricsArr = words.map(w => ({ text: w, width: ctx.measureText(w).width }));
+      let totalTextW = wordMetricsArr.reduce((acc, m) => acc + m.width, 0) + spaceW * (words.length - 1);
+
       if (subtitleStyle === 'tiktok') {
-        // TIKTOK CLEAN OUTLINE STYLE (No background box, yellow text with thick black stroke)
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-        ctx.shadowBlur = 10;
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 5;
-        ctx.strokeText(subText, boxX + boxW / 2, boxY + boxH / 2);
-        ctx.fillStyle = '#FBBF24';
-        ctx.fillText(subText, boxX + boxW / 2, boxY + boxH / 2);
+        // TIKTOK CLEAN OUTLINE STYLE (No background box, yellow text with thick black stroke + Word Bounce)
+        let curWordX = (boxX + boxW / 2) - (totalTextW / 2);
+        const centerY = boxY + boxH / 2;
+
+        words.forEach((wrd, wIdx) => {
+          const wWidth = wordMetricsArr[wIdx].width;
+          const isAct = (wIdx === activeWordIdx);
+          const isPast = (wIdx < activeWordIdx);
+
+          ctx.save();
+          if (isAct) {
+            ctx.translate(curWordX + wWidth / 2, centerY);
+            ctx.scale(activeBounce, activeBounce);
+            ctx.translate(-(curWordX + wWidth / 2), -centerY);
+          }
+
+          ctx.shadowColor = isAct ? 'rgba(0, 240, 255, 0.85)' : 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = isAct ? 16 : 10;
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = isAct ? 6 : 5;
+          ctx.strokeText(wrd, curWordX + wWidth / 2, centerY);
+
+          ctx.fillStyle = isAct ? '#00F0FF' : (isPast ? '#FDE047' : '#FFFFFF');
+          ctx.fillText(wrd, curWordX + wWidth / 2, centerY);
+          ctx.restore();
+
+          curWordX += wWidth + spaceW;
+        });
       } else if (subtitleStyle === 'breaking') {
         // BREAKING NEWS RECTANGLE BANNER STYLE
         ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
@@ -11571,7 +11623,7 @@
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(subText, boxX + boxW / 2, boxY + boxH / 2);
       } else if (subtitleStyle === 'karaoke') {
-        // KARAOKE NEON GLOW STYLE
+        // KARAOKE NEON GLOW STYLE (Glowing rounded card + Word-by-word karaoke filling)
         ctx.shadowColor = '#FF6B00';
         ctx.shadowBlur = 22;
         ctx.fillStyle = 'rgba(8, 14, 28, 0.95)';
@@ -11581,8 +11633,33 @@
         ctx.strokeStyle = '#FF6B00';
         ctx.lineWidth = 2.0;
         ctx.stroke();
-        ctx.fillStyle = '#FFB703';
-        ctx.fillText(subText, boxX + boxW / 2, boxY + boxH / 2);
+
+        let curWordX = (boxX + boxW / 2) - (totalTextW / 2);
+        const centerY = boxY + boxH / 2;
+
+        words.forEach((wrd, wIdx) => {
+          const wWidth = wordMetricsArr[wIdx].width;
+          const isAct = (wIdx === activeWordIdx);
+          const isPast = (wIdx < activeWordIdx);
+
+          ctx.save();
+          if (isAct) {
+            ctx.translate(curWordX + wWidth / 2, centerY);
+            ctx.scale(activeBounce, activeBounce);
+            ctx.translate(-(curWordX + wWidth / 2), -centerY);
+            ctx.shadowColor = '#FFB703';
+            ctx.shadowBlur = 16;
+            ctx.fillStyle = '#FFB703';
+          } else if (isPast) {
+            ctx.fillStyle = '#F59E0B';
+          } else {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+          }
+          ctx.fillText(wrd, curWordX + wWidth / 2, centerY);
+          ctx.restore();
+
+          curWordX += wWidth + spaceW;
+        });
       } else {
         // GLASSMORPHIC CAPSULE BOX (Default VTV style)
         ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
@@ -12147,6 +12224,19 @@
           const fLow = cutoffCenter - halfF;
           const fHigh = cutoffCenter + halfF;
 
+          // BẢNG TRA CỨU NHANH HERMITE SMOOTHSTEP (LUT ACCELERATION 60FPS)
+          if (!aiHermiteLUT) aiHermiteLUT = new Uint8Array(256);
+          for (let val = 0; val < 256; val++) {
+            if (val <= fLow) {
+              aiHermiteLUT[val] = 0;
+            } else if (val >= fHigh) {
+              aiHermiteLUT[val] = 255;
+            } else {
+              const t = (val - fLow) / feather;
+              aiHermiteLUT[val] = Math.round(255 * (t * t * (3 - 2 * t)));
+            }
+          }
+
           const cropL = (studentCropLeft > 0) ? Math.floor((studentCropLeft / 100) * procW) : 0;
           const cropR = (studentCropRight > 0) ? Math.floor((1 - studentCropRight / 100) * procW) : procW;
           const cropB = (studentCropBottom > 0) ? Math.floor((1 - studentCropBottom / 100) * procH) : procH;
@@ -12182,19 +12272,9 @@
                 }
               }
 
-              // Xác suất chủ thể người từ MediaPipe (0..255)
+              // Xác suất chủ thể người từ MediaPipe (0..255) qua bảng LUT siêu tốc
               const rawProb = Math.max(mData[idx], mData[idx + 1], mData[idx + 2], mData[idx + 3]);
-
-              // Đường cong Hermite smoothstep ôm sát sâu hơn (Guided Hairline Recovery & Fine Detail Preservation)
-              let targetA = 0;
-              if (rawProb <= fLow) {
-                targetA = 0;
-              } else if (rawProb >= fHigh) {
-                targetA = 255;
-              } else {
-                const t = (rawProb - fLow) / feather;
-                targetA = Math.round(255 * (t * t * (3 - 2 * t)));
-              }
+              let targetA = aiHermiteLUT[rawProb];
 
               // Bộ lọc thời gian thích ứng nhạy bén (Responsive Smooth Temporal Filter):
               if (enableAiAntiFlicker) {
@@ -12303,33 +12383,43 @@
             }
           }
 
-          // 5. GỌT SÁT MÉP NGƯỜI SIÊU MẠNH (MULTI-PASS MORPHOLOGICAL INWARD CHOKE)
+          // 5. GỌT SÁT MÉP NGƯỜI SIÊU MẠNH (MULTI-PASS MORPHOLOGICAL INWARD CHOKE - ZERO GC PING-PONG)
           // Co viền thực sự từ 0 đến 8 pixel theo sliderAiErode (Mặc định 4px, gọt sâu đánh bật hoàn toàn viền trắng)
           const erodeR = (typeof studentAiErodeRadius === 'number') ? Math.max(0, Math.min(8, studentAiErodeRadius)) : 4;
-          for (let pass = 0; pass < erodeR; pass++) {
-            const prevMask = new Uint8ClampedArray(totalPix);
-            for (let i = 0; i < totalPix; i++) prevMask[i] = fData[i * 4 + 3];
+          if (erodeR > 0) {
+            if (!aiErodeBufferA || aiErodeBufferA.length !== totalPix) {
+              aiErodeBufferA = new Uint8ClampedArray(totalPix);
+              aiErodeBufferB = new Uint8ClampedArray(totalPix);
+            }
+            for (let i = 0; i < totalPix; i++) aiErodeBufferA[i] = fData[i * 4 + 3];
+            let srcMask = aiErodeBufferA;
+            let dstMask = aiErodeBufferB;
 
-            for (let y = 1; y < procH - 1; y++) {
-              const row = y * procW;
-              for (let x = 1; x < procW - 1; x++) {
-                const p = row + x;
-                const a = prevMask[p];
-                if (a > 0) {
-                  const minN = Math.min(
-                    prevMask[p - 1], prevMask[p + 1],
-                    prevMask[p - procW], prevMask[p + procW]
-                  );
-                  if (minN < a) {
-                    // Nếu cạnh tiếp xúc với nền ngoài (alpha thấp), gọt mạnh vào trong
-                    fData[p * 4 + 3] = (minN === 0 || minN < 40) ? 0 : Math.round(minN * 0.75 + a * 0.25);
+            for (let pass = 0; pass < erodeR; pass++) {
+              for (let y = 1; y < procH - 1; y++) {
+                const row = y * procW;
+                for (let x = 1; x < procW - 1; x++) {
+                  const p = row + x;
+                  const a = srcMask[p];
+                  if (a > 0) {
+                    const minN = Math.min(
+                      srcMask[p - 1], srcMask[p + 1],
+                      srcMask[p - procW], srcMask[p + procW]
+                    );
+                    dstMask[p] = (minN < a) ? ((minN === 0 || minN < 40) ? 0 : Math.round(minN * 0.75 + a * 0.25)) : a;
+                  } else {
+                    dstMask[p] = 0;
                   }
                 }
               }
+              const tmp = srcMask;
+              srcMask = dstMask;
+              dstMask = tmp;
             }
+            for (let i = 0; i < totalPix; i++) fData[i * 4 + 3] = srcMask[i];
           }
 
-          // 5B. TRIỆT TIÊU QUẦNG TƯỜNG TRẮNG DÍNH TÓC TƠ / TÓC CON Ở CỔ, TAI VÀ QUAI HÀM
+          // 5B. TRIỆT TIÊU QUẦNG TƯỜNG TRẮNG DÍNH TÓC TƠ / TÓC CON Ở CỔ, TAI VÀ QUAI HÀM (SMART CHROMATICITY)
           // Tự động nhận diện & bóc sạch 100% mảng tường trắng kẹp giữa tóc tơ và cổ bé
           const neckZoneY = Math.floor(procH * 0.72);
           for (let y = 0; y < procH; y++) {
@@ -12342,12 +12432,12 @@
               if (a > 0) {
                 const r = fData[idx], g = fData[idx + 1], b = fData[idx + 2];
                 // Điểm ảnh tường trắng / xám sáng trung tính (không phải màu da, không phải tóc)
-                const isBrightWall = (r > 188 && g > 180 && b > 175 && Math.abs(r - g) < 28 && Math.abs(r - b) < 28);
+                const isBrightWall = (r > 185 && g > 175 && b > 170 && Math.abs(r - g) < 28 && Math.abs(r - b) < 28);
                 if (isBrightWall) {
-                  // Đảm bảo không phải da người (da luôn có sắc tố đỏ r - b > 15 và r > g)
-                  const isSkin = (r > 80 && g > 40 && b > 25 && r > g && (r - b) > 15);
-                  // Đảm bảo không phải tóc sẫm màu
-                  const isHair = (r < 80 && g < 80 && b < 80);
+                  // Đảm bảo không phải da người (da luôn có sắc tố đỏ r - b > 12 và r > g)
+                  const isSkin = (r > 75 && g > 35 && b > 20 && r > g && (r - b) > 12);
+                  // Đảm bảo không phải tóc sẫm màu hay tóc nâu/vàng dưới ánh sáng phòng
+                  const isHair = (r < 90 && g < 90 && b < 90) || ((r + g + b) / 3 < 120 && (r - b) > 12);
                   if (!isSkin && !isHair) {
                     if (isUpperZone) {
                       // Ở vùng đầu, tai, quai hàm và cổ: Xóa sạch triệt để không chừa viền
@@ -12367,9 +12457,12 @@
             }
           }
 
-          // 6. KHỬ SẠCH QUẦNG TRẮNG BẰNG COLOR DECONTAMINATION & HALO SUPPRESSION
-          const edgeMask = new Uint8ClampedArray(totalPix);
-          for (let i = 0; i < totalPix; i++) edgeMask[i] = fData[i * 4 + 3];
+          // 6. KHỬ SẠCH QUẦNG TRẮNG BẰNG COLOR DECONTAMINATION & HALO SUPPRESSION (REUSABLE MASK)
+          if (!aiEdgeDecontamMask || aiEdgeDecontamMask.length !== totalPix) {
+            aiEdgeDecontamMask = new Uint8ClampedArray(totalPix);
+          }
+          for (let i = 0; i < totalPix; i++) aiEdgeDecontamMask[i] = fData[i * 4 + 3];
+          const edgeMask = aiEdgeDecontamMask;
 
           for (let y = 2; y < procH - 2; y++) {
             const row = y * procW;
@@ -13622,6 +13715,23 @@
               }
             }
           });
+        }
+
+        // AUTO AUDIO DUCKING (CapCut / Broadcast Pro Standard):
+        // Tự động hạ âm lượng BGM xuống 22% khi BTV nhí đang nói và nâng trở lại khi kết thúc
+        if (enableAutoDucking && bgmAudio) {
+          const dur = (studentVideoDuration > 0) ? studentVideoDuration : (rawStudentVideoDuration || 60);
+          const isStudentSpeakingNow = (
+            studentVideoElem && 
+            !studentVideoElem.paused && 
+            previewCurrentSec >= (studentTimeOffset || 0) && 
+            previewCurrentSec <= ((studentTimeOffset || 0) + dur)
+          );
+          const targetDucking = isStudentSpeakingNow ? 0.22 : 1.0;
+          currentDuckingFactor = currentDuckingFactor * 0.88 + targetDucking * 0.12;
+          try {
+            bgmAudio.volume = Math.max(0, Math.min(1.0, bgmVolume * currentDuckingFactor));
+          } catch(eDuck) {}
         }
       } else {
         // Trạng thái tạm dừng: đảm bảo video học viên không phát ngầm
