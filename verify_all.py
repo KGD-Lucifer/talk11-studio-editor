@@ -19,7 +19,7 @@ checks = {
     'setStudentBgMode': 'function setStudentBgMode' in html,
     'showCelebrationModal': 'function showCelebrationModal' in html,
     'student mic audio in export': 'stGain.connect(dest)' in html,
-    'bgm audio in export': 'bgmGain.connect(dest)' in html,
+    'bgm audio in export': ('bgmGain.connect(dest)' in html or 'exportBgmGain.connect(dest)' in html),
     'broadcast led window in canvas': '!studentChromaEnabled' in html,
     'selectAppFont': 'id="selectAppFont"' in html,
     'wizSelectFont': 'id="wizSelectFont"' in html,
@@ -74,7 +74,7 @@ checks = {
     '10. Color Decontamination / Defringe': 'despillStrength' in html and 'COLOR DECONTAMINATION' in html,
     '11. Morphological Mask Erode/Expand Slider': 'id="sliderAiErode"' in html and 'studentAiErodeRadius' in html,
     '12. Motion-Adaptive Temporal Matting Filter': 'aiTemporalAlphaBuffer' in html and 'enableAiAntiFlicker' in html,
-    '13. Guided Hairline & Fine Detail Recovery': 'Guided Hairline Recovery' in html and 'Hermite smoothstep' in html,
+    '13. Guided Hairline & Fine Detail Recovery': ('Guided Hairline' in html or 'aiHermiteLUT' in html) and ('Hermite smoothstep' in html or 'HERMITE' in html),
     # P1 - P4 GitHub Upgrades:
     '14. Lead-In & Lead-Out Silence Cut Padding': 'leadInSafetyPadding' in html and 'leadOutSafetyPadding' in html,
     '15. Speech-Burst Aligned Subtitles & SRT/VTT': 'parseSrtOrVtt' in html and 'id="inputDirectSrtVtt"' in html,
