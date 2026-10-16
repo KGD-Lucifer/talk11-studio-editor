@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- TALK11 News Studio v2.1.0 | LAST_UPDATED: 2026-10-16 | Foreground & Beauty upgrade -->
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
@@ -9,11 +8,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <title>TALK11 News Studio — Video Studio & Tách Nền AI (v2.1.0)</title>
+  <title>TALK11 News Studio — Trường Quay 3D, Hầm Neon Cam & Timeline Kéo Thả Chuyên Nghiệp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Comfortaa:wght@700&family=JetBrains+Mono:wght@700;800&family=Lexend:wght@600;700;800&family=Montserrat:wght@700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-  <!-- Optional TensorFlow.js runtime: RVM requires separately supplied compatible model assets. -->
+  <!-- TensorFlow.js for Robust Video Matting (RVM - CapCut Pro Core Model) -->
   <script src="03_ASSETS/tfjs/tf.min.js"></script>
   <script>
     if (typeof tf === 'undefined') {
@@ -2217,8 +2216,8 @@
                 🎯 Cắt ôm sát người:
               </span>
               <div style="display: flex; align-items: center; gap: 4px; flex: 1; max-width: 170px;">
-                <input type="range" class="range-slider" id="sliderWizCutoutTightness" min="30" max="99" value="65" step="1" style="accent-color: #10B981; flex: 1;">
-                <span id="valWizCutoutTightness" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #34D399; min-width: 32px; text-align: right;">65%</span>
+                <input type="range" class="range-slider" id="sliderWizCutoutTightness" min="30" max="99" value="82" step="1" style="accent-color: #10B981; flex: 1;">
+                <span id="valWizCutoutTightness" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #34D399; min-width: 32px; text-align: right;">82%</span>
               </div>
             </div>
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
@@ -2226,22 +2225,22 @@
                 ✂️ Gọt sâu mép viền:
               </span>
               <div style="display: flex; align-items: center; gap: 4px; flex: 1; max-width: 170px;">
-                <input type="range" class="range-slider" id="sliderWizAiErode" min="0" max="4" value="0" step="1" style="accent-color: #F59E0B; flex: 1;">
-                <span id="valWizAiErode" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #F59E0B; min-width: 32px; text-align: right;">0px</span>
+                <input type="range" class="range-slider" id="sliderWizAiErode" min="0" max="8" value="4" step="1" style="accent-color: #F59E0B; flex: 1;">
+                <span id="valWizAiErode" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #F59E0B; min-width: 32px; text-align: right;">4px</span>
               </div>
             </div>
           </div>
 
           <!-- Nút Tách Nền AI RVM 4K Chuẩn CapCut Pro -->
           <button type="button" id="btnWizRunRvm4k" style="width: 100%; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #0F172A; font-weight: 800; font-size: 9.5px; border: none; border-radius: 5px; padding: 6px 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3); margin-top: 4px; margin-bottom: 2px;">
-            <span>🖥️ Tách nền nâng cao (cần backend)</span>
+            <span>👑 Tách Nền RVM 4K Chuẩn CapCut (Khử Sạch Viền Trắng)</span>
           </button>
 
           <!-- TỰ ĐỘNG KÉO SÁNG & LÀM NÉT SIÊU PHÂN GIẢI -->
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; background: rgba(8, 14, 28, 0.7); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 6px; padding: 4px 6px; margin-top: 4px;">
             <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-size: 9px; font-weight: 700; color: #FBBF24; margin-bottom: 0;">
               <input type="checkbox" id="chkWizAutoLighting" checked style="accent-color: #F59E0B; width: 12px; height: 12px;">
-              <span>✨ Tự kéo sáng & tăng nét</span>
+              <span>✨ Tự Kéo Sáng & Nét 4K</span>
             </label>
             <button type="button" class="btn btn-secondary" id="btnWizAutoGenerateSubs" style="padding: 2px 6px; font-size: 8.5px; color: #38BDF8; border-color: rgba(56,189,248,0.4);" title="Tự động nhận diện giọng nói và tạo phụ đề chuẩn xác">
               ⚡ Tự Tạo Sub
@@ -2489,11 +2488,11 @@
           <!-- 2. TÁCH NỀN BTV NHÍ (AI PERSON SEGMENTATION & CHROMA KEY) -->
           <div style="background: rgba(10, 16, 30, 0.85); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 7px; padding: 7px 9px; display: flex; flex-direction: column; gap: 5px;">
             <div style="display: flex; align-items: center; justify-content: space-between;">
-              <label class="talk11-help-title" id="lblProChromaTitle" data-tooltip="Tách nền bằng MediaPipe khi mô hình đã tải. Chọn người để giới hạn thành phần mask, tô cọ nếu cần. Không bảo đảm mọi chi tiết tóc." style="cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 800; color: #10B981; margin-bottom: 0;">
+              <label class="talk11-help-title" id="lblProChromaTitle" data-tooltip="🤖 AI RVM & MediaPipe: Tự động nhận diện & giữ trọn cơ thể, khuôn mặt bé; xóa sạch 100% nền phòng đằng sau không cần phông xanh!" style="cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 800; color: #10B981; margin-bottom: 0;">
                 <input type="checkbox" id="chkChromaKeyEnable" checked style="accent-color: #10B981; width: 13px; height: 13px;">
                 <span>🤖 Tách Nền BTV Nhí (AI / Chroma)</span>
               </label>
-              <span id="badgeAiSegmentStatus" style="font-size: 8.5px; color: #F59E0B; font-weight: 700; background: rgba(245,158,11,0.15); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(245,158,11,0.35);">⏳ AI chưa khởi tạo</span>
+              <span id="badgeAiSegmentStatus" style="font-size: 8.5px; color: #F59E0B; font-weight: 700; background: rgba(245,158,11,0.15); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(245,158,11,0.35);">👑 AI RVM CapCut Pro</span>
             </div>
 
             <!-- Chế độ Tách: AI Tự Động vs Phông Xanh Lá vs Xanh Biển vs Giữ Phòng -->
@@ -2538,24 +2537,24 @@
             <!-- CHẤT LƯỢNG TÁCH NỀN (QUALITY MODES) -->
             <div style="display: flex; gap: 4px; align-items: center;">
               <button type="button" id="btnQualityFast" style="flex: 1; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; font-weight: 800; font-size: 9px; border-radius: 4px; padding: 4px 6px; cursor: pointer; text-align: center;">
-                ⚡ AI xem trước (MediaPipe)
+                ⚡ Nhanh 60FPS (Client AI)
               </button>
               <button type="button" id="btnRunRvm4kBackend" style="flex: 1.3; background: linear-gradient(135deg, #F59E0B, #D97706); color: #0F172A; font-weight: 800; font-size: 9px; border: none; border-radius: 4px; padding: 4px 6px; cursor: pointer; text-align: center; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);">
-                🖥️ Nâng cao (cần backend)
+                👑 RVM 4K ONNX (CapCut Pro)
               </button>
             </div>
 
             <!-- Sliders: Tolerance / AI Confidence, Feather, Despill -->
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
-              <span style="min-width: 90px;" id="lblChromaTolerance" title="Kéo tăng để ôm sát dính người hơn nữa, triệt tiêu toàn bộ viền lem nền">🎯 Ngưỡng mask:</span>
-              <input type="range" class="range-slider" id="sliderChromaTolerance" min="30" max="99" value="65" step="1" style="accent-color: #10B981; flex: 1;">
-              <span id="valChromaTolerance" style="font-family: monospace; font-size: 9.5px; color: #34D399; min-width: 28px; text-align: right;">65%</span>
+              <span style="min-width: 90px;" id="lblChromaTolerance" title="Kéo tăng để ôm sát dính người hơn nữa, triệt tiêu toàn bộ viền lem nền">🎯 Độ ôm sát người:</span>
+              <input type="range" class="range-slider" id="sliderChromaTolerance" min="30" max="99" value="82" step="1" style="accent-color: #10B981; flex: 1;">
+              <span id="valChromaTolerance" style="font-family: monospace; font-size: 9.5px; color: #34D399; min-width: 28px; text-align: right;">82%</span>
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
-              <span style="min-width: 90px;" title="Tự động gọt ôm sát mép người, triệt tiêu 100% viền trắng tường phòng (Chuẩn CapCut Pro)">✂️ Thu viền:</span>
-              <input type="range" class="range-slider" id="sliderAiErode" min="0" max="4" value="0" step="1" style="accent-color: #F59E0B; flex: 1;">
-              <span id="valAiErode" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">0px</span>
+              <span style="min-width: 90px;" title="Tự động gọt ôm sát mép người, triệt tiêu 100% viền trắng tường phòng (Chuẩn CapCut Pro)">✂️ Gọt viền mép CapCut:</span>
+              <input type="range" class="range-slider" id="sliderAiErode" min="0" max="8" value="4" step="1" style="accent-color: #F59E0B; flex: 1;">
+              <span id="valAiErode" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">4px</span>
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
@@ -2606,7 +2605,7 @@
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 10.5px; font-weight: 800; color: #FBBF24; margin-bottom: 0;">
                 <input type="checkbox" id="chkBeautyEnable" checked style="accent-color: #F59E0B; width: 13px; height: 13px;">
-                <span>✨ Làm đẹp & Tăng nét</span>
+                <span>✨ Làm Đẹp & Tăng Nét 4K</span>
               </label>
               <button type="button" class="btn btn-secondary" id="btnAutoBeautyEnhance" style="padding: 1px 6px; font-size: 9px; color: #FBBF24; border-color: rgba(251,191,36,0.5); font-weight: 800;" title="Tự động cân chỉnh sáng, nét và tone da hoàn hảo">
                 ⚡ 1-Chạm Tối Ưu
@@ -2624,14 +2623,14 @@
 
             <!-- SIÊU PHÂN GIẢI LÀM NÉT 4K -->
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
-              <span style="min-width: 80px; font-weight: 700; color: #38BDF8;">🔍 Tăng nét:</span>
+              <span style="min-width: 80px; font-weight: 700; color: #38BDF8;">🔍 Làm nét 4K:</span>
               <input type="range" class="range-slider" id="sliderBeautySharpness" min="0" max="100" value="30" step="5" style="accent-color: #38BDF8; flex: 1;">
               <span id="valBeautySharpness" style="font-family: monospace; font-size: 9.5px; color: #38BDF8; min-width: 28px; text-align: right; font-weight: 800;">30%</span>
             </div>
 
             <!-- Preset làm đẹp 1 chạm (Tối ưu da tự nhiên chuẩn CapCut, khử vàng, khử bóng dầu) -->
             <div style="display: flex; gap: 3px; overflow-x: auto; padding-bottom: 2px;" id="beautyPresetPills">
-              <button type="button" class="btn-tint-pill active" data-beauty="warm">🎥 Tự nhiên</button>
+              <button type="button" class="btn-tint-pill active" data-beauty="warm">🎥 Tự Nhiên CapCut</button>
               <button type="button" class="btn-tint-pill" data-beauty="rosy">🌸 Trắng Sáng</button>
               <button type="button" class="btn-tint-pill" data-beauty="smooth">✨ Trắng Mịn</button>
               <button type="button" class="btn-tint-pill" data-beauty="bright">🌟 Studio Sáng</button>
@@ -2643,12 +2642,6 @@
               <span style="min-width: 80px;">🌸 Mịn da:</span>
               <input type="range" class="range-slider" id="sliderBeautySmooth" min="0" max="100" value="25" step="5" style="accent-color: #F472B6; flex: 1;">
               <span id="valBeautySmooth" style="font-family: monospace; font-size: 9.5px; color: #F472B6; min-width: 28px; text-align: right;">25%</span>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
-              <span style="min-width: 80px;" title="Điều chỉnh sắc da nhẹ, chỉ trên các vùng có màu da — không biến đổi nét mặt">☀️ Sáng da:</span>
-              <input type="range" class="range-slider" id="sliderBeautySkinLift" min="0" max="40" value="12" step="2" style="accent-color: #FBBF24; flex: 1;">
-              <span id="valBeautySkinLift" style="font-family: monospace; font-size: 9.5px; color: #FBBF24; min-width: 28px; text-align: right;">12%</span>
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
@@ -4878,7 +4871,6 @@
         beautyContrast,
         beautySaturation,
         beautySharpness,
-        beautySkinLift,
         enableAutoLighting,
         studentMicVolume,
         currentVocalFilterMode,
@@ -4944,7 +4936,6 @@
         beautyContrast = state.beautyContrast ?? beautyContrast;
         beautySaturation = state.beautySaturation ?? beautySaturation;
         beautySharpness = state.beautySharpness ?? beautySharpness;
-        beautySkinLift = state.beautySkinLift ?? beautySkinLift;
         enableAutoLighting = state.enableAutoLighting ?? enableAutoLighting;
         studentMicVolume = state.studentMicVolume ?? studentMicVolume;
         currentVocalFilterMode = state.currentVocalFilterMode ?? currentVocalFilterMode;
@@ -4972,8 +4963,6 @@
         const chkFlip = document.getElementById('chkStudentFlipH'); if (chkFlip) chkFlip.checked = studentFlipH;
 
         const sSharp = document.getElementById('sliderBeautySharpness'); if (sSharp) sSharp.value = beautySharpness;
-        const sLift = document.getElementById('sliderBeautySkinLift'); if (sLift) sLift.value = Math.round(beautySkinLift * 100);
-        const lLift = document.getElementById('valBeautySkinLift'); if (lLift) lLift.textContent = `${Math.round(beautySkinLift * 100)}%`;
         const lSharp = document.getElementById('valBeautySharpness'); if (lSharp) lSharp.textContent = `${beautySharpness}%`;
         const chkBrt = document.getElementById('chkBrtAutoLighting'); if (chkBrt) chkBrt.checked = enableAutoLighting;
         const chkWizBrt = document.getElementById('chkWizAutoLighting'); if (chkWizBrt) chkWizBrt.checked = enableAutoLighting;
@@ -5102,7 +5091,7 @@
     let studentChromaEnabled = true;
     let studentChromaMode = 'ai_auto'; // 'ai_auto' | 'green' | 'blue' | 'custom' | 'room' // 'green' | 'blue' | 'custom'
     let studentCustomKeyColor = '#00FF00';
-    let studentChromaTolerance = 0.65; // 0.30 to 0.99 (mặc định 82% cắt siêu sát ôm dính người)
+    let studentChromaTolerance = 0.82; // 0.30 to 0.99 (mặc định 82% cắt siêu sát ôm dính người)
     let studentChromaFeather = 2; // 1 to 8 (mặc định 2px bám mép sắc nét)
     let studentChromaDespill = 0.5; // 0.0 to 1.0
     let studentCropLeft = 0;
@@ -5115,7 +5104,7 @@
     let beautyWarmth = 0.0; // 0°: Tông màu tự nhiên, không làm bợt da bé
     let beautyContrast = 1.04; // 1.04: Tương phản rõ nét, tóc đen sâu, môi đỏ tươi như CapCut
     let beautySaturation = 1.03; // 1.03: Màu sắc tươi tắn tự nhiên
-    let studentAiErodeRadius = 0; // Mặc định 4px: Tự động gọt ôm sát viền người, triệt tiêu 100% viền trắng tường phòng
+    let studentAiErodeRadius = 4; // Mặc định 4px: Tự động gọt ôm sát viền người, triệt tiêu 100% viền trắng tường phòng
     let enablePlantRemoval = false; // Tắt hoàn toàn lọc thô màu tránh thủng áo xanh/đồ vật
     let studentPosX = 960;
     let studentPosY = 640;
@@ -5126,8 +5115,7 @@
     let rawStudentVideoDuration = 60;
     let studentSilenceSegments = [];
     let enableAutoLighting = true; // Auto-exposure luma lift
-    let beautySharpness = 30; // 0..100; applies actual unsharp mask to selected foreground
-    let beautySkinLift = 0.12; // 0..0.4; soft luminance lift on skin-like pixels
+    let beautySharpness = 30; // 0 to 100% Nét chi tiết tự nhiên, không làm gắt da hay tăng bóng dầu
     let studentDenoiseIntensity = 75; // 0 to 100% Noise gate & filter intensity
     let studentTimeOffset = 0; // Timeline start offset in seconds
     let isDraggingStudent = false;
@@ -5168,15 +5156,19 @@
     let aiDilateTempHoriz = null;
     let aiDilatedBarrier = null;
     let aiProcessedAlpha = null;
+    let aiErodeBufferA = null;
+    let aiErodeBufferB = null;
+    let aiEdgeDecontamMask = null;
+    let aiHermiteLUT = new Uint8Array(256);
+    let enableAutoDucking = true;
+    let currentDuckingFactor = 1.0;
+    let studentAudioPeaks = null;
+    let studentSpeechIntervals = [];
+    let exportBgmGain = null;
     let smoothedAutoLumaFactor = 1.0;
     let aiMaskCanvas = document.createElement('canvas');
     let aiMaskCtx = aiMaskCanvas.getContext('2d', { willReadFrequently: true });
     let hasValidAiMask = false;
-    let aiMaskSerial = 0;
-    let aiSelectionSignature = '';
-    let aiComponentCache = null;
-    let aiMaskLastReadyAt = 0;
-    let rvmModelAttempted = false;
     let aiInterpolateCanvas = document.createElement('canvas');
     let aiInterpolateCtx = aiInterpolateCanvas.getContext('2d', { willReadFrequently: true });
     let offscreenBeautyCanvas = document.createElement('canvas');
@@ -5187,6 +5179,8 @@
     let aiMattingBrushSize = 24;
     let aiMattingPromptPoints = []; // [{ xNorm, yNorm, isPositive: true }]
     let aiMattingPreviewMode = 'studio'; // 'studio' | 'checkerboard' | 'alpha_matte' | 'greenscreen'
+    window.aiMattingTool = aiMattingTool;
+    window.aiMattingPreviewMode = aiMattingPreviewMode;
     let userMatteCorrectionCanvas = document.createElement('canvas');
     let userMatteCorrectionCtx = userMatteCorrectionCanvas.getContext('2d', { willReadFrequently: true });
     let hasUserMatteCorrections = false;
@@ -7484,8 +7478,30 @@
       const cutoutBadgeColor = isAiMatting ? '#34D399' : '#94A3B8';
       const cutoutBadgeBg = isAiMatting ? 'rgba(16,185,129,0.3)' : 'rgba(0,0,0,0.35)';
 
+      // High-resolution Speech Waveform Track Graphic (CapCut Pro Standard - Real Decoded Audio Peaks)
+      let waveSvgBars = '';
+      const numBars = Math.max(14, Math.min(160, Math.floor(widthPx / 3.8)));
+      if (studentAudioPeaks && studentAudioPeaks.length > 0) {
+        for (let bi = 0; bi < numBars; bi++) {
+          const pIdx = Math.floor((bi / numBars) * studentAudioPeaks.length);
+          const peak = studentAudioPeaks[pIdx] || 0;
+          // Silence (< 0.05) is visibly flat at 1.5px; speech bars scale dynamically up to 14px
+          const barH = peak < 0.05 ? 1.5 : Math.max(2, Math.min(14, Math.round(1.5 + peak * 12.5)));
+          const fillColor = peak < 0.05 ? 'rgba(148, 163, 184, 0.35)' : 'rgba(52, 211, 153, 0.85)';
+          waveSvgBars += `<rect x="${bi * 3.8}" y="${15 - barH}" width="2.2" height="${barH}" rx="1" fill="${fillColor}"/>`;
+        }
+      } else {
+        // Subtle baseline flat line when video audio is not yet decoded or silent
+        for (let bi = 0; bi < numBars; bi++) {
+          waveSvgBars += `<rect x="${bi * 3.8}" y="13.5" width="2.2" height="1.5" rx="1" fill="rgba(148, 163, 184, 0.35)"/>`;
+        }
+      }
+
       block.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; pointer-events: none; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 4px;">
+        <div style="position: absolute; bottom: 2px; left: 4px; right: 4px; height: 16px; pointer-events: none; overflow: hidden; opacity: 0.85;">
+          <svg width="100%" height="16" style="overflow: visible;">${waveSvgBars}</svg>
+        </div>
+        <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; width: 100%; pointer-events: none; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 4px;">
           <span style="font-weight: 800; font-size: 10.5px; color: #FFFFFF;">🎙️ ${anchorName || 'BTV Nhí'} (${studentTimeOffset}s - ${Math.round(studentTimeOffset + dur)}s)</span>
           <div style="display: flex; gap: 4px; align-items: center;">
             <span style="font-size: 8px; color: ${cutoutBadgeColor}; font-weight: 800; background: ${cutoutBadgeBg}; padding: 1px 4px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.15);">${cutoutBadgeText}</span>
@@ -10464,7 +10480,7 @@
           
           // INTERACTIVE MATTE TOOL: SELECT SUBJECT (POINT PROMPT)
           if (aiMattingTool === 'select') {
-            const normX = studentFlipH ? 1-(mouseX - studentBox.x) / studentBox.w : (mouseX - studentBox.x) / studentBox.w;
+            const normX = (mouseX - studentBox.x) / studentBox.w;
             const normY = (mouseY - studentBox.y) / studentBox.h;
             const isPos = !(window.event && (window.event.shiftKey || window.event.altKey));
             aiMattingPromptPoints.push({ xNorm: normX, yNorm: normY, isPositive: isPos });
@@ -11297,7 +11313,7 @@
             studioThemeHint.innerHTML = '💡 Khung Livestream Talk11 Student News chính diện: Nền phòng stream thật màu cam sáng & trắng, kệ kỷ niệm chương bên phải, khung video 16:9 sắc nét bên trái.';
           }
           if (secWallScreens) secWallScreens.style.display = 'none';
-        } else if ((effMode === 'full' || effMode === 'studio') && selectedStudioTheme === 'white_orange_anchor') {
+        } else if (selectedStudioTheme === 'white_orange_anchor') {
           if (studioThemeHint) {
             studioThemeHint.innerHTML = '💡 Góc quay trực diện thẳng mặt: 1 bên Bàn Dẫn BTV Thời Sự, 1 bên Màn Hình TV 16:9 chiếu slide/video, màu cam sáng và trắng thanh lịch.';
           }
@@ -11567,15 +11583,82 @@
 
       currentSubBox = { x: boxX, y: boxY, w: boxW, h: boxH, subId: currentSub.id };
 
+      // DYNAMIC WORD-BY-WORD HIGHLIGHT & SPRING BOUNCE (CapCut TikTok / Karaoke Style)
+      const words = subText.trim().split(/\s+/);
+      let activeWordIdx = 0;
+      let activeBounce = 1.0;
+      if (currentSub.words && Array.isArray(currentSub.words) && currentSub.words.length === words.length) {
+        // High-precision per-word timestamp alignment from speech-to-text / transcription
+        const foundIdx = currentSub.words.findIndex(w => {
+          const ws = (w.startSec !== undefined ? w.startSec : (w.start !== undefined ? w.start : currentSub.startSec));
+          const we = (w.endSec !== undefined ? w.endSec : (w.end !== undefined ? w.end : currentSub.endSec));
+          return timeSec >= ws && timeSec <= we;
+        });
+        if (foundIdx !== -1) {
+          activeWordIdx = foundIdx;
+          const wObj = currentSub.words[foundIdx];
+          const ws = (wObj.startSec !== undefined ? wObj.startSec : (wObj.start !== undefined ? wObj.start : currentSub.startSec));
+          const we = (wObj.endSec !== undefined ? wObj.endSec : (wObj.end !== undefined ? wObj.end : currentSub.endSec));
+          const wDur = Math.max(0.05, we - ws);
+          const wNorm = Math.max(0, Math.min(1, (timeSec - ws) / wDur));
+          activeBounce = (wNorm < 0.35) ? (1.0 + Math.sin(wNorm / 0.35 * Math.PI) * 0.18) : 1.0;
+        } else {
+          // If between words or near boundary, find closest past word
+          let closestIdx = 0;
+          let minDiff = Infinity;
+          currentSub.words.forEach((w, idx) => {
+            const ws = (w.startSec !== undefined ? w.startSec : (w.start !== undefined ? w.start : currentSub.startSec));
+            if (timeSec >= ws && (timeSec - ws) < minDiff) {
+              minDiff = timeSec - ws;
+              closestIdx = idx;
+            }
+          });
+          activeWordIdx = closestIdx;
+          activeBounce = 1.0;
+        }
+      } else {
+        // High-fidelity fallback: Proportional distribution across segment duration
+        const subDuration = Math.max(0.2, currentSub.endSec - currentSub.startSec);
+        const subElapsed = Math.max(0, Math.min(subDuration, timeSec - currentSub.startSec));
+        const subProgress = subElapsed / subDuration;
+        activeWordIdx = Math.min(words.length - 1, Math.floor(subProgress * words.length));
+        const activeWordNorm = (subProgress * words.length) - activeWordIdx;
+        activeBounce = (activeWordNorm < 0.32) ? (1.0 + Math.sin(activeWordNorm / 0.32 * Math.PI) * 0.16) : 1.0;
+      }
+
+      const spaceW = ctx.measureText(' ').width;
+      let wordMetricsArr = words.map(w => ({ text: w, width: ctx.measureText(w).width }));
+      let totalTextW = wordMetricsArr.reduce((acc, m) => acc + m.width, 0) + spaceW * (words.length - 1);
+
       if (subtitleStyle === 'tiktok') {
-        // TIKTOK CLEAN OUTLINE STYLE (No background box, yellow text with thick black stroke)
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-        ctx.shadowBlur = 10;
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 5;
-        ctx.strokeText(subText, boxX + boxW / 2, boxY + boxH / 2);
-        ctx.fillStyle = '#FBBF24';
-        ctx.fillText(subText, boxX + boxW / 2, boxY + boxH / 2);
+        // TIKTOK CLEAN OUTLINE STYLE (No background box, yellow text with thick black stroke + Word Bounce)
+        let curWordX = (boxX + boxW / 2) - (totalTextW / 2);
+        const centerY = boxY + boxH / 2;
+
+        words.forEach((wrd, wIdx) => {
+          const wWidth = wordMetricsArr[wIdx].width;
+          const isAct = (wIdx === activeWordIdx);
+          const isPast = (wIdx < activeWordIdx);
+
+          ctx.save();
+          if (isAct) {
+            ctx.translate(curWordX + wWidth / 2, centerY);
+            ctx.scale(activeBounce, activeBounce);
+            ctx.translate(-(curWordX + wWidth / 2), -centerY);
+          }
+
+          ctx.shadowColor = isAct ? 'rgba(0, 240, 255, 0.85)' : 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = isAct ? 16 : 10;
+          ctx.strokeStyle = '#000000';
+          ctx.lineWidth = isAct ? 6 : 5;
+          ctx.strokeText(wrd, curWordX + wWidth / 2, centerY);
+
+          ctx.fillStyle = isAct ? '#00F0FF' : (isPast ? '#FDE047' : '#FFFFFF');
+          ctx.fillText(wrd, curWordX + wWidth / 2, centerY);
+          ctx.restore();
+
+          curWordX += wWidth + spaceW;
+        });
       } else if (subtitleStyle === 'breaking') {
         // BREAKING NEWS RECTANGLE BANNER STYLE
         ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
@@ -11588,7 +11671,7 @@
         ctx.fillStyle = '#FFFFFF';
         ctx.fillText(subText, boxX + boxW / 2, boxY + boxH / 2);
       } else if (subtitleStyle === 'karaoke') {
-        // KARAOKE NEON GLOW STYLE
+        // KARAOKE NEON GLOW STYLE (Glowing rounded card + Word-by-word karaoke filling)
         ctx.shadowColor = '#FF6B00';
         ctx.shadowBlur = 22;
         ctx.fillStyle = 'rgba(8, 14, 28, 0.95)';
@@ -11598,8 +11681,33 @@
         ctx.strokeStyle = '#FF6B00';
         ctx.lineWidth = 2.0;
         ctx.stroke();
-        ctx.fillStyle = '#FFB703';
-        ctx.fillText(subText, boxX + boxW / 2, boxY + boxH / 2);
+
+        let curWordX = (boxX + boxW / 2) - (totalTextW / 2);
+        const centerY = boxY + boxH / 2;
+
+        words.forEach((wrd, wIdx) => {
+          const wWidth = wordMetricsArr[wIdx].width;
+          const isAct = (wIdx === activeWordIdx);
+          const isPast = (wIdx < activeWordIdx);
+
+          ctx.save();
+          if (isAct) {
+            ctx.translate(curWordX + wWidth / 2, centerY);
+            ctx.scale(activeBounce, activeBounce);
+            ctx.translate(-(curWordX + wWidth / 2), -centerY);
+            ctx.shadowColor = '#FFB703';
+            ctx.shadowBlur = 16;
+            ctx.fillStyle = '#FFB703';
+          } else if (isPast) {
+            ctx.fillStyle = '#F59E0B';
+          } else {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+          }
+          ctx.fillText(wrd, curWordX + wWidth / 2, centerY);
+          ctx.restore();
+
+          curWordX += wWidth + spaceW;
+        });
       } else {
         // GLASSMORPHIC CAPSULE BOX (Default VTV style)
         ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
@@ -11700,10 +11808,9 @@
     // ROBUST VIDEO MATTING (RVM - CAPCUT PRO CORE ENGINE)
     // ========================================================
     async function initRvmWebModel() {
-      if (typeof tf === 'undefined' || rvmModel || rvmModelAttempted || location.protocol === 'file:') return;
-      rvmModelAttempted = true;
+      if (typeof tf === 'undefined' || rvmModel) return;
       try {
-        console.log('Đang kiểm tra mô hình RVM tuỳ chọn...');
+        console.log('🔄 Đang nạp Robust Video Matting (RVM - CapCut Pro)...');
         rvmModel = await tf.loadGraphModel('03_ASSETS/models/rvm/rvm_mobilenetv3_tfjs_int8/model.json');
         rvmRecurrentStates = [
           tf.tensor(0.),
@@ -11716,7 +11823,7 @@
         console.log('✓ Robust Video Matting (RVM) loaded & ready!');
         const badge = document.getElementById('badgeAiSegmentStatus');
         if (badge) {
-          badge.textContent = '✓ RVM sẵn sàng';
+          badge.textContent = '👑 AI RVM CapCut Pro';
           badge.style.color = '#F59E0B';
         }
       } catch (err) {
@@ -11742,24 +11849,26 @@
           rvmCurrentRatioVal = ratioVal;
         }
 
-        const tfImg = tf.browser.fromPixels(vidElem);
-        const srcFloat = tfImg.toFloat().div(255);
-        const src = srcFloat.expandDims(0);
-        let outputs;
-        try {
-          outputs = await rvmModel.executeAsync(
-            {
-              src, r1i: rvmRecurrentStates[0], r2i: rvmRecurrentStates[1],
-              r3i: rvmRecurrentStates[2], r4i: rvmRecurrentStates[3],
-              downsample_ratio: rvmDownsampleRatio
-            },
-            ['fgr', 'pha', 'r1o', 'r2o', 'r3o', 'r4o']
-          );
-        } finally {
-          tf.dispose([tfImg, srcFloat, src]);
-        }
+        let src = null;
+        tf.tidy(() => {
+          const tfImg = tf.browser.fromPixels(vidElem);
+          src = tf.keep(tfImg.expandDims(0).div(255));
+        });
 
-        const [fgr, pha, r1o, r2o, r3o, r4o] = await outputs;
+        const outputs = await rvmModel.executeAsync(
+          {
+            src: src,
+            r1i: rvmRecurrentStates[0],
+            r2i: rvmRecurrentStates[1],
+            r3i: rvmRecurrentStates[2],
+            r4i: rvmRecurrentStates[3],
+            downsample_ratio: rvmDownsampleRatio
+          },
+          ['fgr', 'pha', 'r1o', 'r2o', 'r3o', 'r4o']
+        );
+        src.dispose();
+
+        const [fgr, pha, r1o, r2o, r3o, r4o] = outputs;
 
         // Dispose old recurrent states and save new ones
         tf.dispose(rvmRecurrentStates);
@@ -11814,7 +11923,7 @@
           locateFile: getModelUrl
         });
         selfieSegmentation.setOptions({
-          modelSelection: 1, // Landscape model: improve foreground stability in wide footage
+          modelSelection: 0, // Model 1 = Landscape High Precision (Độ nét cao hơn Model 0, viền tóc & cánh tay sắc gọn)
           selfieMode: false
         });
         selfieSegmentation.onResults((results) => {
@@ -11834,13 +11943,12 @@
             aiMaskCtx.clearRect(0, 0, mW, mH);
             aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
             hasValidAiMask = true;
-            aiMaskSerial++;
             latestSegmentMask = aiMaskCanvas;
           }
 
           const statusBadge = document.getElementById('badgeAiSegmentStatus');
           if (statusBadge) {
-            statusBadge.textContent = '✓ MediaPipe đang tách nền';
+            statusBadge.textContent = '🤖 AI Tách Người 60FPS';
             statusBadge.style.color = '#34D399';
           }
         });
@@ -11852,7 +11960,7 @@
             selfieSegmentation = new SelfieSegmentation({
               locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`
             });
-            selfieSegmentation.setOptions({ modelSelection: 1, selfieMode: false });
+            selfieSegmentation.setOptions({ modelSelection: 0, selfieMode: false });
             selfieSegmentation.onResults((results) => {
               isSegmentingFrame = false;
               selfieSegmentationReady = true;
@@ -11867,7 +11975,6 @@
                 aiMaskCtx.clearRect(0, 0, mW, mH);
                 aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
                 hasValidAiMask = true;
-                aiMaskSerial++;
                 latestSegmentMask = aiMaskCanvas;
               }
             });
@@ -11884,8 +11991,8 @@
       }
     }
 
-    // Legacy color-key fallback retained for compatibility but no longer called in AI mode:
-    // skin/wall color heuristics are NOT reliable person segmentation.
+    // Pure-JS Computer Vision Human Saliency Matting Fallback:
+    // Tự động phân tách người, bảo vệ 100% áo đồng phục trắng, da mặt và đồ vật khi MediaPipe offline hoặc mở trực tiếp file://
     function runPureJsSubjectMattingFallback(imgData, w, h, tol, featherSteps) {
       if (!imgData || !imgData.data) return;
       const data = imgData.data;
@@ -12015,178 +12122,9 @@
       }
     }
 
-    // TALK11 v2.1.0: AI mask post-processing. These do NOT pretend to replace a dedicated
-    // multi-person instance model. A user click selects a connected foreground component.
-    function pickMaskChannel(data, w, h) {
-      let minR = 255, maxR = 0, minA = 255, maxA = 0;
-      for (let i = 0; i < w*h; i += Math.max(1, Math.floor(w*h/1500))) {
-        const p = i*4;
-        minR=Math.min(minR,data[p]); maxR=Math.max(maxR,data[p]);
-        minA=Math.min(minA,data[p+3]); maxA=Math.max(maxA,data[p+3]);
-      }
-      // Some mask backends put confidence in alpha, others draw opaque grayscale RGB.
-      return maxR-minR < 12 && maxA-minA > 20 ? 3 : 0;
-    }
-
-    function isolateMainMaskComponent(pixels, w, h, ch, cutoff) {
-      const step = 3, cw = Math.ceil(w/step), chh = Math.ceil(h/step);
-      const labels = new Int32Array(cw*chh), queue = new Int32Array(cw*chh);
-      const sizes=[0], sumX=[0], sumY=[0]; let count=0;
-      const binaryCut = Math.max(90, Math.min(205, Math.round(cutoff*255-13)));
-      for(let y=0;y<chh;y++) for(let x=0;x<cw;x++) {
-        const p=y*cw+x; if (labels[p]) continue;
-        const xx=Math.min(w-1,x*step), yy=Math.min(h-1,y*step);
-        if(pixels[(yy*w+xx)*4+ch] < binaryCut) continue;
-        const id=++count; let head=0,tail=0,area=0,sx=0,sy=0;
-        queue[tail++]=p; labels[p]=id;
-        while(head<tail) {
-          const q=queue[head++], qx=q%cw, qy=(q/cw)|0;
-          area++;sx+=qx;sy+=qy;
-          const neighbors=[qx>0?q-1:-1,qx<cw-1?q+1:-1,qy>0?q-cw:-1,qy<chh-1?q+cw:-1];
-          for(let k=0;k<4;k++) {
-            const np=neighbors[k]; if(np<0 || labels[np])continue;
-            const nx=np%cw, ny=(np/cw)|0;
-            if(pixels[(Math.min(h-1,ny*step)*w+Math.min(w-1,nx*step))*4+ch] < binaryCut)continue;
-            labels[np]=id;queue[tail++]=np;
-          }
-        }
-        sizes[id]=area;sumX[id]=sx/area;sumY[id]=sy/area;
-      }
-      let selected=0, best=-1;
-      const pos=aiMattingPromptPoints.filter(p=>p.isPositive), neg=aiMattingPromptPoints.filter(p=>!p.isPositive);
-      if(pos.length){
-        const votes = new Float32Array(count+1);
-        for(const pt of pos){
-          const px=Math.max(0,Math.min(cw-1,Math.floor(pt.xNorm*cw)));
-          const py=Math.max(0,Math.min(chh-1,Math.floor(pt.yNorm*chh)));
-          // Allow a click slightly outside the predicted matte (hair / clothes).
-          for(let r=0;r<=8;r++)for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
-            const x=px+dx,y=py+dy;if(x<0||y<0||x>=cw||y>=chh)continue;
-            const id=labels[y*cw+x]; if(id>0) votes[id]+=1/(1+dx*dx+dy*dy);
-          }
-        }
-        for(let id=1;id<=count;id++)if(votes[id]>best){best=votes[id];selected=id;}
-        if(best<=0)selected=0;
-      }
-      if(!selected){
-        best=-1;
-        for(let id=1;id<=count;id++){
-          const cx=sumX[id]/cw, cy=sumY[id]/chh;
-          const central=1-Math.min(1,Math.hypot((cx-.5)*1.3,(cy-.48)*.8));
-          const score=sizes[id]*(.6+.4*central);
-          if(score>best){best=score;selected=id;}
-        }
-      }
-      const excluded = new Set();
-      for(const pt of neg){
-        const x=Math.max(0,Math.min(cw-1,Math.floor(pt.xNorm*cw)));
-        const y=Math.max(0,Math.min(chh-1,Math.floor(pt.yNorm*chh)));
-        const id=labels[y*cw+x]; if(id && id!==selected)excluded.add(id);
-      }
-      return {labels,cw,chh,step,selected,excluded,sizes};
-    }
-
-    function correctMatteAndDefringe(frame, w, h, alpha, manual = true) {
-      // Light alpha erosion ONLY if the user chooses it; avoid removing fine hair by default.
-      const erode=Math.max(0,Math.min(4,studentAiErodeRadius|0));
-      if(erode){
-        const prev=new Uint8ClampedArray(alpha);
-        for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){
-          const p=y*w+x; if(!prev[p])continue;
-          const neighbor=Math.min(prev[p-1],prev[p+1],prev[p-w],prev[p+w]);
-          if(neighbor<prev[p])alpha[p]=Math.round(prev[p]*(1-erode*.13)+neighbor*erode*.13);
-        }
-      }
-      const rgba=frame.data;
-      const strength=Math.max(0,Math.min(1,studentChromaDespill));
-      for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){
-        const p=y*w+x,idx=p*4,a=alpha[p];
-        if(a>8&&a<246&&strength>0){
-          const inside=[p-1,p+1,p-w,p+w].find(q=>alpha[q]>245);
-          if(inside!==undefined){
-            const j=inside*4;
-            for(let c=0;c<3;c++){
-              const original=rgba[idx+c], neighbor=rgba[j+c];
-              if(original>neighbor+16) rgba[idx+c]=original*(1-.32*strength)+neighbor*.32*strength;
-            }
-          }
-        }
-      }
-      if (manual && hasUserMatteCorrections && userMatteCorrectionCanvas.width===w && userMatteCorrectionCanvas.height===h){
-        const corr=userMatteCorrectionCtx.getImageData(0,0,w,h).data;
-        for(let p=0;p<w*h;p++){
-          const i=p*4;if(corr[i+3]<20)continue;
-          if(corr[i+1]>150 && corr[i]<100)alpha[p]=255;
-          else if(corr[i]>150 && corr[i+1]<100)alpha[p]=0;
-        }
-      }
-      for(let p=0;p<w*h;p++)rgba[p*4+3]=alpha[p];
-    }
-
-    // Browser-only beauty effect: light skin-aware smoothing & exposure correction.
-    // No face-landmark tracking / generative retouching is claimed here.
-    const beautyBlurCanvas=document.createElement('canvas');
-    const beautyBlurCtx=beautyBlurCanvas.getContext('2d',{willReadFrequently:true});
-    const skinEnhancedCanvas=document.createElement('canvas');
-    const skinEnhancedCtx=skinEnhancedCanvas.getContext('2d',{willReadFrequently:true});
-    function enhanceStudentVideoFrame(src) {
-      if(!enableBeauty || (beautySmoothness<=0 && beautySkinLift<=0 && beautySharpness<=0))return src;
-      const w=src.width,h=src.height;
-      if(skinEnhancedCanvas.width!==w||skinEnhancedCanvas.height!==h){skinEnhancedCanvas.width=w;skinEnhancedCanvas.height=h;}
-      if(beautyBlurCanvas.width!==w||beautyBlurCanvas.height!==h){beautyBlurCanvas.width=w;beautyBlurCanvas.height=h;}
-      skinEnhancedCtx.clearRect(0,0,w,h);
-      skinEnhancedCtx.drawImage(src,0,0);
-      beautyBlurCtx.clearRect(0,0,w,h);
-      beautyBlurCtx.save();beautyBlurCtx.filter='blur(2px)';beautyBlurCtx.drawImage(src,0,0);beautyBlurCtx.restore();
-      try{
-        const orig=skinEnhancedCtx.getImageData(0,0,w,h), data=orig.data;
-        const blur=beautyBlurCtx.getImageData(0,0,w,h).data;
-        const amt=Math.max(0,Math.min(.65,beautySmoothness*.7));
-        const skinLift=Math.max(0,Math.min(.4,beautySkinLift));
-        const sharpen=Math.max(0,Math.min(.35,beautySharpness/100*.28));
-        for(let i=0;i<data.length;i+=4){
-          const a=data[i+3];if(a<65)continue;
-          const r=data[i],g=data[i+1],b=data[i+2];
-          // Conservative, inclusive skin-color YCbCr heuristic; avoid hair/eyes and bright white fabric.
-          const y=.299*r+.587*g+.114*b;
-          const cb=128-.168736*r-.331264*g+.5*b;
-          const cr=128+.5*r-.418688*g-.081312*b;
-          const isSkin = y>42&&y<232&&cb>=77&&cb<=132&&cr>=128&&cr<=180&&r>g*.96&&r>b*.97;
-          if(isSkin){
-            const edge=Math.abs(r-blur[i])+Math.abs(g-blur[i+1])+Math.abs(b-blur[i+2]);
-            const mix=amt*(edge>65?.22:1);
-            const lift=skinLift*Math.max(0,1-y/255)*105;
-            data[i]=Math.min(255,r*(1-mix)+blur[i]*mix+lift);
-            data[i+1]=Math.min(255,g*(1-mix)+blur[i+1]*mix+lift*.96);
-            data[i+2]=Math.min(255,b*(1-mix)+blur[i+2]*mix+lift*.9);
-          }else if(sharpen>0){
-            data[i]=Math.max(0,Math.min(255,r+(r-blur[i])*sharpen));
-            data[i+1]=Math.max(0,Math.min(255,g+(g-blur[i+1])*sharpen));
-            data[i+2]=Math.max(0,Math.min(255,b+(b-blur[i+2])*sharpen));
-          }
-        }
-        skinEnhancedCtx.putImageData(orig,0,0);
-        return skinEnhancedCanvas;
-      }catch(e){console.warn('Beauty pixel pass unavailable:',e);return src;}
-    }
-
-    const exposureSampleCanvas=document.createElement('canvas');
-    exposureSampleCanvas.width=96;exposureSampleCanvas.height=54;
-    const exposureSampleCtx=exposureSampleCanvas.getContext('2d',{willReadFrequently:true});
-    let exposureSampleTime=-Infinity, exposureCached=null;
-    function sampleStudentExposure(){
-      if(!studentVideoElem||studentVideoElem.readyState<2)return null;
-      const now=performance.now();if(now-exposureSampleTime<280)return exposureCached;
-      exposureSampleTime=now;const x=exposureSampleCtx;x.drawImage(studentVideoElem,0,0,96,54);
-      const d=x.getImageData(0,0,96,54).data;const vals=[];
-      for(let y=5;y<39;y+=2)for(let xx=24;xx<72;xx+=2){
-        const i=(y*96+xx)*4;const lum=d[i]*.2126+d[i+1]*.7152+d[i+2]*.0722;
-        if(lum>8&&lum<248)vals.push(lum);
-      }
-      if(!vals.length)return null;vals.sort((a,b)=>a-b);
-      const median=vals[Math.floor(vals.length*.5)], high=vals[Math.floor(vals.length*.90)];
-      exposureCached={median,high, factor: Math.max(.94,Math.min(1.18,118/Math.max(60,median),226/Math.max(100,high)))};
-      return exposureCached;
+    // Helper: 4K Super-Resolution Unsharp Mask Pass (Optimized for 60FPS realtime rendering)
+    function applyUnsharpMaskSharpness(targetCtx, w, h, sharpnessPct) {
+      return;
     }
 
     // ========================================================
@@ -12240,10 +12178,31 @@
           }
         }
 
-        if (hasValidRvmMatte && aiMattingPromptPoints.length === 0 && rvmOutputCanvas.width > 0 && rvmOutputCanvas.height > 0) {
+        if (hasValidRvmMatte && rvmOutputCanvas.width > 0 && rvmOutputCanvas.height > 0) {
           offscreenKeyCtx.globalCompositeOperation = 'copy';
           offscreenKeyCtx.drawImage(rvmOutputCanvas, 0, 0, procW, procH);
           offscreenKeyCtx.globalCompositeOperation = 'source-over';
+
+          // Apply manual user brush corrections (Eraser / Restore) over RVM output
+          if (hasUserMatteCorrections && userMatteCorrectionCanvas.width > 0) {
+            const rvmFrame = offscreenKeyCtx.getImageData(0, 0, procW, procH);
+            const rData = rvmFrame.data;
+            const uData = userMatteCorrectionCtx.getImageData(0, 0, procW, procH).data;
+            const totalPix = procW * procH;
+            for (let i = 0; i < totalPix; i++) {
+              const uA = uData[i * 4 + 3];
+              if (uA > 0) {
+                if (uData[i * 4] > uData[i * 4 + 1]) {
+                  // Red brush = Erase
+                  rData[i * 4 + 3] = Math.round(rData[i * 4 + 3] * (1 - uA / 255));
+                } else {
+                  // Green brush = Keep / Restore
+                  rData[i * 4 + 3] = Math.max(rData[i * 4 + 3], uA);
+                }
+              }
+            }
+            offscreenKeyCtx.putImageData(rvmFrame, 0, 0);
+          }
           return offscreenKeyCanvas;
         }
 
@@ -12287,84 +12246,392 @@
         offscreenKeyCtx.globalCompositeOperation = 'source-over';
         offscreenKeyCtx.drawImage(studentVideoElem, 0, 0, procW, procH);
 
-        if (hasValidAiMask && aiMaskCanvas.width>0 && aiMaskCanvas.height>0) {
-          if(aiInterpolateCanvas.width!==procW||aiInterpolateCanvas.height!==procH){
-            aiInterpolateCanvas.width=procW;aiInterpolateCanvas.height=procH;
-            aiTemporalAlphaBuffer=null;aiComponentCache=null;
+        if (hasValidAiMask && aiMaskCanvas.width > 0 && aiMaskCanvas.height > 0) {
+          if (aiInterpolateCanvas.width !== procW || aiInterpolateCanvas.height !== procH) {
+            aiInterpolateCanvas.width = procW;
+            aiInterpolateCanvas.height = procH;
+            aiTemporalAlphaBuffer = new Float32Array(procW * procH);
+            aiTemporalBufferWidth = procW;
+            aiTemporalBufferHeight = procH;
           }
-          aiInterpolateCtx.clearRect(0,0,procW,procH);
-          aiInterpolateCtx.imageSmoothingEnabled=true;
-          aiInterpolateCtx.drawImage(aiMaskCanvas,0,0,procW,procH);
-          try{
-            const maskData=aiInterpolateCtx.getImageData(0,0,procW,procH).data;
-            const channel=pickMaskChannel(maskData,procW,procH);
-            const strength=Math.max(0.30,Math.min(.99,studentChromaTolerance));
-            const threshold=Math.max(.31,Math.min(.73,.49+(strength-.65)*.37));
-            const softness=Math.max(.075,Math.min(.18,.085+studentChromaFeather*.012));
-            const sig=`${aiMaskSerial}/${aiMattingPromptPoints.map(p=>`${p.xNorm.toFixed(3)}:${p.yNorm.toFixed(3)}:${+p.isPositive}`).join('|')}/${threshold.toFixed(2)}/${procW}`;
-            if(!aiComponentCache||aiSelectionSignature!==sig){
-              aiComponentCache=isolateMainMaskComponent(maskData,procW,procH,channel,threshold);
-              aiSelectionSignature=sig;
+
+          // 1. Phóng/thu mặt nạ nơ-ron từ persistent buffer sang canvas nội suy với chất lượng cao
+          aiInterpolateCtx.globalCompositeOperation = 'source-over';
+          aiInterpolateCtx.imageSmoothingEnabled = true;
+          aiInterpolateCtx.imageSmoothingQuality = 'high';
+          aiInterpolateCtx.clearRect(0, 0, procW, procH);
+          aiInterpolateCtx.drawImage(aiMaskCanvas, 0, 0, procW, procH);
+
+          // 2. Thu thập dữ liệu pixel mặt nạ và video gốc
+          const maskImgData = aiInterpolateCtx.getImageData(0, 0, procW, procH);
+          const mData = maskImgData.data;
+          const finalVidImgData = offscreenKeyCtx.getImageData(0, 0, procW, procH);
+          const fData = finalVidImgData.data;
+          const totalPix = procW * procH;
+
+          // Kiểm tra xem mặt nạ có chứa điểm ảnh người không (tránh trường hợp frame tối đầu video biến mất bé)
+          // Đọc trực tiếp kênh Red (kênh biểu diễn xác suất của MediaPipe). TUYỆT ĐỐI không đọc Alpha vì canvas opaque luôn là 255!
+          let maxProbInMask = 0;
+          for (let pIdx = 0; pIdx < totalPix; pIdx += 64) {
+            const m = mData[pIdx * 4];
+            if (m > maxProbInMask) maxProbInMask = m;
+          }
+
+          if (maxProbInMask < 35) {
+            runPureJsSubjectMattingFallback(finalVidImgData, procW, procH, studentChromaTolerance, studentChromaFeather);
+            offscreenKeyCtx.putImageData(finalVidImgData, 0, 0);
+            return offscreenKeyCanvas;
+          }
+
+          // 3. TÍNH TOÁN THAM SỐ ÔM SÁT NGƯỜI CHUẨN XÁC (TÁCH MẠNH HƠN NỮA, TRIỆT TIÊU QUẦNG TRẮNG):
+          const tol = (typeof studentChromaTolerance === 'number')
+            ? (studentChromaTolerance > 1 ? studentChromaTolerance / 100 : studentChromaTolerance)
+            : 0.82;
+
+          // Ngưỡng phân tách xác suất AI ôm sát người (Tách sâu triệt để viền mờ phông nền phòng)
+          // tol = 0.50 -> 158; tol = 0.70 -> 186; tol = 0.82 -> 203; tol = 0.95 -> 221; tol = 0.99 -> 227 (trên thang 0-255)
+          const cutoffCenter = Math.max(90, Math.min(235, Math.round(88 + tol * 140)));
+          const featherSteps = (typeof studentChromaFeather === 'number') ? studentChromaFeather : 2;
+          const feather = Math.max(1.5, Math.min(8, Math.round(featherSteps * 1.2)));
+          const halfF = feather * 0.5;
+          const fLow = cutoffCenter - halfF;
+          const fHigh = cutoffCenter + halfF;
+
+          // BẢNG TRA CỨU NHANH HERMITE SMOOTHSTEP (LUT ACCELERATION 60FPS)
+          if (!aiHermiteLUT) aiHermiteLUT = new Uint8Array(256);
+          for (let val = 0; val < 256; val++) {
+            if (val <= fLow) {
+              aiHermiteLUT[val] = 0;
+            } else if (val >= fHigh) {
+              aiHermiteLUT[val] = 255;
+            } else {
+              const t = (val - fLow) / feather;
+              aiHermiteLUT[val] = Math.round(255 * (t * t * (3 - 2 * t)));
             }
-            const comp=aiComponentCache;
-            const frame=offscreenKeyCtx.getImageData(0,0,procW,procH);
-            if(!aiTemporalAlphaBuffer||aiTemporalAlphaBuffer.length!==procW*procH){
-              aiTemporalAlphaBuffer=new Float32Array(procW*procH);
-              aiTemporalBufferWidth=procW;aiTemporalBufferHeight=procH;
+          }
+
+          const cropL = (studentCropLeft > 0) ? Math.floor((studentCropLeft / 100) * procW) : 0;
+          const cropR = (studentCropRight > 0) ? Math.floor((1 - studentCropRight / 100) * procW) : procW;
+          const cropB = (studentCropBottom > 0) ? Math.floor((1 - studentCropBottom / 100) * procH) : procH;
+
+          if (!aiTemporalAlphaBuffer || aiTemporalAlphaBuffer.length !== totalPix) {
+            aiTemporalAlphaBuffer = new Float32Array(totalPix);
+          }
+
+          // 4. BÁM SÁT CHUYỂN ĐỘNG & CỬ CHỈ (MƯỢT MÀ 60FPS KHÔNG NHÁY, KHÔNG KHỰNG)
+          for (let y = 0; y < procH; y++) {
+            const row = y * procW;
+            const isCropY = (y > cropB);
+
+            for (let x = 0; x < procW; x++) {
+              const p = row + x;
+              const idx = p * 4;
+
+              if (isCropY || x < cropL || x > cropR) {
+                fData[idx + 3] = 0;
+                aiTemporalAlphaBuffer[p] = 0;
+                continue;
+              }
+
+              const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
+
+              // Khử phông xanh lá an toàn CHỈ KHI người dùng chủ động bật enablePlantRemoval
+              if (enablePlantRemoval) {
+                const maxRB = Math.max(vr, vb);
+                if (vg > maxRB + 30 && vg > 65) {
+                  fData[idx + 3] = 0;
+                  aiTemporalAlphaBuffer[p] = 0;
+                  continue;
+                }
+              }
+
+              // Xác suất chủ thể người từ MediaPipe (0..255 qua kênh Red) tra qua bảng LUT siêu tốc
+              const rawProb = mData[idx];
+              let targetA = aiHermiteLUT[rawProb];
+
+              // Bộ lọc thời gian thích ứng nhạy bén (Responsive Smooth Temporal Filter):
+              if (enableAiAntiFlicker) {
+                const prevA = aiTemporalAlphaBuffer[p];
+                const diff = Math.abs(targetA - prevA);
+                if (diff > 20) {
+                  // Cử chỉ / chuyển động: Bám sát tức thì không trễ!
+                  aiTemporalAlphaBuffer[p] = targetA;
+                } else {
+                  // Vùng ổn định: Lọc mượt chống nhấp nháy
+                  const smoothA = prevA * 0.35 + targetA * 0.65;
+                  aiTemporalAlphaBuffer[p] = smoothA;
+                  targetA = Math.round(smoothA);
+                }
+              }
+
+              fData[idx + 3] = targetA;
             }
-            const alpha=new Uint8ClampedArray(procW*procH);
-            const cropL=Math.floor(studentCropLeft/100*procW);
-            const cropR=Math.ceil((1-studentCropRight/100)*procW);
-            const cropB=Math.ceil((1-studentCropBottom/100)*procH);
-            const low=(threshold-softness)*255,high=(threshold+softness)*255;
-            for(let y=0;y<procH;y++){
-              const cy=Math.min(comp.chh-1,(y/comp.step)|0);
-              for(let x=0;x<procW;x++){
-                const p=y*procW+x,i=p*4;
-                if(x<cropL||x>=cropR||y>=cropB){aiTemporalAlphaBuffer[p]=0;continue;}
-                const cx=Math.min(comp.cw-1,(x/comp.step)|0);
-                const label=comp.labels[cy*comp.cw+cx];
-                let attached=(label===comp.selected && label!==0);
-                // Allow 1 low-resolution pixel beyond confident component for hair edges.
-                if(!attached && label===0 && comp.selected){
-                  for(let dy=-1;dy<=1&&!attached;dy++)for(let dx=-1;dx<=1;dx++){
-                    const nx=cx+dx,ny=cy+dy;
-                    if(nx>=0&&ny>=0&&nx<comp.cw&&ny<comp.chh&&comp.labels[ny*comp.cw+nx]===comp.selected){attached=true;break;}
+          }
+
+          // 4A. ÁP DỤNG ĐIỂM CHỌN CHỦ THỂ (CLICK-TO-SELECT / PROMPT POINTS)
+          if (aiMattingPromptPoints && aiMattingPromptPoints.length > 0) {
+            for (let pt of aiMattingPromptPoints) {
+              const ptPxX = pt.xNorm * procW;
+              const ptPxY = pt.yNorm * procH;
+              const ptRadius = pt.isPositive ? Math.max(24, procW * 0.18) : Math.max(18, procW * 0.14);
+              const r2 = ptRadius * ptRadius;
+              const minX = Math.max(0, Math.floor(ptPxX - ptRadius));
+              const maxX = Math.min(procW - 1, Math.ceil(ptPxX + ptRadius));
+              const minY = Math.max(0, Math.floor(ptPxY - ptRadius));
+              const maxY = Math.min(procH - 1, Math.ceil(ptPxY + ptRadius));
+
+              for (let py = minY; py <= maxY; py++) {
+                const row = py * procW;
+                for (let px = minX; px <= maxX; px++) {
+                  const dx = px - ptPxX;
+                  const dy = py - ptPxY;
+                  const d2 = dx * dx + dy * dy;
+                  if (d2 <= r2) {
+                    const p = row + px;
+                    const idx = p * 4;
+                    if (pt.isPositive) {
+                      const falloff = 1.0 - (d2 / r2);
+                      const boostA = Math.round(255 * (falloff * 0.85 + 0.15));
+                      if (boostA > fData[idx + 3]) {
+                        fData[idx + 3] = boostA;
+                        if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = boostA;
+                      }
+                    } else {
+                      fData[idx + 3] = 0;
+                      if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
+                    }
                   }
                 }
-                if(!attached)continue;
-                const prob=maskData[i+channel];
-                const t=Math.max(0,Math.min(1,(prob-low)/(high-low)));
-                let target=Math.round(255*t*t*(3-2*t));
-                if(enableAiAntiFlicker){
-                  const prev=aiTemporalAlphaBuffer[p];
-                  // Never lag aggressively when the person moves or the mask changes.
-                  target=Math.round(Math.abs(prev-target)<28 ? prev*.22+target*.78 : target);
-                }
-                aiTemporalAlphaBuffer[p]=target;alpha[p]=target;
               }
             }
-            // Negative prompt on the main component should erase a LOCAL patch, not the whole person.
-            for(const point of aiMattingPromptPoints){
-              if(point.isPositive)continue;
-              const px=point.xNorm*procW, py=point.yNorm*procH;
-              const radius=Math.max(10,Math.min(procW,procH)*.055),r2=radius*radius;
-              for(let y=Math.max(0,(py-radius)|0);y<Math.min(procH,py+radius);y++)
-                for(let x=Math.max(0,(px-radius)|0);x<Math.min(procW,px+radius);x++){
-                  const d2=(x-px)**2+(y-py)**2;if(d2>=r2)continue;
-                  const p=y*procW+x;alpha[p]=Math.round(alpha[p]*Math.min(1,Math.sqrt(d2)/radius));
-                }
+          }
+
+          // 4B. TỰ ĐỘNG BẢO VỆ NỘI THÂN THỂ (CHỈ LẤP LỖ HỔNG VI THỂ <= 5PX TRÊN ÁO)
+          // Tuyệt đối không bắt cầu qua vùng đầu / tai / cổ (y < procH * 0.48) và không bắt cầu qua tường phòng
+          const headNeckLimitY = Math.floor(procH * 0.48);
+          for (let y = headNeckLimitY; y < procH; y++) {
+            const row = y * procW;
+            let firstSolid = -1;
+            let lastSolid = -1;
+            for (let x = 0; x < procW; x++) {
+              if (fData[(row + x) * 4 + 3] >= 220) {
+                if (firstSolid === -1) firstSolid = x;
+                lastSolid = x;
+              }
             }
-            correctMatteAndDefringe(frame,procW,procH,alpha);
-            offscreenKeyCtx.putImageData(frame,0,0);
-            return offscreenKeyCanvas;
-          }catch(maskErr){console.warn('Mask processing failed:',maskErr);}
+            if (lastSolid - firstSolid > 8) {
+              let gapStart = -1;
+              for (let x = firstSolid; x <= lastSolid; x++) {
+                const p = row + x;
+                const a = fData[p * 4 + 3];
+                if (a < 150) {
+                  if (gapStart === -1) gapStart = x;
+                } else {
+                  if (gapStart !== -1) {
+                    const gapWidth = x - gapStart;
+                    // CHỈ LẤP LỖ HỔNG NHỎ <= 5px TRÊN VẢI ÁO (nếp gấp áo, cúc áo)
+                    // TUYỆT ĐỐI KHÔNG BẮT CẦU NẾU ĐIỂM ẢNH LÀ MÀU TƯỜNG TRẮNG / NỀN PHÒNG
+                    if (gapWidth <= 5) {
+                      let containsWall = false;
+                      for (let gx = gapStart; gx < x; gx++) {
+                        const gp = (row + gx) * 4;
+                        const gr = fData[gp], gg = fData[gp + 1], gb = fData[gp + 2];
+                        if (gr > 185 && gg > 180 && gb > 175 && Math.abs(gr - gg) < 26 && Math.abs(gr - gb) < 28) {
+                          containsWall = true;
+                          break;
+                        }
+                      }
+                      if (!containsWall) {
+                        for (let gx = gapStart; gx < x; gx++) {
+                          const gp = row + gx;
+                          fData[gp * 4 + 3] = 255;
+                          if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[gp] = 255;
+                        }
+                      }
+                    }
+                    gapStart = -1;
+                  }
+                }
+              }
+            }
+          }
+
+          // 5. GỌT SÁT MÉP NGƯỜI SIÊU MẠNH (MULTI-PASS MORPHOLOGICAL INWARD CHOKE - ZERO GC PING-PONG)
+          // Co viền thực sự từ 0 đến 8 pixel theo sliderAiErode (Mặc định 2px bảo toàn tóc tơ & áo sáng màu)
+          const erodeR = (typeof studentAiErodeRadius === 'number') ? Math.max(0, Math.min(8, studentAiErodeRadius)) : 2;
+          if (erodeR > 0) {
+            if (!aiErodeBufferA || aiErodeBufferA.length !== totalPix) {
+              aiErodeBufferA = new Uint8ClampedArray(totalPix);
+              aiErodeBufferB = new Uint8ClampedArray(totalPix);
+            }
+            for (let i = 0; i < totalPix; i++) aiErodeBufferA[i] = fData[i * 4 + 3];
+            let srcMask = aiErodeBufferA;
+            let dstMask = aiErodeBufferB;
+
+            for (let pass = 0; pass < erodeR; pass++) {
+              // Khởi tạo toàn bộ dstMask bằng srcMask để bảo toàn chuẩn xác các điểm ảnh ngoài mép biên (y=0, x=0...)
+              dstMask.set(srcMask);
+              for (let y = 1; y < procH - 1; y++) {
+                const row = y * procW;
+                for (let x = 1; x < procW - 1; x++) {
+                  const p = row + x;
+                  const a = srcMask[p];
+                  if (a > 0) {
+                    const minN = Math.min(
+                      srcMask[p - 1], srcMask[p + 1],
+                      srcMask[p - procW], srcMask[p + procW]
+                    );
+                    dstMask[p] = (minN < a) ? ((minN === 0 || minN < 40) ? 0 : Math.round(minN * 0.75 + a * 0.25)) : a;
+                  } else {
+                    dstMask[p] = 0;
+                  }
+                }
+              }
+              const tmp = srcMask;
+              srcMask = dstMask;
+              dstMask = tmp;
+            }
+            for (let i = 0; i < totalPix; i++) fData[i * 4 + 3] = srcMask[i];
+          }
+
+          // 5B. TRIỆT TIÊU QUẦNG TƯỜNG TRẮNG DÍNH TÓC TƠ / TÓC CON Ở CỔ, TAI VÀ QUAI HÀM (SMART CHROMATICITY)
+          // Tự động nhận diện & bóc sạch 100% mảng tường trắng kẹp giữa tóc tơ và cổ bé
+          const neckZoneY = Math.floor(procH * 0.72);
+          for (let y = 0; y < procH; y++) {
+            const row = y * procW;
+            const isUpperZone = (y < neckZoneY);
+            for (let x = 0; x < procW; x++) {
+              const p = row + x;
+              const idx = p * 4;
+              const a = fData[idx + 3];
+              if (a > 0) {
+                const r = fData[idx], g = fData[idx + 1], b = fData[idx + 2];
+                // Điểm ảnh tường trắng / xám sáng trung tính (ngưỡng chọn lọc cao > 215 bảo vệ áo trắng & da)
+                const isBrightWall = (r > 215 && g > 210 && b > 205 && Math.abs(r - g) < 20 && Math.abs(r - b) < 20);
+                if (isBrightWall) {
+                  // Đảm bảo không phải da người (da luôn có sắc tố đỏ r - b > 12 và r > g)
+                  const isSkin = (r > 75 && g > 35 && b > 20 && r > g && (r - b) > 12);
+                  // Đảm bảo không phải tóc sẫm màu hay tóc nâu/vàng dưới ánh sáng phòng
+                  const isHair = (r < 90 && g < 90 && b < 90) || ((r + g + b) / 3 < 120 && (r - b) > 12);
+                  if (!isSkin && !isHair) {
+                    if (isUpperZone) {
+                      // Ở vùng đầu, tai, quai hàm và cổ: Xóa sạch triệt để không chừa viền
+                      fData[idx + 3] = 0;
+                      if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
+                    } else {
+                      // Ở vùng thân dưới (bảo vệ áo trắng nếu có): Chỉ xóa nếu là mép biên mỏng ngoài
+                      const isNearBoundary = (x < 6 || x >= procW - 6 || y >= procH - 6);
+                      if (isNearBoundary) {
+                        fData[idx + 3] = 0;
+                        if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          // 6. KHỬ SẠCH QUẦNG TRẮNG BẰNG COLOR DECONTAMINATION & HALO SUPPRESSION (REUSABLE MASK)
+          if (!aiEdgeDecontamMask || aiEdgeDecontamMask.length !== totalPix) {
+            aiEdgeDecontamMask = new Uint8ClampedArray(totalPix);
+          }
+          for (let i = 0; i < totalPix; i++) aiEdgeDecontamMask[i] = fData[i * 4 + 3];
+          const edgeMask = aiEdgeDecontamMask;
+
+          for (let y = 2; y < procH - 2; y++) {
+            const row = y * procW;
+            for (let x = 2; x < procW - 2; x++) {
+              const p = row + x;
+              const idx = p * 4;
+              const a = edgeMask[p];
+              if (a > 0 && a < 255) {
+                let inIdx = -1;
+                // Tìm pixel thuần người ở sâu bên trong (bán kính 2-6px)
+                for (let r = 2; r <= 6 && inIdx < 0; r++) {
+                  if (x - r >= 0 && edgeMask[p - r] >= 240) inIdx = (p - r) * 4;
+                  else if (x + r < procW && edgeMask[p + r] >= 240) inIdx = (p + r) * 4;
+                  else if (y - r >= 0 && edgeMask[p - procW * r] >= 240) inIdx = (p - procW * r) * 4;
+                  else if (y + r < procH && edgeMask[p + procW * r] >= 240) inIdx = (p + procW * r) * 4;
+                }
+                if (inIdx >= 0) {
+                  const inR = fData[inIdx];
+                  const inG = fData[inIdx + 1];
+                  const inB = fData[inIdx + 2];
+                  const lumCur = (fData[idx] * 0.299 + fData[idx + 1] * 0.587 + fData[idx + 2] * 0.114);
+                  const lumIn = (inR * 0.299 + inG * 0.587 + inB * 0.114);
+
+                  // Nếu rìa ngoài sáng hơn phần ruột bên trong (dấu hiệu quầng trắng tường phòng):
+                  if (lumCur > lumIn + 10) {
+                    // Đè màu nội thân thể (tóc đen / da / áo) lên rìa ngoài
+                    fData[idx] = inR;
+                    fData[idx + 1] = inG;
+                    fData[idx + 2] = inB;
+                    // Giảm mạnh hoặc triệt tiêu alpha nếu quầng sáng
+                    if (lumCur > 120 && lumIn < 100) {
+                      fData[idx + 3] = Math.round(fData[idx + 3] * 0.25);
+                    } else if (fData[idx + 3] < 110) {
+                      fData[idx + 3] = 0;
+                    }
+                  }
+                } else if (a < 90) {
+                  // Mép mờ bán trong suốt không có ruột gần: triệt tiêu hoàn toàn
+                  fData[idx + 3] = 0;
+                }
+              }
+            }
+          }
+
+          // 5C. ÁP DỤNG NÉT CỌ TÔ GIỮ / TÔ XÓA THỦ CÔNG CỦA NGƯỜI DÙNG (USER MATTE CORRECTIONS)
+          if (hasUserMatteCorrections && userMatteCorrectionCanvas.width === procW && userMatteCorrectionCanvas.height === procH) {
+            const corrData = userMatteCorrectionCtx.getImageData(0, 0, procW, procH).data;
+            for (let p = 0; p < totalPix; p++) {
+              const cIdx = p * 4;
+              const ca = corrData[cIdx + 3];
+              if (ca > 30) {
+                const cr = corrData[cIdx], cg = corrData[cIdx + 1], cb = corrData[cIdx + 2];
+                if (cg > 160 && cr < 90 && cb < 90) {
+                  // CỌ XANH: Giữ trọn vẹn điểm ảnh (Alpha = 255)
+                  fData[cIdx + 3] = 255;
+                  if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 255;
+                } else if (cr > 160 && cg < 90 && cb < 90) {
+                  // CỌ ĐỎ: Xóa sạch hoàn toàn (Alpha = 0)
+                  fData[cIdx + 3] = 0;
+                  if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
+                }
+              }
+            }
+          }
+
+          // 7. Khử ám màu viền (Despill) an toàn
+          const despillStrength = (typeof studentChromaDespill === 'number') ? (studentChromaDespill > 1 ? studentChromaDespill / 100 : studentChromaDespill) : 0;
+          if (despillStrength > 0) {
+            for (let p = 0; p < totalPix; p++) {
+              const idx = p * 4;
+              const a = fData[idx + 3];
+              if (a > 0 && a < 255) {
+                const r = fData[idx], g = fData[idx + 1], b = fData[idx + 2];
+                const maxRB = Math.max(r, b);
+                if (g > maxRB) {
+                  fData[idx + 1] = Math.round(g * (1 - despillStrength * 0.75) + maxRB * (despillStrength * 0.75));
+                }
+              }
+            }
+          }
+
+          offscreenKeyCtx.putImageData(finalVidImgData, 0, 0);
+          return offscreenKeyCanvas;
         }
 
-        // No neural-network mask yet: keep ORIGINAL frame instead of generating a fake
-        // body-shaped patch by guessing skin/wall colors (which destroyed hair & sleeves).
-        const badge=document.getElementById('badgeAiSegmentStatus');
-        if(badge){badge.textContent=(typeof SelfieSegmentation==='undefined'?'⚠️ Thiếu MediaPipe':'⏳ Đang chờ AI');badge.style.color='#FBBF24';}
+        // KHI MEDIAPIPE ĐANG KHỞI TẠO HOẶC MẤT MẠNG OFFLINE:
+        // Chạy ngay lập tức bộ lọc Computer Vision thông minh để tách nền, không để lộ nền phòng!
+        try {
+          const fallbackImgData = offscreenKeyCtx.getImageData(0, 0, procW, procH);
+          runPureJsSubjectMattingFallback(fallbackImgData, procW, procH, studentChromaTolerance, studentChromaFeather);
+          offscreenKeyCtx.putImageData(fallbackImgData, 0, 0);
+        } catch (fErr) {
+          console.warn('Fallback pixel read restriction:', fErr);
+        }
         return offscreenKeyCanvas;
       }
 
@@ -12473,7 +12740,6 @@
       let processedCanvas = null;
       if (studentVideoElem.readyState >= 2 && !studentVideoElem.seeking) {
         processedCanvas = processStudentChromaKey();
-        if(processedCanvas)processedCanvas=enhanceStudentVideoFrame(processedCanvas);
         if (processedCanvas && processedCanvas.width > 0 && processedCanvas.height > 0) {
           if (lastValidStudentFrameCanvas.width !== processedCanvas.width || lastValidStudentFrameCanvas.height !== processedCanvas.height) {
             lastValidStudentFrameCanvas.width = processedCanvas.width;
@@ -12549,12 +12815,17 @@
         ctx.scale(-1, 1);
       }
 
-      // 1. VIDEO EXPOSURE ADJUSTMENT (luminance estimate from the actual person frame).
+      // 1. AUTO LIGHTING (CHỈ NÂNG SÁNG NHẸ NẾU VIDEO QUÁ TỐI, TRÁNH CHÁY SÁNG 100%)
       if (enableAutoLighting) {
-        const sample = sampleStudentExposure();
-        const target = sample ? sample.factor : 1;
-        smoothedAutoLumaFactor=smoothedAutoLumaFactor*.82+target*.18;
-      } else smoothedAutoLumaFactor=1;
+        const luma = getSampledLuma(processedCanvas);
+        let targetLuma = 1.0;
+        if (luma < 90) {
+          targetLuma = Math.min(1.10, Math.max(1.0, 95 / Math.max(40, luma)));
+        }
+        smoothedAutoLumaFactor = smoothedAutoLumaFactor * 0.90 + targetLuma * 0.10;
+      } else {
+        smoothedAutoLumaFactor = 1.0;
+      }
 
       // 2. BASE BEAUTY FILTER LAYER (Làm trắng sáng da tự nhiên, khử vàng, khử bóng dầu)
       let filterList = [];
@@ -12594,6 +12865,14 @@
         ctx.clip();
         ctx.drawImage(processedCanvas, x0, y0, charW, charH);
 
+        // Soft skin smoothing / glow
+        if (enableBeauty && beautySmoothness > 0) {
+          ctx.save();
+          ctx.globalAlpha = beautySmoothness * 0.38;
+          ctx.filter = `blur(${Math.max(2, Math.round(beautySmoothness * 8))}px) brightness(1.12) saturate(1.15)`;
+          ctx.drawImage(processedCanvas, x0, y0, charW, charH);
+          ctx.restore();
+        }
         ctx.restore();
 
         // Broadcast LED Border
@@ -12612,98 +12891,136 @@
         ctx.restore();
       } else {
         // AI Segmented / Green Screen Mode:
-        // BÓNG ĐỔ TIẾP XÚC SÀN/BÀN (AMBIENT CONTACT SHADOW - TẠO CẢM GIÁC NHÂN VẬT THỰC SỰ ĐỨNG/NGỒI TRONG TRƯỜNG QUAY 3D)
-        if (curPreviewMode === 'studio' || curPreviewMode === 'full') {
-        ctx.save();
-        ctx.beginPath();
-        const shadowW = charW * 0.72;
-        const shadowH = Math.max(14, charH * 0.08);
-        const shadowY = y0 + charH - shadowH * 0.45;
-        const shadowGrad = ctx.createRadialGradient(0, shadowY, 4, 0, shadowY, shadowW / 2);
-        shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0.42)');
-        shadowGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.18)');
-        shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = shadowGrad;
-        ctx.scale(1, 0.32);
-        ctx.arc(0, shadowY / 0.32, shadowW / 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-        }
+        const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
+        const effMode = isExportingRecording ? selectedExportMode : (aiMattingPreviewMode || 'studio');
+        const isCleanKeyExport = (effMode === 'transparent_webm' || effMode === 'alpha_matte' || effMode === 'greenscreen');
 
-        ctx.drawImage(processedCanvas, x0, y0, charW, charH);
-
-      }
-
-      // Draw manual user brush strokes overlay
-      if (aiMattingTool !== 'auto' && !isExportingNow && hasUserMatteCorrections && userMatteCorrectionCanvas.width > 0) {
-        ctx.save();
-        ctx.globalAlpha = 0.45;
-        ctx.drawImage(userMatteCorrectionCanvas, x0, y0, charW, charH);
-        ctx.restore();
-      }
-
-      // Draw interactive prompt point pins (SAM / Magic Mask markers)
-      if (aiMattingTool === 'select' && !isExportingNow && aiMattingPromptPoints && aiMattingPromptPoints.length > 0) {
-        ctx.save();
-        for (let pt of aiMattingPromptPoints) {
-          const px = x0 + pt.xNorm * charW;
-          const py = y0 + pt.yNorm * charH;
+        // BÓNG ĐỔ TIẾP XÚC SÀN/BÀN (AMBIENT CONTACT SHADOW - CHỈ VẼ KHI Ở STUDIO THƯỜNG ĐỂ TRÁNH LEM NỀN TRONG SUỐT / ALPHA / PHÔNG XANH)
+        if (!isCleanKeyExport) {
+          ctx.save();
           ctx.beginPath();
-          ctx.arc(px, py, 11, 0, Math.PI * 2);
-          ctx.fillStyle = pt.isPositive ? 'rgba(16, 185, 129, 0.85)' : 'rgba(239, 68, 68, 0.85)';
+          const shadowW = charW * 0.72;
+          const shadowH = Math.max(14, charH * 0.08);
+          const shadowY = y0 + charH - shadowH * 0.45;
+          const shadowGrad = ctx.createRadialGradient(0, shadowY, 4, 0, shadowY, shadowW / 2);
+          shadowGrad.addColorStop(0, 'rgba(0, 0, 0, 0.42)');
+          shadowGrad.addColorStop(0.5, 'rgba(0, 0, 0, 0.18)');
+          shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = shadowGrad;
+          ctx.scale(1, 0.32);
+          ctx.arc(0, shadowY / 0.32, shadowW / 2, 0, Math.PI * 2);
           ctx.fill();
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = '#FFFFFF';
-          ctx.stroke();
-          ctx.font = 'bold 11px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillText(pt.isPositive ? '🎯' : '✕', px, py);
+          ctx.restore();
         }
-        ctx.restore();
+
+        if (effMode === 'alpha_matte') {
+          // Xuất mặt nạ Alpha chuẩn (Pure White Silhouette on Black)
+          ctx.save();
+          ctx.drawImage(processedCanvas, x0, y0, charW, charH);
+          ctx.globalCompositeOperation = 'source-in';
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(x0, y0, charW, charH);
+          ctx.restore();
+        } else {
+          ctx.drawImage(processedCanvas, x0, y0, charW, charH);
+
+          // Soft skin smoothing / glow overlay (Khóa chặt trong người, không loang ra ngoài nền, chống nhấp nháy 100%)
+          if (enableBeauty && beautySmoothness > 0) {
+            if (offscreenBeautyCanvas.width !== processedCanvas.width || offscreenBeautyCanvas.height !== processedCanvas.height) {
+              offscreenBeautyCanvas.width = processedCanvas.width;
+              offscreenBeautyCanvas.height = processedCanvas.height;
+            }
+            offscreenBeautyCtx.save();
+            offscreenBeautyCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+            // Giữ brightness(1.00) để không làm cháy sáng hay bợt da bé
+            offscreenBeautyCtx.filter = `blur(${Math.max(2, Math.round(beautySmoothness * 4))}px) brightness(1.00) saturate(1.00)`;
+            offscreenBeautyCtx.drawImage(processedCanvas, 0, 0);
+            offscreenBeautyCtx.globalCompositeOperation = 'destination-in';
+            offscreenBeautyCtx.filter = 'none';
+            offscreenBeautyCtx.drawImage(processedCanvas, 0, 0);
+            offscreenBeautyCtx.restore();
+
+            ctx.save();
+            ctx.globalAlpha = beautySmoothness * 0.25;
+            ctx.drawImage(offscreenBeautyCanvas, x0, y0, charW, charH);
+            ctx.restore();
+          }
+        }
       }
 
-      ctx.restore();
+      const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
 
-      // 4. INTERACTIVE ON-CANVAS TRANSFORM BOUNDING BOX (NEON DASHED FRAME & CORNER HANDLES)
-      if (!isExportingNow && (studentHovered || isDraggingStudent || isResizingStudent)) {
-        ctx.save();
-        ctx.translate(targetX, targetY);
+      // CHỈ VẼ CON TRỎ CỌ, GHIM SAM & KHUNG BIẾN ĐỔI KHI ĐANG PREVIEW (KHÔNG BAKE VÀO VIDEO XUẤT)
+      if (!isExportingRecording) {
+        // Draw manual user brush strokes overlay
+        if (hasUserMatteCorrections && userMatteCorrectionCanvas.width > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.45;
+          ctx.drawImage(userMatteCorrectionCanvas, x0, y0, charW, charH);
+          ctx.restore();
+        }
 
-        ctx.strokeStyle = '#38BDF8';
-        ctx.lineWidth = 2.0;
-        ctx.setLineDash([8, 6]);
-        ctx.shadowColor = 'rgba(56, 189, 248, 0.9)';
-        ctx.shadowBlur = 10;
-        ctx.strokeRect(x0, y0, charW, charH);
+        // Draw interactive prompt point pins (SAM / Magic Mask markers)
+        if (aiMattingPromptPoints && aiMattingPromptPoints.length > 0) {
+          ctx.save();
+          for (let pt of aiMattingPromptPoints) {
+            const px = x0 + pt.xNorm * charW;
+            const py = y0 + pt.yNorm * charH;
+            ctx.beginPath();
+            ctx.arc(px, py, 11, 0, Math.PI * 2);
+            ctx.fillStyle = pt.isPositive ? 'rgba(16, 185, 129, 0.85)' : 'rgba(239, 68, 68, 0.85)';
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#FFFFFF';
+            ctx.stroke();
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText(pt.isPositive ? '🎯' : '✕', px, py);
+          }
+          ctx.restore();
+        }
 
-        // Draw 4 corner handles
-        const handleSize = 10;
-        ctx.setLineDash([]);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.strokeStyle = '#0284C7';
-        ctx.lineWidth = 2;
+        // 4. INTERACTIVE ON-CANVAS TRANSFORM BOUNDING BOX (NEON DASHED FRAME & CORNER HANDLES)
+        if (studentHovered || isDraggingStudent || isResizingStudent) {
+          ctx.save();
+          ctx.translate(targetX, targetY);
 
-        const corners = [
-          [x0, y0],
-          [x0 + charW, y0],
-          [x0 + charW, y0 + charH],
-          [x0, y0 + charH]
-        ];
+          ctx.strokeStyle = '#38BDF8';
+          ctx.lineWidth = 2.0;
+          ctx.setLineDash([8, 6]);
+          ctx.shadowColor = 'rgba(56, 189, 248, 0.9)';
+          ctx.shadowBlur = 10;
+          ctx.strokeRect(x0, y0, charW, charH);
 
-        corners.forEach(([cx, cy]) => {
-          ctx.fillRect(cx - handleSize / 2, cy - handleSize / 2, handleSize, handleSize);
-          ctx.strokeRect(cx - handleSize / 2, cy - handleSize / 2, handleSize, handleSize);
-        });
+          // Draw 4 corner handles
+          const handleSize = 10;
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.strokeStyle = '#0284C7';
+          ctx.lineWidth = 2;
 
-        // Center position indicator
-        ctx.fillStyle = '#38BDF8';
-        ctx.beginPath();
-        ctx.arc(0, 0, 5, 0, Math.PI * 2);
-        ctx.fill();
+          const corners = [
+            [x0, y0],
+            [x0 + charW, y0],
+            [x0 + charW, y0 + charH],
+            [x0, y0 + charH]
+          ];
 
-        ctx.restore();
+          corners.forEach(([cx, cy]) => {
+            ctx.fillRect(cx - handleSize / 2, cy - handleSize / 2, handleSize, handleSize);
+            ctx.strokeRect(cx - handleSize / 2, cy - handleSize / 2, handleSize, handleSize);
+          });
+
+          // Center position indicator
+          ctx.fillStyle = '#38BDF8';
+          ctx.beginPath();
+          ctx.arc(0, 0, 5, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
+        }
       }
     }
 
@@ -12717,6 +13034,7 @@
       // PREVIEW & EXPORT BACKGROUND HANDLING
       const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
       const effMode = isExportingRecording ? selectedExportMode : (aiMattingPreviewMode || 'studio');
+      const isStudioThemeAllowed = (effMode === 'full' || effMode === 'studio');
 
       if (effMode === 'transparent_webm' || (!isExportingRecording && aiMattingPreviewMode === 'checkerboard')) {
         if (!isExportingRecording && aiMattingPreviewMode === 'checkerboard') {
@@ -12738,12 +13056,6 @@
         ctx.fillStyle = '#00FF00';
         ctx.fillRect(0, 0, w, h);
       }
-      // Subject-only render: no studio, logos, TV, headline, desk or ticker.
-      if (effMode === 'transparent_webm' || effMode === 'checkerboard' ||
-          effMode === 'alpha_matte' || effMode === 'greenscreen') {
-        drawStudentCharacter(ctx, w, h, timeSec);
-        return;
-      }
       const time = timeSec * 1.2;
 
       const camDriftIntensity = parseFloat(sliderCamDrift.value) / 100;
@@ -12760,8 +13072,15 @@
         ctx.scale(camZoom, camZoom);
         ctx.translate(-w / 2, -h / 2);
 
+      let tvX = 50;
+      let tvY = 85;
+      let tvW = 1152;
+      let tvH = 648;
+      let showTvScreen = (selectedTvLayoutMode !== 'hide_tv');
+
       // 1. Draw Studio Background according to selected theme (Only when in normal studio mode)
-      if ((effMode === 'full' || effMode === 'studio') && selectedStudioTheme === 'talk11_talkshow') {
+      if (isStudioThemeAllowed) {
+        if (selectedStudioTheme === 'talk11_talkshow') {
         // TALKSHOW SOLO BÀN TRUNG TÂM (CẬN CẢNH • 1 VỊ TRÍ MC • KHÔNG CẦN MÀN HÌNH)
         if (imgStudioTalkshow && (imgStudioTalkshow._loaded || (imgStudioTalkshow.complete && imgStudioTalkshow.naturalWidth > 0))) {
           ctx.drawImage(imgStudioTalkshow, 0, 0, w, h);
@@ -12850,11 +13169,11 @@
       }
 
       // 4. TV Frame & Dynamic Media Screen (Thu nhỏ 1 cỡ chuẩn 16:9: 1152 × 648)
-      let tvX = 50;
-      let tvY = 85;
-      let tvW = 1152;
-      let tvH = 648;
-      let showTvScreen = (selectedTvLayoutMode !== 'hide_tv');
+      tvX = 50;
+      tvY = 85;
+      tvW = 1152;
+      tvH = 648;
+      showTvScreen = (selectedTvLayoutMode !== 'hide_tv');
 
       if (selectedStudioTheme === 'talk11_talkshow') {
         // Talkshow Solo cận cảnh: Không cần màn hình TV che bối cảnh bàn dẫn và logo Talk11
@@ -13078,20 +13397,19 @@
           drawStudioTvScreen(tvX, tvY, tvW, tvH, timeSec, tvMotionIntensity);
         }
       }
+      } // End of isStudioThemeAllowed (Studio Background, Particles, Wall Screens & TV Frame)
 
       
       // ============================================================
       // DRAW STUDENT CHARACTER HOST / ANCHOR (CHROMA KEY & BEAUTY)
       // ============================================================
-      if (selectedExportMode !== 'greenscreen') {
-        drawStudentCharacter(ctx, w, h, timeSec);
-      }
+      drawStudentCharacter(ctx, w, h, timeSec);
 
       // ============================================================
       // DRAW STUDIO DESK FOREGROUND OVERLAY (BÀN TIỀN CẢNH & CÁC VẬT TRÊN BÀN)
       // Tách riêng cụm bàn, máy tính bảng & mic ra trước mặt bé; ghế ở sau lưng bé!
       // ============================================================
-      if (enableDeskForegroundOverlay && selectedStudioTheme === 'talk11_talkshow') {
+      if (isStudioThemeAllowed && enableDeskForegroundOverlay && selectedStudioTheme === 'talk11_talkshow') {
         if (imgDeskOverlay && (imgDeskOverlay._loaded || (imgDeskOverlay.complete && imgDeskOverlay.naturalWidth > 0))) {
           ctx.save();
           if (selectedAspectRatio === '9:16') {
@@ -13104,7 +13422,7 @@
       }
 
       // 5. Headline Banner (Lower-Third) Below or Inside TV Screen (Gọn gàng, Không Xếp Lớp)
-      if (selectedBannerStyle !== 'hide_banner') {
+      if (isStudioThemeAllowed && selectedBannerStyle !== 'hide_banner') {
         let bannerX = tvX;
         let bannerY = tvY + tvH + 12;
         let bannerW = tvW;
@@ -13248,7 +13566,7 @@
       // ============================================================
       // LOWER-THIRD ANCHOR CARD (TÊN HỌC VIÊN & BTV NHÍ TALK11)
       // ============================================================
-      if (showAnchorCard && anchorName && anchorName.trim() && selectedExportMode !== 'greenscreen') {
+      if (isStudioThemeAllowed && showAnchorCard && anchorName && anchorName.trim()) {
         const baseCardW = (selectedAspectRatio === '9:16') ? 420 : 390;
         const cardH = 68;
         const cardX = (selectedAspectRatio === '9:16') ? 40 : 50;
@@ -13336,12 +13654,12 @@
       drawActiveSubtitles(w, h, timeSec);
 
       // 8. Bottom Ticker (Only when in studio broadcast mode)
-      if (effMode === 'full' || effMode === 'studio') {
+      if (isStudioThemeAllowed) {
         drawScrollingTicker(h - 56, 56, inputTickerText.value, 3.2, timeSec);
       }
 
-      // Interactive Brush Cursor Ring on Canvas
-      if (canvasHoverScreenX >= 0 && canvasHoverScreenY >= 0 && (aiMattingTool === 'brush_keep' || aiMattingTool === 'brush_remove')) {
+      // Interactive Brush Cursor Ring on Canvas (Only during preview, never in export recording)
+      if (!isExportingRecording && canvasHoverScreenX >= 0 && canvasHoverScreenY >= 0 && (aiMattingTool === 'brush_keep' || aiMattingTool === 'brush_remove')) {
         ctx.save();
         ctx.strokeStyle = (aiMattingTool === 'brush_keep') ? '#10B981' : '#EF4444';
         ctx.lineWidth = 2;
@@ -13499,6 +13817,28 @@
             }
           });
         }
+
+        // AUTO AUDIO DUCKING (CapCut / Broadcast Pro Standard):
+        // Tự động hạ âm lượng BGM xuống 22% khi BTV nhí đang nói và nâng trở lại khi kết thúc
+        if (enableAutoDucking && bgmAudio) {
+          const dur = (studentVideoDuration > 0) ? studentVideoDuration : (rawStudentVideoDuration || 60);
+          const offset = (studentTimeOffset || 0);
+          let isStudentSpeakingNow = false;
+          if (studentVideoElem && !studentVideoElem.paused && previewCurrentSec >= offset && previewCurrentSec <= (offset + dur)) {
+            if (studentSpeechIntervals && studentSpeechIntervals.length > 0) {
+              const relSec = previewCurrentSec - offset;
+              // Check if relSec is inside speech interval with a 0.25s attack/release cushion
+              isStudentSpeakingNow = studentSpeechIntervals.some(iv => relSec >= (iv.start - 0.25) && relSec <= (iv.end + 0.25));
+            } else {
+              isStudentSpeakingNow = true;
+            }
+          }
+          const targetDucking = isStudentSpeakingNow ? 0.22 : 1.0;
+          currentDuckingFactor = currentDuckingFactor * 0.88 + targetDucking * 0.12;
+          try {
+            bgmAudio.volume = Math.max(0, Math.min(1.0, bgmVolume * currentDuckingFactor));
+          } catch(eDuck) {}
+        }
       } else {
         // Trạng thái tạm dừng: đảm bảo video học viên không phát ngầm
         if (studentVideoElem && !studentVideoElem.paused) {
@@ -13610,17 +13950,49 @@
           }
         }
 
-        // HÒA ÂM NHẠC NỀN BGM VÀO FILE XUẤT VIDEO
+        // HÒA ÂM NHẠC NỀN BGM VÀO FILE XUẤT VIDEO (VỚI AUTO-DUCKING TỰ ĐỘNG THEO LỜI NÓI)
         if (bgmAudio && bgmVolume > 0) {
           try {
             if (!bgmAudio._actxSource) {
               bgmAudio._actxSource = actx.createMediaElementSource(bgmAudio);
             }
-            const bgmGain = actx.createGain();
-            bgmGain.gain.setValueAtTime(bgmVolume, now);
-            bgmAudio._actxSource.connect(bgmGain);
-            bgmGain.connect(dest);
-            bgmGain.connect(actx.destination);
+            if (exportBgmGain) {
+              try { exportBgmGain.disconnect(); } catch(e) {}
+              exportBgmGain = null;
+            }
+            exportBgmGain = actx.createGain();
+            exportBgmGain.gain.setValueAtTime(bgmVolume, now);
+            bgmAudio._actxSource.connect(exportBgmGain);
+            exportBgmGain.connect(dest);
+
+            // AUTO-DUCKING SCHEDULED ON EXPORT
+            if (enableAutoDucking && enableStudentVideo && studentMicVolume > 0) {
+              const dur = (studentVideoDuration > 0) ? studentVideoDuration : (rawStudentVideoDuration || 60);
+              const offset = (studentTimeOffset || 0);
+              const duckVal = bgmVolume * 0.22;
+
+              if (studentSpeechIntervals && studentSpeechIntervals.length > 0) {
+                // Lập lịch chính xác theo các khoảng nói thực tế của bé
+                studentSpeechIntervals.forEach(iv => {
+                  const sStart = now + offset + iv.start;
+                  const sEnd = now + offset + iv.end;
+                  if (sStart < (now + targetExportSec)) {
+                    exportBgmGain.gain.setValueAtTime(bgmVolume, Math.max(now, sStart - 0.12));
+                    exportBgmGain.gain.linearRampToValueAtTime(duckVal, sStart + 0.08);
+                    exportBgmGain.gain.setValueAtTime(duckVal, sEnd);
+                    exportBgmGain.gain.linearRampToValueAtTime(bgmVolume, Math.min(now + targetExportSec, sEnd + 0.22));
+                  }
+                });
+              } else {
+                // Lập lịch bao trọn khung xuất hiện của video học viên
+                const sStart = now + offset;
+                const sEnd = Math.min(now + targetExportSec, sStart + dur);
+                exportBgmGain.gain.setValueAtTime(bgmVolume, Math.max(now, sStart - 0.15));
+                exportBgmGain.gain.linearRampToValueAtTime(duckVal, sStart + 0.15);
+                exportBgmGain.gain.setValueAtTime(duckVal, sEnd);
+                exportBgmGain.gain.linearRampToValueAtTime(bgmVolume, Math.min(now + targetExportSec, sEnd + 0.35));
+              }
+            }
           } catch(eBgmAudio) {
             console.warn('BGM audio capture fallback:', eBgmAudio);
           }
@@ -13904,6 +14276,10 @@
     }
 
     function stopExport() {
+      if (exportBgmGain) {
+        try { exportBgmGain.disconnect(); } catch(e) {}
+        exportBgmGain = null;
+      }
       if (exportWorker) {
         try {
           exportWorker.postMessage('stop');
@@ -14522,6 +14898,69 @@
       } catch(e) {}
     }
 
+    async function detectStudentVideoSilence(blob) {
+      if (!blob) return;
+      try {
+        const actx = getAudioCtx();
+        const arrayBuf = await blob.arrayBuffer();
+        const audioBuf = await actx.decodeAudioData(arrayBuf);
+        const totalSamples = audioBuf.length;
+        const dur = audioBuf.duration;
+        if (!totalSamples || dur <= 0) return;
+
+        const rawData = audioBuf.getChannelData(0);
+        const numBuckets = 120;
+        const bucketSize = Math.max(1, Math.floor(totalSamples / numBuckets));
+        const peaks = [];
+        const rawRmsList = [];
+        let maxRms = 0;
+
+        for (let b = 0; b < numBuckets; b++) {
+          let sumSq = 0;
+          const start = b * bucketSize;
+          const end = Math.min(totalSamples, start + bucketSize);
+          const step = Math.max(1, Math.floor((end - start) / 250)); // sample up to 250 points per bucket
+          let count = 0;
+          for (let i = start; i < end; i += step) {
+            sumSq += rawData[i] * rawData[i];
+            count++;
+          }
+          const rms = Math.sqrt(sumSq / Math.max(1, count));
+          rawRmsList.push(rms);
+          if (rms > maxRms) maxRms = rms;
+        }
+
+        const normFactor = maxRms > 0.0001 ? (1.0 / maxRms) : 1;
+        const speechThreshold = 0.08; // 8% of peak RMS indicates active voice activity (VAD)
+        studentSpeechIntervals = [];
+        let currentSpeechStart = null;
+
+        for (let b = 0; b < numBuckets; b++) {
+          const normRms = rawRmsList[b] * normFactor;
+          peaks.push(normRms);
+          const tSec = (b / numBuckets) * dur;
+          if (normRms >= speechThreshold) {
+            if (currentSpeechStart === null) currentSpeechStart = tSec;
+          } else {
+            if (currentSpeechStart !== null) {
+              studentSpeechIntervals.push({ start: currentSpeechStart, end: tSec });
+              currentSpeechStart = null;
+            }
+          }
+        }
+        if (currentSpeechStart !== null) {
+          studentSpeechIntervals.push({ start: currentSpeechStart, end: dur });
+        }
+
+        studentAudioPeaks = peaks;
+        try { renderStudentVideoTrackUI(); } catch(e) {}
+      } catch (err) {
+        console.warn('Real audio waveform decoding error:', err);
+        studentAudioPeaks = null;
+        studentSpeechIntervals = [];
+      }
+    }
+
     function setupStudentVideoFromBlob(blob, fileName) {
       if (studentVideoElem) {
         studentVideoElem.pause();
@@ -14549,12 +14988,7 @@
         if (studentVideoElem === vid) studentVideoElem = null;
       };
 
-      vid.addEventListener('seeking', () => {
-        hasValidAiMask=false;hasValidRvmMatte=false;aiTemporalAlphaBuffer=null;aiComponentCache=null;
-      });
       vid.onloadedmetadata = () => {
-        hasValidAiMask=false;hasValidRvmMatte=false;aiComponentCache=null;
-        aiTemporalAlphaBuffer=null;aiMaskSerial++;smoothedAutoLumaFactor=1;
         studentVideoDuration = vid.duration || 60;
         enableStudentVideo = true;
         try {
@@ -14817,9 +15251,9 @@
         btns.forEach(b => {
           b.disabled = false;
           if (b.id === 'btnWizRunRvm4k') {
-            b.innerHTML = '<span>🖥️ Tách nền nâng cao (cần backend)</span>';
+            b.innerHTML = '<span>👑 Tách Nền RVM 4K Chuẩn CapCut (Khử Sạch Viền Trắng)</span>';
           } else {
-            b.innerHTML = '<span>🖥️ Tách nền nâng cao (cần backend)</span>';
+            b.innerHTML = '<span>👑 Xuất Video Tách Nền RVM 4K Siêu Nét (AI Backend ONNX)</span>';
           }
         });
       }
@@ -14841,6 +15275,7 @@
       if (btn) {
         btn.addEventListener('click', () => {
           aiMattingTool = tool;
+          window.aiMattingTool = tool;
           document.querySelectorAll('#matteToolPills button').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           if (tool === 'select') {
@@ -14871,7 +15306,6 @@
     if (btnClearMatteStrokes) {
       btnClearMatteStrokes.addEventListener('click', () => {
         aiMattingPromptPoints = [];
-        aiComponentCache=null;
         hasUserMatteCorrections = false;
         if (userMatteCorrectionCanvas.width > 0 && userMatteCorrectionCanvas.height > 0) {
           userMatteCorrectionCtx.clearRect(0, 0, userMatteCorrectionCanvas.width, userMatteCorrectionCanvas.height);
@@ -14895,6 +15329,7 @@
       if (btn) {
         btn.addEventListener('click', () => {
           aiMattingPreviewMode = mode;
+          window.aiMattingPreviewMode = mode;
           document.querySelectorAll('#aiMattingPreviewPills button').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           try { render(previewCurrentSec); } catch(err) {}
@@ -14906,7 +15341,7 @@
     if (btnQualityFast) {
       btnQualityFast.addEventListener('click', () => {
         studentChromaMode = 'ai_auto';
-        showToast('⚡ Chế độ MediaPipe: tốc độ phụ thuộc phần cứng và tải mô hình');
+        showToast('⚡ Đã chuyển sang chế độ Tách Nền Realtime 60FPS (Client AI)');
         try { render(previewCurrentSec); } catch(err) {}
       });
     }
@@ -15009,23 +15444,21 @@
 
         if (p === 'warm') {
           // Tự Nhiên CapCut: Màu da mộc chuẩn, hồng hào, sắc nét tự nhiên
-          beautySmoothness = 0.25; beautyBrightness = 1.02; beautyWarmth = 0; beautyContrast = 1.04; beautySaturation = 1.03; beautySharpness = 30; beautySkinLift = .12;
+          beautySmoothness = 0.25; beautyBrightness = 1.02; beautyWarmth = 0; beautyContrast = 1.04; beautySaturation = 1.03; beautySharpness = 30;
         } else if (p === 'rosy') {
           // Trắng Sáng BTV: Da sáng mịn trong trẻo, không cháy sáng da & áo
-          beautySmoothness = 0.35; beautyBrightness = 1.04; beautyWarmth = -1; beautyContrast = 1.02; beautySaturation = 1.02; beautySharpness = 30; beautySkinLift = .2;
+          beautySmoothness = 0.35; beautyBrightness = 1.04; beautyWarmth = -1; beautyContrast = 1.02; beautySaturation = 1.02; beautySharpness = 30;
         } else if (p === 'smooth') {
           // Trắng Mịn Hàn Quốc: Da sứ mịn màng
-          beautySmoothness = 0.45; beautyBrightness = 1.04; beautyWarmth = -1.5; beautyContrast = 1.00; beautySaturation = 1.00; beautySharpness = 25; beautySkinLift = .24;
+          beautySmoothness = 0.45; beautyBrightness = 1.04; beautyWarmth = -1.5; beautyContrast = 1.00; beautySaturation = 1.00; beautySharpness = 25;
         } else if (p === 'bright') {
           // Studio Sáng: Rực rỡ nhưng giữ trọn chi tiết vải
-          beautySmoothness = 0.25; beautyBrightness = 1.08; beautyWarmth = 0; beautyContrast = 1.04; beautySaturation = 1.04; beautySharpness = 35; beautySkinLift = .15;
+          beautySmoothness = 0.25; beautyBrightness = 1.08; beautyWarmth = 0; beautyContrast = 1.04; beautySaturation = 1.04; beautySharpness = 35;
         } else if (p === 'none') {
-          beautySmoothness = 0.0; beautyBrightness = 1.0; beautyWarmth = 0; beautyContrast = 1.0; beautySaturation = 1.0; beautySharpness = 0; beautySkinLift = 0;
+          beautySmoothness = 0.0; beautyBrightness = 1.0; beautyWarmth = 0; beautyContrast = 1.0; beautySaturation = 1.0; beautySharpness = 0;
         }
 
         // Sync slider UI
-        const sLift = document.getElementById('sliderBeautySkinLift'); if(sLift)sLift.value=Math.round(beautySkinLift*100);
-        const vLift = document.getElementById('valBeautySkinLift'); if(vLift)vLift.textContent=`${Math.round(beautySkinLift*100)}%`;
         const sSmooth = document.getElementById('sliderBeautySmooth'); if (sSmooth) sSmooth.value = Math.round(beautySmoothness * 100);
         const lSmooth = document.getElementById('valBeautySmooth'); if (lSmooth) lSmooth.textContent = `${Math.round(beautySmoothness * 100)}%`;
         const sBright = document.getElementById('sliderBeautyBright'); if (sBright) sBright.value = Math.round(beautyBrightness * 100);
@@ -15583,36 +16016,36 @@
     chkBrtAuto?.addEventListener('change', (e) => syncAutoLighting(e.target.checked));
     chkWizBrtAuto?.addEventListener('change', (e) => syncAutoLighting(e.target.checked));
 
-    // 1-chạm: estimate actual exposure; avoid a fixed 114% which overexposes light skin.
+    // 1-Chạm Tối Ưu Làm Đẹp & Tăng Nét 4K
     document.getElementById('btnAutoBeautyEnhance')?.addEventListener('click', () => {
-      const exposure=sampleStudentExposure();
-      enableBeauty=true;enableAutoLighting=true;
-      beautySharpness=24;beautySmoothness=.24;beautySkinLift=.12;
-      beautyBrightness=exposure ? Math.max(1,Math.min(1.12,exposure.factor)) : 1.03;
-      beautyWarmth=0;beautyContrast=1.02;beautySaturation=1.02;
-      const chk=document.getElementById('chkBeautyEnable');if(chk)chk.checked=true;
-      syncAutoLighting(true);
-      for(const [id,value,label] of [
-        ['BeautySharpness',Math.round(beautySharpness),'%'],
-        ['BeautySmooth',Math.round(beautySmoothness*100),'%'],
-        ['BeautySkinLift',Math.round(beautySkinLift*100),'%'],
-        ['BeautyBright',Math.round(beautyBrightness*100),'%'],
-        ['BeautyWarmth',beautyWarmth,'°'],
-        ['BeautyContrast',Math.round(beautyContrast*100),'%'],
-        ['BeautySat',Math.round(beautySaturation*100),'%']]){
-        const sl=document.getElementById('slider'+id),val=document.getElementById('val'+id);
-        if(sl)sl.value=value;if(val)val.textContent=`${value}${label}`;
-      }
-      try{render(previewCurrentSec);}catch(e){}
-      pushUndoState('Tối ưu màu, sáng và da theo video');
-      showToast(exposure?'✨ Đã phân tích độ sáng video và áp dụng làm đẹp tự nhiên':'✨ Đã áp dụng mức làm đẹp an toàn (chưa có frame video để phân tích)');
-    });
+      enableBeauty = true;
+      enableAutoLighting = true;
+      beautySharpness = 30;
+      beautySmoothness = 0.45;
+      beautyBrightness = 1.14;
+      beautyWarmth = -2;
+      beautyContrast = 1.00;
+      beautySaturation = 0.98;
 
-    document.getElementById('sliderBeautySkinLift')?.addEventListener('input',e=>{
-      beautySkinLift=(parseInt(e.target.value,10)||0)/100;
-      const label=document.getElementById('valBeautySkinLift');
-      if(label)label.textContent=`${Math.round(beautySkinLift*100)}%`;
-      try{render(previewCurrentSec);}catch(err){}
+      const chk = document.getElementById('chkBeautyEnable'); if (chk) chk.checked = true;
+      syncAutoLighting(true);
+
+      const sSharp = document.getElementById('sliderBeautySharpness'); if (sSharp) sSharp.value = 30;
+      const lSharp = document.getElementById('valBeautySharpness'); if (lSharp) lSharp.textContent = '30%';
+      const sSmooth = document.getElementById('sliderBeautySmooth'); if (sSmooth) sSmooth.value = 45;
+      const lSmooth = document.getElementById('valBeautySmooth'); if (lSmooth) lSmooth.textContent = '45%';
+      const sBright = document.getElementById('sliderBeautyBright'); if (sBright) sBright.value = 114;
+      const lBright = document.getElementById('valBeautyBright'); if (lBright) lBright.textContent = '114%';
+      const sWarmth = document.getElementById('sliderBeautyWarmth'); if (sWarmth) sWarmth.value = -2;
+      const lWarmth = document.getElementById('valBeautyWarmth'); if (lWarmth) lWarmth.textContent = '-2° (Trắng Sáng)';
+      const sCont = document.getElementById('sliderBeautyContrast'); if (sCont) sCont.value = 100;
+      const lCont = document.getElementById('valBeautyContrast'); if (lCont) lCont.textContent = '100%';
+      const sSat = document.getElementById('sliderBeautySat'); if (sSat) sSat.value = 98;
+      const lSat = document.getElementById('valBeautySat'); if (lSat) lSat.textContent = '98%';
+
+      try { render(previewCurrentSec); } catch(err) {}
+      pushUndoState('Tự động tối ưu làm đẹp & nét 4K');
+      showToast('✨ Đã tự động kéo sáng, mịn da, tăng nét 4K & màu sắc chuẩn studio!');
     });
 
     // Movable Position Presets

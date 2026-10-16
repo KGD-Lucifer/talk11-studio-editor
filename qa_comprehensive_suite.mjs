@@ -1,8 +1,9 @@
 import { spawn } from 'child_process';
 import fs from 'fs';
+import path from 'path';
 
 const EDGE_PATH = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
-const APP_URL = 'http://127.0.0.1:8080/Tao_Khung_Thoi_Su_Talk11.html';
+const APP_URL = 'file:///' + path.resolve('Tao_Khung_Thoi_Su_Talk11.html').replace(/\\/g, '/');
 
 async function runTests() {
   console.log('===============================================================');
@@ -378,6 +379,9 @@ async function runTests() {
     console.log(`Passed: ${passed} | Failed: ${failed}`);
     console.log(`Console Errors Caught: ${consoleErrors.length}`);
     console.log(`Uncaught Exceptions: ${uncaughtExceptions.length}`);
+    if (uncaughtExceptions.length > 0) {
+      console.log('Uncaught details:', uncaughtExceptions.map(e => e.exception?.description || e.text || JSON.stringify(e)));
+    }
 
     await send('Page.close');
   } catch (err) {
