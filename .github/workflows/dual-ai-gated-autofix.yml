@@ -147,3 +147,11 @@ jobs:
         run: |
           gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" \
             --body "Codex created a proposed fix: $PROPOSED_PR. Antigravity: review this PR, run local AI/video/audio tests, and post PASS/FAIL evidence. Do not merge automatically."
+
+      - name: Dispatch PR review (bot-created PRs do not trigger normal PR events)
+        if: steps.propose.outputs.pull-request-number != '' && vars.ENABLE_DUAL_AI_REVIEW == 'true'
+        env:
+          PROPOSED_PR_NUMBER: ${{ steps.propose.outputs.pull-request-number }}
+        run: |
+          gh workflow run dual-ai-pr-review.yml --repo "$GITHUB_REPOSITORY" \
+            --ref main --field pr_number="$PROPOSED_PR_NUMBER"
