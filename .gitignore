@@ -1,0 +1,27 @@
+# Video & large media outputs
+*.mp4
+*.webm
+*.avi
+*.mov
+*.mkv
+*.png
+*.jpg
+*.jpeg
+*.gif
+02_OUTPUT_VIDEO/
+TALK11_Community_Antigravity/02_OUTPUT_VIDEO/
+TALK11_Community_Antigravity/03_ASSETS/VTV_TALK11_CAPCUT_FRAMES/
+github_repositories/
+
+# Backups & checkpoints
+*.bak
+*.checkpoint*
+*.old
+
+# System & tool cache
+node_modules/
+.gemini/
+.vscode/
+*.db
+*.lock
+__pycache__/
