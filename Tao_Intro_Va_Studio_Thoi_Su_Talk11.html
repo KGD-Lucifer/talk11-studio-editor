@@ -11,7 +11,8 @@
   <title>TALK11 News Studio — Trường Quay 3D, Hầm Neon Cam & Timeline Kéo Thả Chuyên Nghiệp</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Comfortaa:wght@700&family=JetBrains+Mono:wght@700;800&family=Lexend:wght@600;700;800&family=Montserrat:wght@700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Comfortaa:wght@700&family=JetBrains+Mono:wght@700;800&family=Lexend:wght@600;700;800&family=Montserrat:wght@700;800;900&family=Playfair+Display:wght@700;900&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Baloo+2:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Comfortaa:wght@700&family=JetBrains+Mono:wght@700;800&family=Lexend:wght@600;700;800&family=Montserrat:wght@700;800;900&family=Playfair+Display:wght@700;900&display=swap"></noscript>
   <!-- TensorFlow.js for Robust Video Matting (RVM - CapCut Pro Core Model) -->
   <script src="03_ASSETS/tfjs/tf.min.js"></script>
   <script>
@@ -2235,6 +2236,34 @@
           <button type="button" id="btnWizRunRvm4k" style="width: 100%; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #0F172A; font-weight: 800; font-size: 9.5px; border: none; border-radius: 5px; padding: 6px 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3); margin-top: 4px; margin-bottom: 2px;">
             <span>👑 Tách Nền RVM 4K Chuẩn CapCut (Khử Sạch Viền Trắng)</span>
           </button>
+
+          <!-- VỊ TRÍ NHÂN VẬT & CẮT PHẦN THỪA (DÀNH CHO PHỤ HUYNH) -->
+          <div style="background: rgba(8, 14, 28, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 5px 6px; margin-top: 4px; display: flex; flex-direction: column; gap: 4px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; font-weight: 700; color: #38BDF8;">
+              <span>📍 Vị Trí BTV Nhí:</span>
+              <span style="font-size: 8px; color: #94A3B8;">Kéo thả trực tiếp trên màn hình</span>
+            </div>
+            <div style="display: flex; gap: 3px;">
+              <button type="button" class="btn btn-secondary" id="btnWizPosDesk" style="flex: 1.2; padding: 3px 4px; font-size: 8.5px; font-weight: 800; color: #FFB703; border-color: rgba(255,183,3,0.4);" title="Tự động đặt bé ngồi chuẩn xác sau bàn BTV trường quay">
+                🎙️ Đặt Vào Giữa Bàn
+              </button>
+              <button type="button" class="btn btn-secondary" id="btnWizPosTv" style="flex: 1; padding: 3px 4px; font-size: 8.5px; color: #38BDF8;" title="Đặt bé đứng cạnh màn hình TV">
+                📺 Cạnh TV
+              </button>
+              <button type="button" class="btn btn-secondary" id="btnWizPosReset" style="flex: 0.8; padding: 3px 4px; font-size: 8.5px; color: #94A3B8;" title="Căn giữa nhân vật">
+                🔄 Căn Giữa
+              </button>
+            </div>
+            <!-- Cắt nhanh lề thừa (bàn học, tường nhà) -->
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 8.5px; color: #94A3B8; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 3px;">
+              <span title="Cắt bỏ cạnh bàn học hay góc phòng thừa ở 2 bên hoặc đáy video của bé">✂️ Cắt bỏ cạnh thừa:</span>
+              <div style="display: flex; gap: 4px; align-items: center;">
+                <label style="margin: 0; font-size: 8px;">Trái: <input type="number" id="inputWizCropLeft" min="0" max="40" value="0" style="width: 28px; font-size: 8.5px; text-align: center; background: #070D1E; border: 1px solid rgba(255,255,255,0.2); color: #FFF; border-radius: 3px;">%</label>
+                <label style="margin: 0; font-size: 8px;">Phải: <input type="number" id="inputWizCropRight" min="0" max="40" value="0" style="width: 28px; font-size: 8.5px; text-align: center; background: #070D1E; border: 1px solid rgba(255,255,255,0.2); color: #FFF; border-radius: 3px;">%</label>
+                <label style="margin: 0; font-size: 8px;">Đáy: <input type="number" id="inputWizCropBottom" min="0" max="40" value="0" style="width: 28px; font-size: 8.5px; text-align: center; background: #070D1E; border: 1px solid rgba(255,255,255,0.2); color: #FFF; border-radius: 3px;">%</label>
+              </div>
+            </div>
+          </div>
 
           <!-- TỰ ĐỘNG KÉO SÁNG & LÀM NÉT SIÊU PHÂN GIẢI -->
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; background: rgba(8, 14, 28, 0.7); border: 1px solid rgba(251, 191, 36, 0.25); border-radius: 6px; padding: 4px 6px; margin-top: 4px;">
@@ -13059,7 +13088,7 @@
         // 4. INTERACTIVE ON-CANVAS TRANSFORM BOUNDING BOX (NEON DASHED FRAME & CORNER HANDLES)
         if (studentHovered || isDraggingStudent || isResizingStudent) {
           ctx.save();
-          ctx.translate(targetX, targetY);
+          // ctx is already translated to (targetX, targetY) by line 12885
 
           ctx.strokeStyle = '#38BDF8';
           ctx.lineWidth = 2.0;
@@ -13095,7 +13124,10 @@
 
           ctx.restore();
         }
-      }
+      } // End of !isExportingRecording
+
+      // CRITICAL: Restore root ctx.save() from line 12885 to prevent shifting subsequent layers
+      ctx.restore();
     }
 
     function render(timeSecOverride) {
@@ -15685,6 +15717,51 @@
       const lSc = document.getElementById('valStudentScale'); if (lSc) lSc.textContent = `${Math.round(studentScale * 100)}%`;
       const chkF = document.getElementById('chkStudentFlipH'); if (chkF) chkF.checked = studentFlipH;
     }
+
+    // Wizard Positioning Listeners
+    document.getElementById('btnWizPosDesk')?.addEventListener('click', () => {
+      studentPosX = 960; studentPosY = 640; studentScale = 1.05; studentFlipH = false;
+      syncStudentPositionSliders();
+      try { render(previewCurrentSec); } catch(err) {}
+      showToast('🎙️ Đã đặt bé ngồi chuẩn giữa bàn BTV thời sự!');
+    });
+    document.getElementById('btnWizPosTv')?.addEventListener('click', () => {
+      studentPosX = 1450; studentPosY = 650; studentScale = 0.95; studentFlipH = false;
+      syncStudentPositionSliders();
+      try { render(previewCurrentSec); } catch(err) {}
+      showToast('📺 Đã đặt bé đứng cạnh màn hình TV!');
+    });
+    document.getElementById('btnWizPosReset')?.addEventListener('click', () => {
+      studentPosX = 960; studentPosY = 640; studentScale = 1.0; studentFlipH = false;
+      syncStudentPositionSliders();
+      try { render(previewCurrentSec); } catch(err) {}
+      showToast('🔄 Đã căn giữa nhân vật BTV!');
+    });
+
+    // Synchronize crop inputs between Wizard and Pro tabs
+    function syncCropInputs(source, val) {
+      val = Math.max(0, Math.min(40, parseInt(val) || 0));
+      if (source === 'left') {
+        studentCropLeft = val;
+        const i1 = document.getElementById('inputCropLeft'); if (i1) i1.value = val;
+        const i2 = document.getElementById('inputWizCropLeft'); if (i2) i2.value = val;
+      } else if (source === 'right') {
+        studentCropRight = val;
+        const i1 = document.getElementById('inputCropRight'); if (i1) i1.value = val;
+        const i2 = document.getElementById('inputWizCropRight'); if (i2) i2.value = val;
+      } else if (source === 'bottom') {
+        studentCropBottom = val;
+        const i1 = document.getElementById('inputCropBottom'); if (i1) i1.value = val;
+        const i2 = document.getElementById('inputWizCropBottom'); if (i2) i2.value = val;
+      }
+      try { render(previewCurrentSec); } catch(err) {}
+    }
+    document.getElementById('inputWizCropLeft')?.addEventListener('input', (e) => syncCropInputs('left', e.target.value));
+    document.getElementById('inputWizCropRight')?.addEventListener('input', (e) => syncCropInputs('right', e.target.value));
+    document.getElementById('inputWizCropBottom')?.addEventListener('input', (e) => syncCropInputs('bottom', e.target.value));
+    document.getElementById('inputCropLeft')?.addEventListener('input', (e) => syncCropInputs('left', e.target.value));
+    document.getElementById('inputCropRight')?.addEventListener('input', (e) => syncCropInputs('right', e.target.value));
+    document.getElementById('inputCropBottom')?.addEventListener('input', (e) => syncCropInputs('bottom', e.target.value));
 
     // ========================================================
     // BỘ ĐIỀU HƯỚNG 3 BƯỚC CHO PHỤ HUYNH & BTV NHÍ (THAY THẾ CAPCUT)
