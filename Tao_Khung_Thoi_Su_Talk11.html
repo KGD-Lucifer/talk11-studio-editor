@@ -5230,6 +5230,12 @@
     // Offscreen Canvas for Real-time Chroma Key & Beauty Processing
     let offscreenKeyCanvas = document.createElement('canvas');
     let offscreenKeyCtx = offscreenKeyCanvas.getContext('2d', { willReadFrequently: true });
+    let hasChromaCachedFrame = false;
+    let forceChromaReprocess = true;
+    let lastChromaProcessedVideoTime = -999;
+    let lastChromaParamsKey = '';
+    let hasValidBeautyCanvas = false;
+    let lastBeautyFrameKey = '';
 
     let selectedTvLayoutMode = 'left_wall';
     let selectedBannerStyle = 'docked_inside'; // 'docked_inside' | 'clean_below' | 'hide_banner'
@@ -10379,6 +10385,13 @@
     // ----------------------------------------------------
     // INTERACTIVE CANVAS MANIPULATION: STUDENT DRAGGING & RESIZING + SUBTITLES (MOUSE & TOUCH)
     // ----------------------------------------------------
+    let elSliderStudentPosX = null;
+    let elValStudentPosX = null;
+    let elSliderStudentPosY = null;
+    let elValStudentPosY = null;
+    let elSliderStudentScale = null;
+    let elValStudentScale = null;
+
     function handleCanvasPointerMove(clientX, clientY) {
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
@@ -10412,7 +10425,7 @@
           lastBrushNormX = normX;
           lastBrushNormY = normY;
           hasUserMatteCorrections = true;
-          try { render(previewCurrentSec); } catch(err) {}
+          forceChromaReprocess = true;
         }
         return true;
       }
@@ -10429,7 +10442,6 @@
         if (sliderSubPosX) sliderSubPosX.value = Math.round(subPosX);
         if (valSubPosX) valSubPosX.textContent = `${Math.round(subPosX)}px`;
 
-        try { render(previewCurrentSec); } catch(err) {}
         return true;
       }
 
@@ -10444,12 +10456,20 @@
         studentPosX = Math.max(100, Math.min(1820, studentPosX));
         studentPosY = Math.max(100, Math.min(1150, studentPosY));
 
-        const sX = document.getElementById('sliderStudentPosX'); if (sX) sX.value = studentPosX;
-        const lX = document.getElementById('valStudentPosX'); if (lX) lX.textContent = `${studentPosX}px`;
-        const sY = document.getElementById('sliderStudentPosY'); if (sY) sY.value = studentPosY;
-        const lY = document.getElementById('valStudentPosY'); if (lY) lY.textContent = `${studentPosY}px`;
+        if (!elSliderStudentPosX) {
+          elSliderStudentPosX = document.getElementById('sliderStudentPosX');
+          elValStudentPosX = document.getElementById('valStudentPosX');
+          elSliderStudentPosY = document.getElementById('sliderStudentPosY');
+          elValStudentPosY = document.getElementById('valStudentPosY');
+          elSliderStudentScale = document.getElementById('sliderStudentScale');
+          elValStudentScale = document.getElementById('valStudentScale');
+        }
 
-        try { render(previewCurrentSec); } catch(err) {}
+        if (elSliderStudentPosX) elSliderStudentPosX.value = studentPosX;
+        if (elValStudentPosX) elValStudentPosX.textContent = `${studentPosX}px`;
+        if (elSliderStudentPosY) elSliderStudentPosY.value = studentPosY;
+        if (elValStudentPosY) elValStudentPosY.textContent = `${studentPosY}px`;
+
         return true;
       }
 
@@ -10461,10 +10481,13 @@
           const ratio = curDist / Math.max(20, studentInitialDist);
           studentScale = Math.max(0.4, Math.min(2.0, Math.round(studentInitialScale * ratio * 50) / 50));
 
-          const sScale = document.getElementById('sliderStudentScale'); if (sScale) sScale.value = Math.round(studentScale * 100);
-          const lScale = document.getElementById('valStudentScale'); if (lScale) lScale.textContent = `${Math.round(studentScale * 100)}%`;
+          if (!elSliderStudentScale) {
+            elSliderStudentScale = document.getElementById('sliderStudentScale');
+            elValStudentScale = document.getElementById('valStudentScale');
+          }
 
-          try { render(previewCurrentSec); } catch(err) {}
+          if (elSliderStudentScale) elSliderStudentScale.value = Math.round(studentScale * 100);
+          if (elValStudentScale) elValStudentScale.textContent = `${Math.round(studentScale * 100)}%`;
         }
         return true;
       }
@@ -10495,7 +10518,6 @@
         if (isOverCorner) {
           canvas.style.cursor = (studentResizeCorner === 0 || studentResizeCorner === 2) ? 'nwse-resize' : 'nesw-resize';
           studentHovered = true;
-          try { render(previewCurrentSec); } catch(err) {}
           return false;
         }
 
@@ -10503,17 +10525,13 @@
             mouseY >= studentBox.y && mouseY <= studentBox.y + studentBox.h) {
           isOverStudent = true;
           canvas.style.cursor = 'grab';
-          if (!studentHovered) {
-            studentHovered = true;
-            try { render(previewCurrentSec); } catch(err) {}
-          }
+          studentHovered = true;
           return false;
         }
       }
 
       if (studentHovered && !isOverStudent && !isOverCorner) {
         studentHovered = false;
-        try { render(previewCurrentSec); } catch(err) {}
       }
 
       // 5. Hover detection on Subtitles
@@ -10523,7 +10541,6 @@
           if (!isHoveringSubtitle) {
             isHoveringSubtitle = true;
             canvas.style.cursor = 'grab';
-            try { render(previewCurrentSec); } catch(err) {}
           }
           return false;
         }
@@ -10532,7 +10549,6 @@
       if (isHoveringSubtitle) {
         isHoveringSubtitle = false;
         canvas.style.cursor = 'default';
-        try { render(previewCurrentSec); } catch(err) {}
       } else if (!isOverStudent && !isOverCorner) {
         canvas.style.cursor = 'default';
       }
@@ -10578,9 +10594,9 @@
             const normY = (mouseY - studentBox.y) / studentBox.h;
             const isPos = !(window.event && (window.event.shiftKey || window.event.altKey));
             aiMattingPromptPoints.push({ xNorm: normX, yNorm: normY, isPositive: isPos });
+            forceChromaReprocess = true;
             pushUndoState('Thêm điểm chọn chủ thể AI');
             showToast(isPos ? '🎯 Đã ghim điểm giữ chủ thể' : '❌ Đã ghim điểm loại trừ vùng thừa');
-            try { render(previewCurrentSec); } catch(err) {}
             return true;
           }
 
@@ -10600,7 +10616,7 @@
               userMatteCorrectionCtx.arc(px, py, r, 0, Math.PI * 2);
               userMatteCorrectionCtx.fill();
               hasUserMatteCorrections = true;
-              try { render(previewCurrentSec); } catch(err) {}
+              forceChromaReprocess = true;
             }
             return true;
           }
@@ -10612,7 +10628,6 @@
           studentDragOffsetX = mouseX - studentBox.centerX;
           studentDragOffsetY = mouseY - studentBox.centerY;
           studentHovered = true;
-          try { render(previewCurrentSec); } catch(err) {}
           return true;
         }
       }
@@ -10625,7 +10640,6 @@
           canvas.style.cursor = 'grabbing';
           subDragStartX = mouseX - currentSubBox.x;
           subDragStartY = mouseY - currentSubBox.y;
-          try { render(previewCurrentSec); } catch(err) {}
           return true;
         }
       }
@@ -10656,12 +10670,33 @@
       }
       if (didAct) {
         canvas.style.cursor = 'default';
-        try { render(previewCurrentSec); } catch(err) {}
       }
     }
 
+    // High performance window pointer drag tracking (CapCut PC Standard):
+    // Dragging continues smoothly even when mouse rapidly leaves canvas bounds
+    window.addEventListener('mousemove', (e) => {
+      if (isDraggingStudent || isResizingStudent || isDraggingSubtitle || isPaintingMatteBrush) {
+        handleCanvasPointerMove(e.clientX, e.clientY);
+      }
+    }, { passive: true });
+
     canvas.addEventListener('mousemove', (e) => {
-      handleCanvasPointerMove(e.clientX, e.clientY);
+      if (!isDraggingStudent && !isResizingStudent && !isDraggingSubtitle && !isPaintingMatteBrush) {
+        handleCanvasPointerMove(e.clientX, e.clientY);
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('mouseleave', () => {
+      if (!isDraggingStudent && !isResizingStudent && !isDraggingSubtitle && !isPaintingMatteBrush) {
+        if (studentHovered || isHoveringSubtitle) {
+          studentHovered = false;
+          isHoveringSubtitle = false;
+          canvas.style.cursor = 'default';
+        }
+        canvasHoverScreenX = -1;
+        canvasHoverScreenY = -1;
+      }
     });
 
     canvas.addEventListener('mousedown', (e) => {
@@ -10679,7 +10714,7 @@
     }, { passive: false });
 
     window.addEventListener('touchmove', (e) => {
-      if (isDraggingStudent || isResizingStudent || isDraggingSubtitle) {
+      if (isDraggingStudent || isResizingStudent || isDraggingSubtitle || isPaintingMatteBrush) {
         if (e.touches && e.touches.length > 0) {
           handleCanvasPointerMove(e.touches[0].clientX, e.touches[0].clientY);
           if (e.cancelable) e.preventDefault();
@@ -12205,7 +12240,7 @@
     let lastLumaSampleFrame = -999;
     function getSampledLuma(srcCanvas) {
       if (!srcCanvas || srcCanvas.width === 0 || srcCanvas.height === 0) return 128;
-      if (animFrame - lastLumaSampleFrame < 24) return cachedSampledLuma;
+      if (isDraggingStudent || isResizingStudent || animFrame - lastLumaSampleFrame < 24) return cachedSampledLuma;
       lastLumaSampleFrame = animFrame;
       try {
         const sCtx = srcCanvas.getContext('2d');
@@ -12252,12 +12287,34 @@
       if (offscreenKeyCanvas.width !== procW || offscreenKeyCanvas.height !== procH) {
         offscreenKeyCanvas.width = procW;
         offscreenKeyCanvas.height = procH;
+        hasChromaCachedFrame = false;
+        forceChromaReprocess = true;
       }
 
       // If Chroma/AI is disabled or mode is 'room': return original room video
       if (!studentChromaEnabled || studentChromaMode === 'room') {
         offscreenKeyCtx.globalCompositeOperation = 'source-over';
         offscreenKeyCtx.drawImage(studentVideoElem, 0, 0, procW, procH);
+        return offscreenKeyCanvas;
+      }
+
+      const curVidTime = studentVideoElem.currentTime;
+      const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
+      const curParamsKey = `${studentChromaMode}_${studentChromaTolerance}_${studentChromaFeather}_${studentAiErodeRadius}_${studentCropLeft}_${studentCropRight}_${studentCropBottom}_${enablePlantRemoval}_${enableAiAntiFlicker}_${aiMattingPromptPoints ? aiMattingPromptPoints.length : 0}_${hasUserMatteCorrections ? 1 : 0}`;
+
+      // FAST 120FPS CACHE BYPASS: If video is paused or static AND parameters unchanged, return cache immediately (0.0001ms)!
+      if (hasChromaCachedFrame && !isExportingRecording && !forceChromaReprocess) {
+        const isTimeStatic = studentVideoElem.paused || Math.abs(curVidTime - lastChromaProcessedVideoTime) < 0.015;
+        if (isTimeStatic && curParamsKey === lastChromaParamsKey) {
+          return offscreenKeyCanvas;
+        }
+      }
+
+      function finalizeChromaCache() {
+        hasChromaCachedFrame = true;
+        forceChromaReprocess = false;
+        lastChromaProcessedVideoTime = curVidTime;
+        lastChromaParamsKey = curParamsKey;
         return offscreenKeyCanvas;
       }
 
@@ -12306,7 +12363,7 @@
             }
             offscreenKeyCtx.putImageData(rvmFrame, 0, 0);
           }
-          return offscreenKeyCanvas;
+          return finalizeChromaCache();
         }
 
         const now = performance.now();
@@ -12383,7 +12440,7 @@
           if (maxProbInMask < 35) {
             runPureJsSubjectMattingFallback(finalVidImgData, procW, procH, studentChromaTolerance, studentChromaFeather);
             offscreenKeyCtx.putImageData(finalVidImgData, 0, 0);
-            return offscreenKeyCanvas;
+            return finalizeChromaCache();
           }
 
           // 3. TÍNH TOÁN THAM SỐ ÔM SÁT NGƯỜI CHUẨN XÁC (TÁCH MẠNH HƠN NỮA, TRIỆT TIÊU QUẦNG TRẮNG):
@@ -12723,7 +12780,7 @@
           }
 
           offscreenKeyCtx.putImageData(finalVidImgData, 0, 0);
-          return offscreenKeyCanvas;
+          return finalizeChromaCache();
         }
 
         // KHI MEDIAPIPE ĐANG KHỞI TẠO HOẶC MẤT MẠNG OFFLINE:
@@ -12735,7 +12792,7 @@
         } catch (fErr) {
           console.warn('Fallback pixel read restriction:', fErr);
         }
-        return offscreenKeyCanvas;
+        return finalizeChromaCache();
       }
 
       // ----------------------------------------------------
@@ -12829,7 +12886,7 @@
       } catch (secErr) {
         console.warn('Canvas pixel read security restriction:', secErr);
       }
-      return offscreenKeyCanvas;
+      return finalizeChromaCache();
     }
 
     let lastValidStudentFrameCanvas = document.createElement('canvas');
@@ -12844,13 +12901,15 @@
       if (studentVideoElem.readyState >= 2 && !studentVideoElem.seeking) {
         processedCanvas = processStudentChromaKey();
         if (processedCanvas && processedCanvas.width > 0 && processedCanvas.height > 0) {
-          if (lastValidStudentFrameCanvas.width !== processedCanvas.width || lastValidStudentFrameCanvas.height !== processedCanvas.height) {
-            lastValidStudentFrameCanvas.width = processedCanvas.width;
-            lastValidStudentFrameCanvas.height = processedCanvas.height;
+          if (!hasValidStudentCachedFrame || forceChromaReprocess || (studentVideoElem && !studentVideoElem.paused)) {
+            if (lastValidStudentFrameCanvas.width !== processedCanvas.width || lastValidStudentFrameCanvas.height !== processedCanvas.height) {
+              lastValidStudentFrameCanvas.width = processedCanvas.width;
+              lastValidStudentFrameCanvas.height = processedCanvas.height;
+            }
+            lastValidStudentFrameCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+            lastValidStudentFrameCtx.drawImage(processedCanvas, 0, 0);
+            hasValidStudentCachedFrame = true;
           }
-          lastValidStudentFrameCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
-          lastValidStudentFrameCtx.drawImage(processedCanvas, 0, 0);
-          hasValidStudentCachedFrame = true;
         }
       }
 
@@ -13032,16 +13091,22 @@
             if (offscreenBeautyCanvas.width !== processedCanvas.width || offscreenBeautyCanvas.height !== processedCanvas.height) {
               offscreenBeautyCanvas.width = processedCanvas.width;
               offscreenBeautyCanvas.height = processedCanvas.height;
+              hasValidBeautyCanvas = false;
             }
-            offscreenBeautyCtx.save();
-            offscreenBeautyCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
-            // Giữ brightness(1.00) để không làm cháy sáng hay bợt da bé
-            offscreenBeautyCtx.filter = `blur(${Math.max(2, Math.round(beautySmoothness * 4))}px) brightness(1.00) saturate(1.00)`;
-            offscreenBeautyCtx.drawImage(processedCanvas, 0, 0);
-            offscreenBeautyCtx.globalCompositeOperation = 'destination-in';
-            offscreenBeautyCtx.filter = 'none';
-            offscreenBeautyCtx.drawImage(processedCanvas, 0, 0);
-            offscreenBeautyCtx.restore();
+            const beautyKey = `${beautySmoothness}_${beautyBrightness}_${lastChromaProcessedVideoTime}`;
+            if (!hasValidBeautyCanvas || beautyKey !== lastBeautyFrameKey || (studentVideoElem && !studentVideoElem.paused && !isDraggingStudent && !isResizingStudent)) {
+              offscreenBeautyCtx.save();
+              offscreenBeautyCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+              // Giữ brightness(1.00) để không làm cháy sáng hay bợt da bé
+              offscreenBeautyCtx.filter = `blur(${Math.max(2, Math.round(beautySmoothness * 4))}px) brightness(1.00) saturate(1.00)`;
+              offscreenBeautyCtx.drawImage(processedCanvas, 0, 0);
+              offscreenBeautyCtx.globalCompositeOperation = 'destination-in';
+              offscreenBeautyCtx.filter = 'none';
+              offscreenBeautyCtx.drawImage(processedCanvas, 0, 0);
+              offscreenBeautyCtx.restore();
+              hasValidBeautyCanvas = true;
+              lastBeautyFrameKey = beautyKey;
+            }
 
             ctx.save();
             ctx.globalAlpha = beautySmoothness * 0.25;
