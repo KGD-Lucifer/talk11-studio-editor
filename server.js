@@ -124,7 +124,12 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        const pyProc = spawn('python', ['tach_nen_rvm_capcut.py', '-i', inputAbs, '-o', outputAbs], { cwd: ROOT });
+        const pyArgs = ['tach_nen_rvm_capcut.py', '-i', inputAbs, '-o', outputAbs];
+        if (payload.hairDetail !== undefined) pyArgs.push('--hair-detail', String(payload.hairDetail));
+        if (payload.coreProtect !== undefined) pyArgs.push('--core-protect', String(payload.coreProtect));
+        if (payload.despill !== undefined) pyArgs.push('--despill', String(payload.despill));
+        if (payload.choke !== undefined) pyArgs.push('--choke', String(payload.choke));
+        const pyProc = spawn('python', pyArgs, { cwd: ROOT });
         let stderrData = '';
         pyProc.stderr.on('data', d => stderrData += d);
         pyProc.on('close', code => {
@@ -174,7 +179,17 @@ const server = http.createServer((req, res) => {
 
     req.pipe(outStream);
     outStream.on('finish', () => {
-      const pyProc = spawn('python', ['tach_nen_rvm_capcut.py', '-i', tempUpload, '-o', outputAbs], { cwd: ROOT });
+      const parsedUrl = new URL(req.url, 'http://127.0.0.1');
+      const pyArgs = ['tach_nen_rvm_capcut.py', '-i', tempUpload, '-o', outputAbs];
+      const hDetail = parsedUrl.searchParams.get('hairDetail');
+      const cProtect = parsedUrl.searchParams.get('coreProtect');
+      const dSpill = parsedUrl.searchParams.get('despill');
+      const cChoke = parsedUrl.searchParams.get('choke');
+      if (hDetail) pyArgs.push('--hair-detail', hDetail);
+      if (cProtect) pyArgs.push('--core-protect', cProtect);
+      if (dSpill) pyArgs.push('--despill', dSpill);
+      if (cChoke) pyArgs.push('--choke', cChoke);
+      const pyProc = spawn('python', pyArgs, { cwd: ROOT });
       let stderrData = '';
       pyProc.stderr.on('data', d => stderrData += d);
       pyProc.on('close', code => {

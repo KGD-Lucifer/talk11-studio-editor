@@ -2533,6 +2533,13 @@
               <input type="color" id="inputCustomKeyColor" value="#00FF00" style="width: 18px; height: 18px; border: none; border-radius: 3px; cursor: pointer; padding: 0;" title="Hút màu tùy chỉnh">
             </div>
 
+            <!-- BỘ PRESET ĐỈNH CAO 1 CHẠM: DAVINCI MAGIC HAIR / PHOTOSHOP CORE SHIELD / CAPCUT FAST CLEAN -->
+            <div style="display: flex; gap: 3px; margin-top: 1px;" id="proMattingPresetPills">
+              <button type="button" class="btn-tint-pill active" id="btnPresetMatteDaVinci" style="flex: 1; padding: 2px 3px; font-size: 8.5px; font-weight: 800; color: #F59E0B; border-color: rgba(245,158,11,0.5);" title="👑 DaVinci Magic Hair: Tối ưu chi tiết tóc tơ tột đỉnh, giữ trọn sợi tóc bay tự nhiên không răng cưa">👑 DaVinci Tóc Tơ</button>
+              <button type="button" class="btn-tint-pill" id="btnPresetMattePhotoshop" style="flex: 1; padding: 2px 3px; font-size: 8.5px; font-weight: 800; color: #38BDF8; border-color: rgba(56,189,248,0.5);" title="🛡️ Photoshop Core Shield: Khóa vững lõi 100%, bảo vệ áo trắng/sáng màu không bao giờ bị cắn lẹm">🛡️ Photoshop Áo Trắng</button>
+              <button type="button" class="btn-tint-pill" id="btnPresetMatteCapCut" style="flex: 1; padding: 2px 3px; font-size: 8.5px; font-weight: 800; color: #10B981; border-color: rgba(16,185,129,0.5);" title="⚡ CapCut Fast Clean: Gọt mép 2px, khử quầng sáng siêu tốc 120FPS mượt mà">⚡ CapCut Siêu Nhanh</button>
+            </div>
+
             <!-- CÔNG CỤ TINH CHỈNH MẶT NẠ TRỰC TIẾP TRÊN CANVAS (CHỌN CHỦ THỂ / TÔ GIỮ / TÔ XÓA) -->
             <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 6px; padding: 5px 6px; display: flex; flex-direction: column; gap: 4px;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -2584,6 +2591,20 @@
               <span style="min-width: 90px;" title="Tự động gọt ôm sát mép người, triệt tiêu 100% viền trắng tường phòng (Chuẩn CapCut Pro)">✂️ Gọt viền mép CapCut:</span>
               <input type="range" class="range-slider" id="sliderAiErode" min="0" max="8" value="2" step="1" style="accent-color: #F59E0B; flex: 1;">
               <span id="valAiErode" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">2px</span>
+            </div>
+
+            <!-- PHOTOSHOP CORE MATTE PROTECTION: KHÓA ÁO TRẮNG ĐỒNG PHỤC HỌC SINH -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
+              <span style="min-width: 90px;" title="Photoshop Core Protection: Khóa 100% ruột thân thể & áo đồng phục trắng học sinh, không bao giờ bị thủng hay lem tường">🛡️ Khóa áo trắng học sinh:</span>
+              <input type="range" class="range-slider" id="sliderMatteCoreProtect" min="0" max="100" value="85" step="5" style="accent-color: #38BDF8; flex: 1;">
+              <span id="valMatteCoreProtect" style="font-family: monospace; font-size: 9.5px; color: #38BDF8; min-width: 28px; text-align: right;">85%</span>
+            </div>
+
+            <!-- DAVINCI MAGIC HAIR DETAIL RECOVERY: BỘ LỌC TÓC TƠ CAO TẦN -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
+              <span style="min-width: 90px;" title="DaVinci Magic Mask Hair Recovery: Bộ lọc tần số cao giữ từng sợi tóc tơ mảnh nhất mà không để lại quầng sáng viền">👑 Chi tiết tóc tơ DaVinci:</span>
+              <input type="range" class="range-slider" id="sliderMatteHairDetail" min="0" max="100" value="75" step="5" style="accent-color: #F59E0B; flex: 1;">
+              <span id="valMatteHairDetail" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">75%</span>
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
@@ -4892,6 +4913,9 @@
         studentChromaFeather,
         studentChromaDespill,
         studentAiErodeRadius,
+        studentMatteCoreProtect,
+        studentMatteHairDetail,
+        studentMattePreset,
         enablePlantRemoval,
         enableBeauty,
         beautySmoothness,
@@ -4957,6 +4981,9 @@
         studentChromaFeather = state.studentChromaFeather ?? studentChromaFeather;
         studentChromaDespill = state.studentChromaDespill ?? studentChromaDespill;
         studentAiErodeRadius = state.studentAiErodeRadius ?? studentAiErodeRadius;
+        studentMatteCoreProtect = state.studentMatteCoreProtect ?? studentMatteCoreProtect;
+        studentMatteHairDetail = state.studentMatteHairDetail ?? studentMatteHairDetail;
+        studentMattePreset = state.studentMattePreset ?? studentMattePreset;
         enablePlantRemoval = state.enablePlantRemoval ?? enablePlantRemoval;
         enableBeauty = state.enableBeauty ?? enableBeauty;
         beautySmoothness = state.beautySmoothness ?? beautySmoothness;
@@ -5017,6 +5044,24 @@
         if (lErode) lErode.textContent = `${studentAiErodeRadius}px`;
         if (sWizErode) sWizErode.value = studentAiErodeRadius;
         if (lWizErode) lWizErode.textContent = `${studentAiErodeRadius}px`;
+
+        const sCoreProt = document.getElementById('sliderMatteCoreProtect');
+        const lCoreProt = document.getElementById('valMatteCoreProtect');
+        if (sCoreProt) sCoreProt.value = studentMatteCoreProtect;
+        if (lCoreProt) lCoreProt.textContent = `${studentMatteCoreProtect}%`;
+
+        const sHairDet = document.getElementById('sliderMatteHairDetail');
+        const lHairDet = document.getElementById('valMatteHairDetail');
+        if (sHairDet) sHairDet.value = studentMatteHairDetail;
+        if (lHairDet) lHairDet.textContent = `${studentMatteHairDetail}%`;
+
+        const presetBtns = {
+          davinci: document.getElementById('btnPresetMatteDaVinci'),
+          photoshop: document.getElementById('btnPresetMattePhotoshop'),
+          capcut: document.getElementById('btnPresetMatteCapCut')
+        };
+        Object.values(presetBtns).forEach(b => b?.classList.remove('active'));
+        if (presetBtns[studentMattePreset]) presetBtns[studentMattePreset].classList.add('active');
 
         if (typeof applyVocalFilterMode === 'function') applyVocalFilterMode(currentVocalFilterMode);
         if (typeof setStudentBgMode === 'function') setStudentBgMode(studentChromaMode);
@@ -5134,6 +5179,12 @@
     let beautyContrast = 1.04; // 1.04: Tương phản rõ nét, tóc đen sâu, môi đỏ tươi như CapCut
     let beautySaturation = 1.03; // 1.03: Màu sắc tươi tắn tự nhiên
     let studentAiErodeRadius = 2; // Mặc định 2px: Tự động gọt ôm sát viền người, triệt tiêu viền trắng tường phòng và bảo toàn tóc tơ, áo sáng màu
+    let studentMatteCoreProtect = 85; // 0..100% Khóa lõi áo trắng học sinh (Photoshop Core Protection)
+    let studentMatteHairDetail = 75; // 0..100% Khôi phục chi tiết tóc tơ DaVinci Magic Mask
+    let studentMattePreset = 'davinci'; // 'davinci' | 'photoshop' | 'capcut'
+    window.studentMatteCoreProtect = studentMatteCoreProtect;
+    window.studentMatteHairDetail = studentMatteHairDetail;
+    window.studentMattePreset = studentMattePreset;
     let enablePlantRemoval = false; // Tắt hoàn toàn lọc thô màu tránh thủng áo xanh/đồ vật
     let studentPosX = 960;
     let studentPosY = 640;
@@ -12300,7 +12351,7 @@
 
       const curVidTime = studentVideoElem.currentTime;
       const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
-      const curParamsKey = `${studentChromaMode}_${studentChromaTolerance}_${studentChromaFeather}_${studentAiErodeRadius}_${studentCropLeft}_${studentCropRight}_${studentCropBottom}_${enablePlantRemoval}_${enableAiAntiFlicker}_${aiMattingPromptPoints ? aiMattingPromptPoints.length : 0}_${hasUserMatteCorrections ? 1 : 0}`;
+      const curParamsKey = `${studentChromaMode}_${studentChromaTolerance}_${studentChromaFeather}_${studentAiErodeRadius}_${studentMatteCoreProtect}_${studentMatteHairDetail}_${studentCropLeft}_${studentCropRight}_${studentCropBottom}_${enablePlantRemoval}_${enableAiAntiFlicker}_${aiMattingPromptPoints ? aiMattingPromptPoints.length : 0}_${hasUserMatteCorrections ? 1 : 0}`;
 
       // FAST 120FPS CACHE BYPASS: If video is paused or static AND parameters unchanged, return cache immediately (0.0001ms)!
       if (hasChromaCachedFrame && !isExportingRecording && !forceChromaReprocess) {
@@ -12566,20 +12617,40 @@
             }
           }
 
-          // 4B. TỰ ĐỘNG BẢO VỆ NỘI THÂN THỂ (CHỈ LẤP LỖ HỔNG VI THỂ <= 5PX TRÊN ÁO)
-          // Tuyệt đối không bắt cầu qua vùng đầu / tai / cổ (y < procH * 0.48) và không bắt cầu qua tường phòng
+          // 4B. PHOTOSHOP CORE MATTE PROTECTION: KHÓA LÕI 100% RUỘT THÂN THỂ & ÁO TRẮNG ĐỒNG PHỤC HỌC SINH
+          // Tuyệt đối không để áo trắng bị xuyên thấu, cắn lẹm hay thủng lỗ chỗ như CapCut
           const headNeckLimitY = Math.floor(procH * 0.48);
+          const coreProtectFactor = (typeof studentMatteCoreProtect === 'number') ? (studentMatteCoreProtect / 100) : 0.85;
           for (let y = headNeckLimitY; y < procH; y++) {
             const row = y * procW;
             let firstSolid = -1;
             let lastSolid = -1;
             for (let x = 0; x < procW; x++) {
-              if (fData[(row + x) * 4 + 3] >= 220) {
+              if (fData[(row + x) * 4 + 3] >= 190) {
                 if (firstSolid === -1) firstSolid = x;
                 lastSolid = x;
               }
             }
-            if (lastSolid - firstSolid > 8) {
+            if (lastSolid - firstSolid > 12) {
+              // Khóa vững vùng ruột cơ thể (Solid Core)
+              if (coreProtectFactor > 0) {
+                const coreMargin = Math.max(3, Math.round((1.0 - coreProtectFactor) * 16));
+                const coreMinX = firstSolid + coreMargin;
+                const coreMaxX = lastSolid - coreMargin;
+                for (let x = coreMinX; x <= coreMaxX; x++) {
+                  const p = row + x;
+                  const idx = p * 4;
+                  const gr = fData[idx], gg = fData[idx + 1], gb = fData[idx + 2];
+                  // Loại trừ tường phòng trung tính thuần túy ở khe hở nách/tay
+                  const isPureWall = (gr > 225 && gg > 220 && gb > 215 && Math.abs(gr - gg) < 14 && Math.abs(gr - gb) < 14);
+                  if (!isPureWall) {
+                    fData[idx + 3] = 255;
+                    if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 255;
+                  }
+                }
+              }
+
+              // Lấp lỗ hổng vi thể (cúc áo, nếp gấp vải)
               let gapStart = -1;
               for (let x = firstSolid; x <= lastSolid; x++) {
                 const p = row + x;
@@ -12589,24 +12660,11 @@
                 } else {
                   if (gapStart !== -1) {
                     const gapWidth = x - gapStart;
-                    // CHỈ LẤP LỖ HỔNG NHỎ <= 5px TRÊN VẢI ÁO (nếp gấp áo, cúc áo)
-                    // TUYỆT ĐỐI KHÔNG BẮT CẦU NẾU ĐIỂM ẢNH LÀ MÀU TƯỜNG TRẮNG / NỀN PHÒNG
-                    if (gapWidth <= 5) {
-                      let containsWall = false;
+                    if (gapWidth <= 6) {
                       for (let gx = gapStart; gx < x; gx++) {
-                        const gp = (row + gx) * 4;
-                        const gr = fData[gp], gg = fData[gp + 1], gb = fData[gp + 2];
-                        if (gr > 185 && gg > 180 && gb > 175 && Math.abs(gr - gg) < 26 && Math.abs(gr - gb) < 28) {
-                          containsWall = true;
-                          break;
-                        }
-                      }
-                      if (!containsWall) {
-                        for (let gx = gapStart; gx < x; gx++) {
-                          const gp = row + gx;
-                          fData[gp * 4 + 3] = 255;
-                          if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[gp] = 255;
-                        }
+                        const gp = row + gx;
+                        fData[gp * 4 + 3] = 255;
+                        if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[gp] = 255;
                       }
                     }
                     gapStart = -1;
@@ -12629,7 +12687,6 @@
             let dstMask = aiErodeBufferB;
 
             for (let pass = 0; pass < erodeR; pass++) {
-              // Khởi tạo toàn bộ dstMask bằng srcMask để bảo toàn chuẩn xác các điểm ảnh ngoài mép biên (y=0, x=0...)
               dstMask.set(srcMask);
               for (let y = 1; y < procH - 1; y++) {
                 const row = y * procW;
@@ -12654,8 +12711,40 @@
             for (let i = 0; i < totalPix; i++) fData[i * 4 + 3] = srcMask[i];
           }
 
-          // 5B. TRIỆT TIÊU QUẦNG TƯỜNG TRẮNG DÍNH TÓC TƠ / TÓC CON Ở CỔ, TAI VÀ QUAI HÀM (SMART CHROMATICITY)
-          // Tự động nhận diện & bóc sạch 100% mảng tường trắng kẹp giữa tóc tơ và cổ bé
+          // 5A. DAVINCI MAGIC HAIR DETAIL RECOVERY (BỘ LỌC TÓC TƠ TẦN SỐ CAO)
+          // Giữ trọn từng sợi tóc tơ mảnh bay tự nhiên quanh đỉnh đầu và hai bên tai
+          const hairDetailFactor = (typeof studentMatteHairDetail === 'number') ? (studentMatteHairDetail / 100) : 0.75;
+          if (hairDetailFactor > 0) {
+            const hairZoneMaxY = Math.floor(procH * 0.52);
+            for (let y = 1; y < hairZoneMaxY; y++) {
+              const row = y * procW;
+              for (let x = 1; x < procW - 1; x++) {
+                const p = row + x;
+                const idx = p * 4;
+                const a = fData[idx + 3];
+                // Dải chuyển tiếp mép tóc (15 <= alpha <= 215)
+                if (a >= 15 && a <= 215) {
+                  const r = fData[idx], g = fData[idx + 1], b = fData[idx + 2];
+                  // Tính gradient độ sáng tương phản cục bộ (Laplacian 4 hướng)
+                  const lumCur = 0.299 * r + 0.587 * g + 0.114 * b;
+                  const lumLeft = 0.299 * fData[(p - 1) * 4] + 0.587 * fData[(p - 1) * 4 + 1] + 0.114 * fData[(p - 1) * 4 + 2];
+                  const lumRight = 0.299 * fData[(p + 1) * 4] + 0.587 * fData[(p + 1) * 4 + 1] + 0.114 * fData[(p + 1) * 4 + 2];
+                  const lumUp = 0.299 * fData[(p - procW) * 4] + 0.587 * fData[(p - procW) * 4 + 1] + 0.114 * fData[(p - procW) * 4 + 2];
+                  const lumDown = 0.299 * fData[(p + procW) * 4] + 0.587 * fData[(p + procW) * 4 + 1] + 0.114 * fData[(p + procW) * 4 + 2];
+                  const localLap = Math.abs(lumCur * 4 - (lumLeft + lumRight + lumUp + lumDown));
+                  // Sợi tóc tơ tương phản cao với nền
+                  if (localLap > 16 && (r < 115 && g < 115 && b < 115)) {
+                    const hairBoost = Math.round(localLap * hairDetailFactor * 0.65);
+                    const newA = Math.min(255, a + hairBoost);
+                    fData[idx + 3] = newA;
+                    if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = newA;
+                  }
+                }
+              }
+            }
+          }
+
+          // 5B. TRIỆT TIÊU QUẦNG TƯỜNG TRẮNG TOÀN THÂN (SMART CHROMATICITY DECONTAMINATION)
           const neckZoneY = Math.floor(procH * 0.72);
           for (let y = 0; y < procH; y++) {
             const row = y * procW;
@@ -12666,20 +12755,16 @@
               const a = fData[idx + 3];
               if (a > 0) {
                 const r = fData[idx], g = fData[idx + 1], b = fData[idx + 2];
-                // Điểm ảnh tường trắng / xám sáng trung tính (ngưỡng chọn lọc cao > 215 bảo vệ áo trắng & da)
+                // Điểm ảnh tường trắng / xám sáng trung tính
                 const isBrightWall = (r > 215 && g > 210 && b > 205 && Math.abs(r - g) < 20 && Math.abs(r - b) < 20);
                 if (isBrightWall) {
-                  // Đảm bảo không phải da người (da luôn có sắc tố đỏ r - b > 12 và r > g)
                   const isSkin = (r > 75 && g > 35 && b > 20 && r > g && (r - b) > 12);
-                  // Đảm bảo không phải tóc sẫm màu hay tóc nâu/vàng dưới ánh sáng phòng
                   const isHair = (r < 90 && g < 90 && b < 90) || ((r + g + b) / 3 < 120 && (r - b) > 12);
                   if (!isSkin && !isHair) {
                     if (isUpperZone) {
-                      // Ở vùng đầu, tai, quai hàm và cổ: Xóa sạch triệt để không chừa viền
                       fData[idx + 3] = 0;
                       if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
                     } else {
-                      // Ở vùng thân dưới (bảo vệ áo trắng nếu có): Chỉ xóa nếu là mép biên mỏng ngoài
                       const isNearBoundary = (x < 6 || x >= procW - 6 || y >= procH - 6);
                       if (isNearBoundary) {
                         fData[idx + 3] = 0;
@@ -12692,12 +12777,13 @@
             }
           }
 
-          // 6. KHỬ SẠCH QUẦNG TRẮNG BẰNG COLOR DECONTAMINATION & HALO SUPPRESSION (REUSABLE MASK)
+          // 6. COLOR DECONTAMINATION, DAVINCI DELTA KEYER DESPILL & HALO SUPPRESSION (REUSABLE MASK)
           if (!aiEdgeDecontamMask || aiEdgeDecontamMask.length !== totalPix) {
             aiEdgeDecontamMask = new Uint8ClampedArray(totalPix);
           }
           for (let i = 0; i < totalPix; i++) aiEdgeDecontamMask[i] = fData[i * 4 + 3];
           const edgeMask = aiEdgeDecontamMask;
+          const despillStrength = (typeof studentChromaDespill === 'number') ? (studentChromaDespill > 1 ? studentChromaDespill / 100 : studentChromaDespill) : 0.5;
 
           for (let y = 2; y < procH - 2; y++) {
             const row = y * procW;
@@ -12705,6 +12791,16 @@
               const p = row + x;
               const idx = p * 4;
               const a = edgeMask[p];
+
+              // DaVinci Delta Keyer Smart Despill (Khử ám xanh phông lá vào mép tóc và da)
+              if (a > 0 && despillStrength > 0) {
+                const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
+                const rbAvg = (vr + vb) * 0.5;
+                if (vg > rbAvg + 8) {
+                  fData[idx + 1] = Math.round(vg - (vg - rbAvg) * despillStrength);
+                }
+              }
+
               if (a > 0 && a < 255) {
                 let inIdx = -1;
                 // Tìm pixel thuần người ở sâu bên trong (bán kính 2-6px)
@@ -12764,7 +12860,6 @@
           }
 
           // 7. Khử ám màu viền (Despill) an toàn
-          const despillStrength = (typeof studentChromaDespill === 'number') ? (studentChromaDespill > 1 ? studentChromaDespill / 100 : studentChromaDespill) : 0;
           if (despillStrength > 0) {
             for (let p = 0; p < totalPix; p++) {
               const idx = p * 4;
@@ -15324,8 +15419,13 @@
 
       try {
         let res;
+        const hairDetailParam = (typeof studentMatteHairDetail === 'number' ? studentMatteHairDetail / 100 : 0.75);
+        const coreProtectParam = (typeof studentMatteCoreProtect === 'number' ? studentMatteCoreProtect / 100 : 0.85);
+        const despillParam = (typeof studentChromaDespill === 'number' ? studentChromaDespill : 0.5);
+        const chokeParam = (typeof studentAiErodeRadius === 'number' ? studentAiErodeRadius : 2);
+
         if (currentStudentVideoBlob) {
-          res = await fetch('/api/upload-and-rvm-matte', {
+          res = await fetch(`/api/upload-and-rvm-matte?hairDetail=${hairDetailParam}&coreProtect=${coreProtectParam}&despill=${despillParam}&choke=${chokeParam}`, {
             method: 'POST',
             body: currentStudentVideoBlob
           });
@@ -15333,7 +15433,13 @@
           res = await fetch('/api/rvm-matte', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ input: studentVideoFileName || 'student_input_sample.mp4' })
+            body: JSON.stringify({
+              input: studentVideoFileName || 'student_input_sample.mp4',
+              hairDetail: hairDetailParam,
+              coreProtect: coreProtectParam,
+              despill: despillParam,
+              choke: chokeParam
+            })
           });
         }
         const data = await res.json();
@@ -15496,6 +15602,84 @@
     });
     document.getElementById('sliderWizAiErode')?.addEventListener('input', (e) => {
       syncCutoutAiErode(parseInt(e.target.value) || 0);
+    });
+
+    // 1-Click Pro Matting Presets: DaVinci Magic Hair, Photoshop Core Shield, CapCut Fast Clean
+    function applyMattePreset(presetName) {
+      studentMattePreset = presetName;
+      window.studentMattePreset = presetName;
+      const pBtns = {
+        davinci: document.getElementById('btnPresetMatteDaVinci'),
+        photoshop: document.getElementById('btnPresetMattePhotoshop'),
+        capcut: document.getElementById('btnPresetMatteCapCut')
+      };
+      Object.values(pBtns).forEach(b => b?.classList.remove('active'));
+      if (pBtns[presetName]) pBtns[presetName].classList.add('active');
+
+      if (presetName === 'davinci') {
+        studentMatteHairDetail = 95;
+        studentMatteCoreProtect = 85;
+        syncCutoutAiErode(1);
+        syncCutoutTolerance(80);
+        studentChromaFeather = 3;
+        const sFeather = document.getElementById('sliderChromaFeather');
+        if (sFeather) sFeather.value = 3;
+        const lFeather = document.getElementById('valChromaFeather');
+        if (lFeather) lFeather.textContent = '3px';
+        showToast('👑 Đã kích hoạt Preset DaVinci Magic Hair: Tối ưu chi tiết tóc tơ tột đỉnh!');
+      } else if (presetName === 'photoshop') {
+        studentMatteCoreProtect = 100;
+        studentMatteHairDetail = 70;
+        syncCutoutAiErode(2);
+        syncCutoutTolerance(86);
+        studentChromaFeather = 2;
+        const sFeather = document.getElementById('sliderChromaFeather');
+        if (sFeather) sFeather.value = 2;
+        const lFeather = document.getElementById('valChromaFeather');
+        if (lFeather) lFeather.textContent = '2px';
+        showToast('🛡️ Đã kích hoạt Preset Photoshop Core Shield: Khóa 100% áo trắng đồng phục học sinh!');
+      } else if (presetName === 'capcut') {
+        studentMatteCoreProtect = 80;
+        studentMatteHairDetail = 60;
+        syncCutoutAiErode(2);
+        syncCutoutTolerance(82);
+        studentChromaFeather = 2;
+        const sFeather = document.getElementById('sliderChromaFeather');
+        if (sFeather) sFeather.value = 2;
+        const lFeather = document.getElementById('valChromaFeather');
+        if (lFeather) lFeather.textContent = '2px';
+        showToast('⚡ Đã kích hoạt Preset CapCut Pro Fast Clean: Gọt mép 2px, siêu mượt 120FPS!');
+      }
+
+      const sCoreProt = document.getElementById('sliderMatteCoreProtect');
+      const lCoreProt = document.getElementById('valMatteCoreProtect');
+      if (sCoreProt) sCoreProt.value = studentMatteCoreProtect;
+      if (lCoreProt) lCoreProt.textContent = `${studentMatteCoreProtect}%`;
+
+      const sHairDet = document.getElementById('sliderMatteHairDetail');
+      const lHairDet = document.getElementById('valMatteHairDetail');
+      if (sHairDet) sHairDet.value = studentMatteHairDetail;
+      if (lHairDet) lHairDet.textContent = `${studentMatteHairDetail}%`;
+
+      try { render(previewCurrentSec); } catch(err) {}
+    }
+
+    document.getElementById('btnPresetMatteDaVinci')?.addEventListener('click', () => applyMattePreset('davinci'));
+    document.getElementById('btnPresetMattePhotoshop')?.addEventListener('click', () => applyMattePreset('photoshop'));
+    document.getElementById('btnPresetMatteCapCut')?.addEventListener('click', () => applyMattePreset('capcut'));
+
+    document.getElementById('sliderMatteCoreProtect')?.addEventListener('input', (e) => {
+      studentMatteCoreProtect = parseInt(e.target.value) || 85;
+      const lbl = document.getElementById('valMatteCoreProtect');
+      if (lbl) lbl.textContent = `${studentMatteCoreProtect}%`;
+      try { render(previewCurrentSec); } catch(err) {}
+    });
+
+    document.getElementById('sliderMatteHairDetail')?.addEventListener('input', (e) => {
+      studentMatteHairDetail = parseInt(e.target.value) || 75;
+      const lbl = document.getElementById('valMatteHairDetail');
+      if (lbl) lbl.textContent = `${studentMatteHairDetail}%`;
+      try { render(previewCurrentSec); } catch(err) {}
     });
 
     document.getElementById('chkStripPlants')?.addEventListener('change', (e) => {
