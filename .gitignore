@@ -25,3 +25,15 @@ node_modules/
 *.db
 *.lock
 __pycache__/
+flicker_analysis/
+obs_frames/
+remotion-prompt-to-video/
+VIDEO_KHUNG_THOI_SU_CAPCUT/
+TALK11_Community_Antigravity/
+
+# AI Models & Binaries
+*.tflite
+*.binarypb
+*.wasm
+03_ASSETS/mediapipe/
+03_ASSETS/models/

@@ -1,0 +1,19 @@
+{
+  "lastPollTime": "2026-10-16T10:34:32.853Z",
+  "processedIssues": {
+    "3": {
+      "rounds": 1,
+      "lastCommentCount": 0,
+      "status": "IN_PROGRESS"
+    }
+  },
+  "processedPRs": {
+    "2": {
+      "rounds": 1,
+      "lastCommentCount": 0,
+      "status": "DUAL_PASS_PROPOSED",
+      "lastSha": null
+    }
+  },
+  "auditLog": []
+}

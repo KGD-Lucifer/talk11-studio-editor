@@ -2,7 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -99,17 +99,24 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // 2.5 RVM AI Video Matting Endpoint (CapCut Pro Standard)
+  // 2.5 RVM AI Video Matting Endpoint (CapCut Pro Standard - Secure Spawn)
   if (req.method === 'POST' && reqUrl === '/api/rvm-matte') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
       try {
         const payload = JSON.parse(body || '{}');
-        const inputRel = payload.input || 'student_input_sample.mp4';
+        const inputRel = path.basename(payload.input || 'student_input_sample.mp4');
         const inputAbs = path.resolve(ROOT, inputRel);
-        const outputRel = payload.output || ('TALK11_RVM_Matte_' + Date.now() + '.mp4');
+        const outputRel = 'TALK11_RVM_Matte_' + Date.now() + '.mp4';
         const outputAbs = path.resolve(ROOT, outputRel);
+
+        // Path traversal protection
+        if (!inputAbs.startsWith(ROOT) || !outputAbs.startsWith(ROOT)) {
+          res.writeHead(403, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: 'Path traversal forbidden' }));
+          return;
+        }
 
         if (!fs.existsSync(inputAbs)) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -117,12 +124,14 @@ const server = http.createServer((req, res) => {
           return;
         }
 
-        const cmd = `python tach_nen_rvm_capcut.py -i "${inputAbs}" -o "${outputAbs}"`;
-        exec(cmd, { cwd: ROOT }, (error, stdout, stderr) => {
-          if (error) {
-            console.error('RVM Execution error:', error, stderr);
+        const pyProc = spawn('python', ['tach_nen_rvm_capcut.py', '-i', inputAbs, '-o', outputAbs], { cwd: ROOT });
+        let stderrData = '';
+        pyProc.stderr.on('data', d => stderrData += d);
+        pyProc.on('close', code => {
+          if (code !== 0) {
+            console.error('RVM Execution error code:', code, stderrData);
             res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ success: false, error: stderr || error.message }));
+            res.end(JSON.stringify({ success: false, error: stderrData || `Process exited with code ${code}` }));
           } else {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
@@ -140,22 +149,40 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // 2.6 Direct Upload & RVM AI Video Matting Endpoint
+  // 2.6 Direct Upload & RVM AI Video Matting Endpoint (With 200MB size limit)
   if (req.method === 'POST' && reqUrl === '/api/upload-and-rvm-matte') {
+    const contentLength = parseInt(req.headers['content-length'] || '0', 10);
+    if (contentLength > 200 * 1024 * 1024) {
+      res.writeHead(413, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ success: false, error: 'Tep video vuot qua gioi han 200MB' }));
+      return;
+    }
+
     const tempUpload = path.join(ROOT, 'temp_rvm_in_' + Date.now() + '.mp4');
     const outputRel = 'TALK11_RVM_Matte_' + Date.now() + '.mp4';
     const outputAbs = path.join(ROOT, outputRel);
     const outStream = fs.createWriteStream(tempUpload);
 
-    req.pipe(outStream);
-    req.on('end', () => {
-      const cmd = `python tach_nen_rvm_capcut.py -i "${tempUpload}" -o "${outputAbs}"`;
-      exec(cmd, { cwd: ROOT }, (error, stdout, stderr) => {
+    let bytesReceived = 0;
+    req.on('data', chunk => {
+      bytesReceived += chunk.length;
+      if (bytesReceived > 200 * 1024 * 1024) {
+        req.destroy();
         try { fs.unlinkSync(tempUpload); } catch(e) {}
-        if (error) {
-          console.error('Upload RVM error:', error, stderr);
+      }
+    });
+
+    req.pipe(outStream);
+    outStream.on('finish', () => {
+      const pyProc = spawn('python', ['tach_nen_rvm_capcut.py', '-i', tempUpload, '-o', outputAbs], { cwd: ROOT });
+      let stderrData = '';
+      pyProc.stderr.on('data', d => stderrData += d);
+      pyProc.on('close', code => {
+        try { fs.unlinkSync(tempUpload); } catch(e) {}
+        if (code !== 0) {
+          console.error('Upload RVM error code:', code, stderrData);
           res.writeHead(500, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: false, error: stderr || error.message }));
+          res.end(JSON.stringify({ success: false, error: stderrData || `Process exited with code ${code}` }));
         } else {
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({
