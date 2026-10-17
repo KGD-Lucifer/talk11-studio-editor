@@ -23,6 +23,7 @@ targets = [
     os.path.join(base_dir, 'TALK11_Community_Antigravity', '03_ASSETS', 'VTV_TALK11_CAPCUT_FRAMES', 'Tao_Intro_Va_Studio_Thoi_Su_Talk11.html'),
     os.path.join(base_dir, 'VIDEO_KHUNG_THOI_SU_CAPCUT', 'Tao_Khung_Thoi_Su_Talk11.html'),
     os.path.join(base_dir, 'VIDEO_KHUNG_THOI_SU_CAPCUT', 'Tao_Intro_Va_Studio_Thoi_Su_Talk11.html'),
+    os.path.join(base_dir, 'TALK11_News_Studio_v2.1.0_Enhanced.html'),
 ]
 
 synced = 0

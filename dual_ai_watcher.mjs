@@ -224,23 +224,29 @@ export async function processOpenPRs(state) {
     // Run local tests
     const testReport = runLocalTestPipeline();
 
-    // Check Codex verdict if present
+    // Check Codex / ChatGPT review verdict
     const codexText = latestCodex ? latestCodex.body : '';
-    const codexHasBlockers = /P0|Blocking|REQUEST CHANGES|NOT FINAL PASS/i.test(codexText) && !codexText.includes('REVIEW PASS');
+    const hasCodexReview = !!latestCodex;
+    const codexHasBlockers = /P0|Blocking|REQUEST CHANGES|NOT FINAL PASS/i.test(codexText);
+    const codexHasExplicitPass = /REVIEW PASS|FINAL DUAL PASS|APPROVED/i.test(codexText) && !codexHasBlockers;
 
-    if (testReport.allPassed && !codexHasBlockers) {
-      // DUAL PASS PROPOSAL
-      const passMsg = `### 🌟 Antigravity Runtime Verification: PASS\n\n**Commit / PR:** #${prNum} (${pr.headRefName})\n**Round:** ${prState.rounds}/${MAX_ROUNDS}\n\n#### Kết quả kiểm thử thực tế tại máy Windows:\n- [x] **verify_all.py:** ALL 18+ CORE CHECKS PASSED\n- [x] **server.js:** Cú pháp Node.js & security checks sạch\n- [x] **test_ai_matting_cdp.mjs:** Edge Headless CDP 100% tính năng cọ vẽ, preview mode & canvas đạt chuẩn (0 console error)\n- [x] **qa_comprehensive_suite.mjs:** 20/20 test suites Full HD, âm thanh & bộ mã hóa video đạt chuẩn\n\n#### Trạng thái Dual-AI:\n- **Codex static review:** Đã rà soát diff mã nguồn.\n- **Antigravity local QA:** Đã nghiệm thu runtime thực tế 100%.\n\n=> **ĐỀ XUẤT DUAL PASS (SẴN SÀNG HỢP NHẤT)**: Cả 2 AI đã đồng thuận. Quyết định merge vào \`main\` thuộc về người dùng (@KGD-Lucifer).`;
+    if (testReport.allPassed && codexHasExplicitPass) {
+      // TRUE DUAL PASS PROPOSAL: Both Codex source review and Antigravity local tests have passed
+      const passMsg = `### 🌟 Antigravity & Codex DUAL PASS (SẴN SÀNG HỢP NHẤT)\n\n**Commit / PR:** #${prNum} (${pr.headRefName})\n**Round:** ${prState.rounds}/${MAX_ROUNDS}\n\n#### Trạng thái Dual-AI:\n- [x] **Codex / ChatGPT static review:** Xác nhận đạt chuẩn (\`REVIEW PASS\`).\n- [x] **Antigravity local runtime QA:** 100% tests thực tế trên máy Windows đã đạt chuẩn:\n${testReport.details.map(d => `  - ${d}`).join('\n')}\n\n=> **CẢ 2 AI ĐÃ ĐỒNG THUẬN TUYỆT ĐỐI**: Quyết định merge vào \`main\` thuộc về repository owner (@KGD-Lucifer).`;
 
       runGh(['pr', 'comment', prNum.toString(), '--repo', REPO, '--body', passMsg]);
       prState.status = 'DUAL_PASS_PROPOSED';
-      console.log(`[Dual-AI] Posted DUAL PASS proposal for PR #${prNum}.`);
+      console.log(`[Dual-AI] Posted TRUE DUAL PASS proposal for PR #${prNum}.`);
     } else {
-      // Report remaining gaps
-      const failMsg = `### 🔍 Antigravity Cross-Review & Runtime QA Report\n\n**PR:** #${prNum} | **Vòng:** ${prState.rounds}/${MAX_ROUNDS}\n\n#### Kết quả kiểm thử runtime:\n${testReport.details.map(d => `- ${d}`).join('\n')}\n\n${codexHasBlockers ? '⚠️ **Ghi nhận từ Codex Review:** Vẫn còn điểm cần điều chỉnh hoặc cần bổ sung bằng chứng vận hành.' : ''}\n\n${prState.rounds >= MAX_ROUNDS ? '⚠️ Đã chạm ngưỡng 2 vòng tự động. Chuyển giao người dùng phê duyệt.' : 'Đang chuẩn bị điều chỉnh và kiểm thử lại.'}`;
+      // Local runtime QA status report
+      const verdict = testReport.allPassed
+        ? (hasCodexReview ? 'Local tests PASS — Đang chờ Codex/ChatGPT hoàn tất re-check (Review Pending)' : 'Local tests PASS — Đang chờ phản biện từ Codex/ChatGPT')
+        : 'Cần điều chỉnh kiểm thử runtime cục bộ';
+
+      const failMsg = `### 🔍 Antigravity Local Runtime QA Report\n\n**PR:** #${prNum} | **Vòng:** ${prState.rounds}/${MAX_ROUNDS}\n**Trạng thái:** ${verdict}\n\n#### Kết quả kiểm thử runtime:\n${testReport.details.map(d => `- ${d}`).join('\n')}\n\n${hasCodexReview ? (codexHasBlockers ? '⚠️ **Ghi nhận từ Codex/ChatGPT:** Vẫn còn điểm cần điều chỉnh hoặc cần bổ sung bằng chứng vận hành.' : 'ℹ️ Đã ghi nhận review từ Codex/ChatGPT, đang đối soát tiêu chí hoàn tất.') : 'ℹ️ Chưa có phản biện từ Codex/ChatGPT cho commit này. Đang chờ review.'}\n\n${prState.rounds >= MAX_ROUNDS ? '⚠️ Đã chạm ngưỡng 2 vòng tự động. Chuyển giao repository owner (@KGD-Lucifer) xem xét.' : 'Sẵn sàng phối hợp rà soát tiếp.'}`;
 
       runGh(['pr', 'comment', prNum.toString(), '--repo', REPO, '--body', failMsg]);
-      prState.status = 'REVIEWED_PENDING';
+      prState.status = testReport.allPassed ? 'LOCAL_PASS_AWAITING_REVIEW' : 'REVIEWED_PENDING';
       console.log(`[Dual-AI] Posted QA status report for PR #${prNum}.`);
     }
 

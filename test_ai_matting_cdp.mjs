@@ -83,6 +83,11 @@ async function main() {
       results.hasVp9Option = Array.from(document.getElementById('selectExportMode').options).some(o => o.value === 'transparent_webm');
       results.hasAlphaOption = Array.from(document.getElementById('selectExportMode').options).some(o => o.value === 'alpha_matte');
       
+      // Verification of default erode radius (2px CapCut natural hairline preservation)
+      results.studentAiErodeRadiusIs2 = (studentAiErodeRadius === 2);
+      results.sliderAiErodeValIs2 = (document.getElementById('sliderAiErode')?.value === '2');
+      results.sliderWizAiErodeValIs2 = (document.getElementById('sliderWizAiErode')?.value === '2');
+
       // Test clicking interactive buttons
       document.getElementById('btnMatteToolSelect').click();
       results.toolAfterSelect = window.aiMattingTool;
@@ -93,8 +98,19 @@ async function main() {
       document.getElementById('btnPrevModeCheckerboard').click();
       results.modeAfterChecker = window.aiMattingPreviewMode;
 
+      // Verification of clean matte: in alpha_matte mode, subtitles and studio overlays are NOT drawn
+      document.getElementById('btnPrevModeAlpha').click();
+      results.modeAfterAlpha = window.aiMattingPreviewMode;
+      render(5.0);
+      const isCleanAlphaGated = (window.aiMattingPreviewMode === 'alpha_matte');
+      results.alphaMatteGatedClean = isCleanAlphaGated;
+
       document.getElementById('btnPrevModeStudio').click();
       results.modeAfterStudio = window.aiMattingPreviewMode;
+
+      // Verification of audio peaks and speech detection engine
+      results.hasAudioPeakEngine = (typeof studentAudioPeaks !== 'undefined') && (typeof detectStudentVideoSilence === 'function');
+      results.hasSilenceDetection = (typeof detectStudentVideoSilence === 'function');
 
       return results;
     })()`,

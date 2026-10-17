@@ -2225,8 +2225,8 @@
                 ✂️ Gọt sâu mép viền:
               </span>
               <div style="display: flex; align-items: center; gap: 4px; flex: 1; max-width: 170px;">
-                <input type="range" class="range-slider" id="sliderWizAiErode" min="0" max="8" value="4" step="1" style="accent-color: #F59E0B; flex: 1;">
-                <span id="valWizAiErode" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #F59E0B; min-width: 32px; text-align: right;">4px</span>
+                <input type="range" class="range-slider" id="sliderWizAiErode" min="0" max="8" value="2" step="1" style="accent-color: #F59E0B; flex: 1;">
+                <span id="valWizAiErode" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #F59E0B; min-width: 32px; text-align: right;">2px</span>
               </div>
             </div>
           </div>
@@ -2553,8 +2553,8 @@
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
               <span style="min-width: 90px;" title="Tự động gọt ôm sát mép người, triệt tiêu 100% viền trắng tường phòng (Chuẩn CapCut Pro)">✂️ Gọt viền mép CapCut:</span>
-              <input type="range" class="range-slider" id="sliderAiErode" min="0" max="8" value="4" step="1" style="accent-color: #F59E0B; flex: 1;">
-              <span id="valAiErode" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">4px</span>
+              <input type="range" class="range-slider" id="sliderAiErode" min="0" max="8" value="2" step="1" style="accent-color: #F59E0B; flex: 1;">
+              <span id="valAiErode" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">2px</span>
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
@@ -5104,7 +5104,7 @@
     let beautyWarmth = 0.0; // 0°: Tông màu tự nhiên, không làm bợt da bé
     let beautyContrast = 1.04; // 1.04: Tương phản rõ nét, tóc đen sâu, môi đỏ tươi như CapCut
     let beautySaturation = 1.03; // 1.03: Màu sắc tươi tắn tự nhiên
-    let studentAiErodeRadius = 4; // Mặc định 4px: Tự động gọt ôm sát viền người, triệt tiêu 100% viền trắng tường phòng
+    let studentAiErodeRadius = 2; // Mặc định 2px: Tự động gọt ôm sát viền người, triệt tiêu viền trắng tường phòng và bảo toàn tóc tơ, áo sáng màu
     let enablePlantRemoval = false; // Tắt hoàn toàn lọc thô màu tránh thủng áo xanh/đồ vật
     let studentPosX = 960;
     let studentPosY = 640;
@@ -6640,10 +6640,75 @@
       const badgeWiz = document.getElementById('badgeWizSilenceStats');
       if (reportBox) reportBox.textContent = '⏳ Đang phân tích sóng âm tìm khoảng lặng...';
 
-      const segs = await analyzeVideoAudioForSilence(blob, silenceSensitivity);
-      studentSilenceSegments = segs;
+      // 1. Phân tích khoảng lặng cắt ghép video (Ripple Stitch)
+      try {
+        const segs = await analyzeVideoAudioForSilence(blob, silenceSensitivity);
+        studentSilenceSegments = segs || [];
+        applyRippleStitchSilences(studentSilenceSegments);
+      } catch (err) {
+        console.warn('Silence segmentation error:', err);
+      }
 
-      applyRippleStitchSilences(segs);
+      // 2. Trích xuất năng lượng RMS sóng âm thực tế (Waveform 120 bars & Auto-Ducking VAD)
+      try {
+        const actx = getAudioCtx();
+        const arrayBuf = await blob.arrayBuffer();
+        const audioBuf = await actx.decodeAudioData(arrayBuf);
+        const totalSamples = audioBuf.length;
+        const dur = audioBuf.duration;
+        if (!totalSamples || dur <= 0) return;
+
+        const rawData = audioBuf.getChannelData(0);
+        const numBuckets = 120;
+        const bucketSize = Math.max(1, Math.floor(totalSamples / numBuckets));
+        const peaks = [];
+        const rawRmsList = [];
+        let maxRms = 0;
+
+        for (let b = 0; b < numBuckets; b++) {
+          let sumSq = 0;
+          const start = b * bucketSize;
+          const end = Math.min(totalSamples, start + bucketSize);
+          const step = Math.max(1, Math.floor((end - start) / 250));
+          let count = 0;
+          for (let i = start; i < end; i += step) {
+            sumSq += rawData[i] * rawData[i];
+            count++;
+          }
+          const rms = Math.sqrt(sumSq / Math.max(1, count));
+          rawRmsList.push(rms);
+          if (rms > maxRms) maxRms = rms;
+        }
+
+        const normFactor = maxRms > 0.0001 ? (1.0 / maxRms) : 1;
+        const speechThreshold = 0.08;
+        studentSpeechIntervals = [];
+        let currentSpeechStart = null;
+
+        for (let b = 0; b < numBuckets; b++) {
+          const normRms = rawRmsList[b] * normFactor;
+          peaks.push(normRms);
+          const tSec = (b / numBuckets) * dur;
+          if (normRms >= speechThreshold) {
+            if (currentSpeechStart === null) currentSpeechStart = tSec;
+          } else {
+            if (currentSpeechStart !== null) {
+              studentSpeechIntervals.push({ start: currentSpeechStart, end: tSec });
+              currentSpeechStart = null;
+            }
+          }
+        }
+        if (currentSpeechStart !== null) {
+          studentSpeechIntervals.push({ start: currentSpeechStart, end: dur });
+        }
+
+        studentAudioPeaks = peaks;
+        try { renderStudentVideoTrackUI(); } catch(e) {}
+      } catch (err) {
+        console.warn('Real audio waveform decoding error:', err);
+        studentAudioPeaks = null;
+        studentSpeechIntervals = [];
+      }
     }
 
     function mapCompressedTimeToOriginal(compTime, silences) {
@@ -11850,49 +11915,58 @@
         }
 
         let src = null;
-        tf.tidy(() => {
-          const tfImg = tf.browser.fromPixels(vidElem);
-          src = tf.keep(tfImg.expandDims(0).div(255));
-        });
+        let outputs = null;
+        let rgbaTensor = null;
+        try {
+          tf.tidy(() => {
+            const tfImg = tf.browser.fromPixels(vidElem);
+            src = tf.keep(tfImg.expandDims(0).div(255));
+          });
 
-        const outputs = await rvmModel.executeAsync(
-          {
-            src: src,
-            r1i: rvmRecurrentStates[0],
-            r2i: rvmRecurrentStates[1],
-            r3i: rvmRecurrentStates[2],
-            r4i: rvmRecurrentStates[3],
-            downsample_ratio: rvmDownsampleRatio
-          },
-          ['fgr', 'pha', 'r1o', 'r2o', 'r3o', 'r4o']
-        );
-        src.dispose();
+          outputs = await rvmModel.executeAsync(
+            {
+              src: src,
+              r1i: rvmRecurrentStates[0],
+              r2i: rvmRecurrentStates[1],
+              r3i: rvmRecurrentStates[2],
+              r4i: rvmRecurrentStates[3],
+              downsample_ratio: rvmDownsampleRatio
+            },
+            ['fgr', 'pha', 'r1o', 'r2o', 'r3o', 'r4o']
+          );
 
-        const [fgr, pha, r1o, r2o, r3o, r4o] = outputs;
+          const [fgr, pha, r1o, r2o, r3o, r4o] = outputs;
 
-        // Dispose old recurrent states and save new ones
-        tf.dispose(rvmRecurrentStates);
-        rvmRecurrentStates = [r1o, r2o, r3o, r4o];
+          // Dispose old recurrent states and save new ones
+          tf.dispose(rvmRecurrentStates);
+          rvmRecurrentStates = [r1o, r2o, r3o, r4o];
 
-        // Combine decontaminated fgr (RGB) and continuous pha (Alpha) into RGBA
-        const rgbaTensor = tf.tidy(() => {
-          const rgb = fgr.squeeze(0).mul(255).cast('int32');
-          const a = pha.squeeze(0).mul(255).cast('int32');
-          return tf.concat([rgb, a], -1);
-        });
+          // Combine decontaminated fgr (RGB) and continuous pha (Alpha) into RGBA
+          rgbaTensor = tf.tidy(() => {
+            const rgb = fgr.squeeze(0).mul(255).cast('int32');
+            const a = pha.squeeze(0).mul(255).cast('int32');
+            return tf.concat([rgb, a], -1);
+          });
 
-        const [mH, mW] = rgbaTensor.shape.slice(0, 2);
-        const pixelData = new Uint8ClampedArray(await rgbaTensor.data());
-        const imgData = new ImageData(pixelData, mW, mH);
+          const [mH, mW] = rgbaTensor.shape.slice(0, 2);
+          const pixelData = new Uint8ClampedArray(await rgbaTensor.data());
+          const imgData = new ImageData(pixelData, mW, mH);
 
-        if (rvmOutputCanvas.width !== mW || rvmOutputCanvas.height !== mH) {
-          rvmOutputCanvas.width = mW;
-          rvmOutputCanvas.height = mH;
+          if (rvmOutputCanvas.width !== mW || rvmOutputCanvas.height !== mH) {
+            rvmOutputCanvas.width = mW;
+            rvmOutputCanvas.height = mH;
+          }
+          rvmOutputCtx.putImageData(imgData, 0, 0);
+          hasValidRvmMatte = true;
+        } finally {
+          if (src) { tf.dispose(src); src = null; }
+          if (rgbaTensor) { tf.dispose(rgbaTensor); rgbaTensor = null; }
+          if (outputs) {
+            if (outputs[0]) tf.dispose(outputs[0]);
+            if (outputs[1]) tf.dispose(outputs[1]);
+            outputs = null;
+          }
         }
-        rvmOutputCtx.putImageData(imgData, 0, 0);
-        hasValidRvmMatte = true;
-
-        tf.dispose([fgr, pha, rgbaTensor]);
       } catch (err) {
         console.warn('RVM inference error, disabling RVM fallback to MediaPipe:', err);
         rvmModelReady = false;
@@ -13650,8 +13724,10 @@
         ctx.restore();
       }
 
-      // 7. Subtitles Layer
-      drawActiveSubtitles(w, h, timeSec);
+      // 7. Subtitles Layer (Chỉ hiển thị trong chế độ trường quay Studio; không in đè lên alpha matte, phông xanh hoặc video tách nền trong suốt)
+      if (isStudioThemeAllowed) {
+        drawActiveSubtitles(w, h, timeSec);
+      }
 
       // 8. Bottom Ticker (Only when in studio broadcast mode)
       if (isStudioThemeAllowed) {
@@ -14898,68 +14974,7 @@
       } catch(e) {}
     }
 
-    async function detectStudentVideoSilence(blob) {
-      if (!blob) return;
-      try {
-        const actx = getAudioCtx();
-        const arrayBuf = await blob.arrayBuffer();
-        const audioBuf = await actx.decodeAudioData(arrayBuf);
-        const totalSamples = audioBuf.length;
-        const dur = audioBuf.duration;
-        if (!totalSamples || dur <= 0) return;
-
-        const rawData = audioBuf.getChannelData(0);
-        const numBuckets = 120;
-        const bucketSize = Math.max(1, Math.floor(totalSamples / numBuckets));
-        const peaks = [];
-        const rawRmsList = [];
-        let maxRms = 0;
-
-        for (let b = 0; b < numBuckets; b++) {
-          let sumSq = 0;
-          const start = b * bucketSize;
-          const end = Math.min(totalSamples, start + bucketSize);
-          const step = Math.max(1, Math.floor((end - start) / 250)); // sample up to 250 points per bucket
-          let count = 0;
-          for (let i = start; i < end; i += step) {
-            sumSq += rawData[i] * rawData[i];
-            count++;
-          }
-          const rms = Math.sqrt(sumSq / Math.max(1, count));
-          rawRmsList.push(rms);
-          if (rms > maxRms) maxRms = rms;
-        }
-
-        const normFactor = maxRms > 0.0001 ? (1.0 / maxRms) : 1;
-        const speechThreshold = 0.08; // 8% of peak RMS indicates active voice activity (VAD)
-        studentSpeechIntervals = [];
-        let currentSpeechStart = null;
-
-        for (let b = 0; b < numBuckets; b++) {
-          const normRms = rawRmsList[b] * normFactor;
-          peaks.push(normRms);
-          const tSec = (b / numBuckets) * dur;
-          if (normRms >= speechThreshold) {
-            if (currentSpeechStart === null) currentSpeechStart = tSec;
-          } else {
-            if (currentSpeechStart !== null) {
-              studentSpeechIntervals.push({ start: currentSpeechStart, end: tSec });
-              currentSpeechStart = null;
-            }
-          }
-        }
-        if (currentSpeechStart !== null) {
-          studentSpeechIntervals.push({ start: currentSpeechStart, end: dur });
-        }
-
-        studentAudioPeaks = peaks;
-        try { renderStudentVideoTrackUI(); } catch(e) {}
-      } catch (err) {
-        console.warn('Real audio waveform decoding error:', err);
-        studentAudioPeaks = null;
-        studentSpeechIntervals = [];
-      }
-    }
+// (Unified detectStudentVideoSilence consolidated above)
 
     function setupStudentVideoFromBlob(blob, fileName) {
       if (studentVideoElem) {
