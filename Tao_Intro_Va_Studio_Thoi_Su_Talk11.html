@@ -176,16 +176,16 @@
     /* MAIN APP WORKSPACE (2-COLUMN: SIDEBAR ON LEFT, PREVIEW + TIMELINE ON RIGHT) */
     .app-workspace {
       display: grid;
-      grid-template-columns: 460px minmax(0, 1fr);
-      gap: 14px;
-      padding: 10px 14px 12px;
+      grid-template-columns: minmax(360px, 440px) minmax(0, 1fr);
+      gap: 12px;
+      padding: 8px 12px 10px;
       flex: 1;
       height: calc(100vh - 52px);
       min-height: 0;
       overflow: hidden;
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 860px) {
       .app-workspace {
         grid-template-columns: 1fr;
         height: auto;
@@ -1779,7 +1779,7 @@
       display: none;
     }
 
-    @media (max-width: 992px) {
+    @media (max-width: 768px) {
       body {
         overflow-y: auto !important;
         height: auto !important;
@@ -3432,8 +3432,7 @@
           </div>
 
           <!-- VIEW 3: KHO TRANSCRIPT & TẢI THÊM CÁC BẢN KỊCH BẢN -->
-          <!-- Kho Transcript Vault đã được tinh giản -->
-          </div>
+          <!-- Kho Transcript Vault (đã tinh giản) -->
         </div>
       </div>
 
@@ -17233,8 +17232,8 @@
       });
 
       function handleResponsiveView() {
-        if (window.innerWidth <= 992) {
-          if (!document.body.hasAttribute('data-mobile-view') || document.body.getAttribute('data-mobile-view') === 'all') {
+        if (window.innerWidth <= 768) {
+          if (!document.body.hasAttribute('data-mobile-view')) {
             setMobileView('preview');
           }
           if (btnExportText) btnExportText.textContent = '⚡ Xuất Video (60s)';
