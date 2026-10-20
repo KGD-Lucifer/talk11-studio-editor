@@ -19,24 +19,28 @@ globs: ["*"]
 
 ---
 
-## 2. QUY TRÌNH KIỂM TRA CHÉO 4 BƯỚC (STANDARD PROTOCOL)
+## 2. QUY TRÌNH PHỐI HỢP MỚI (GRAVITY PROPOSE ➔ CHATGPT AUDIT & FIX ➔ FINAL MASTER)
 
 ```text
-[Ý tưởng / Yêu cầu]
+[Yêu cầu / Nhiệm vụ phát triển]
         │
         ▼
-1. CHATGPT & BẠN ĐỀ XUẤT ──► Antigravity phân tích khả thi & kiến trúc
+1. GRAVITY CHỦ ĐỘNG ĐỀ XUẤT:
+   ├─ Nghiên cứu thuật toán, phân tích khả thi & thiết kế kiến trúc
+   ├─ Triển khai mã nguồn hoàn chỉnh + chạy test tự động (CDP/Headless)
+   └─ Đồng bộ mã nguồn và push GitHub (`origin/main`)
         │
         ▼
-2. ANTIGRAVITY THỰC THI ──► Viết code + chạy test tự động (CDP Edge, 0 console error)
+2. CHATGPT SOI XÉT & SỬA LỖI (NẾU CÓ):
+   ├─ Đọc mã nguồn và tài liệu mới nhất trực tiếp trên GitHub
+   ├─ Soi kỹ các góc khuất: logic edge cases, tràn bộ nhớ, trải nghiệm thực tế
+   └─ Chỉ ra lỗi cụ thể, phản biện hoặc cung cấp mã nguồn chỉnh sửa
         │
         ▼
-3. ĐỒNG BỘ GITHUB ────────► Push commit lên repo để ChatGPT đọc và phản biện lại
-        │
-        ▼
-4. KIỂM TRA CHÉO & PHÊ DUYỆT:
-   ├─ Nếu ChatGPT phát hiện lỗi/góp ý: Antigravity lập tức thẩm định, sửa và test lại
-   └─ Nếu cả Antigravity (Test Pass) và ChatGPT (Review Pass): BẢN CHÍNH THỨC HOÀN TẤT
+3. THỐNG NHẤT & RA BẢN HOÀN THIỆN CUỐI CÙNG (FINAL MASTER BUILD):
+   ├─ Gravity thẩm định phản hồi từ ChatGPT, tối ưu hóa và vá lỗi ngay
+   ├─ Chạy lại toàn bộ test tự động (100% Pass)
+   └─ Nghiệm thu kép (Dual-Approval Pass) hoàn tất bản chính thức
 ```
 
 ---
