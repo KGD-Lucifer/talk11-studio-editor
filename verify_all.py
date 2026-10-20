@@ -25,7 +25,6 @@ checks = {
     'wizSelectFont': 'id="wizSelectFont"' in html,
     'inputCustomFontFile': 'id="inputCustomFontFile"' in html,
     'inputCustomSfxFile': 'id="inputCustomSfxFile"' in html,
-    'btnImportSfxFromUrl': 'id="btnImportSfxFromUrl"' in html,
     'saveCustomFontToDB': 'function saveCustomFontToDB' in html,
     'saveCustomSfxToDB': 'function saveCustomSfxToDB' in html,
     'handleCustomFontFileUpload': 'function handleCustomFontFileUpload' in html,

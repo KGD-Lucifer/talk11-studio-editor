@@ -2341,9 +2341,7 @@
           </div>
 
           <!-- Nút Tách Nền AI RVM 4K Chuẩn CapCut Pro -->
-          <button type="button" id="btnWizRunRvm4k" style="width: 100%; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #0F172A; font-weight: 800; font-size: 9.5px; border: none; border-radius: 5px; padding: 6px 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3); margin-top: 4px; margin-bottom: 2px;">
-            <span>👑 Tách Nền RVM 4K Chuẩn CapCut (Khử Sạch Viền Trắng)</span>
-          </button>
+          
 
           <!-- BỘ CỌ CHỈNH SỬA THỦ CÔNG: TÔ XÓA VÙNG THỪA & KHÔI PHỤC ÁO/TÓC BỊ LẸM -->
           <div id="wizBrushToolkitBox" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 6px; padding: 6px 8px; margin-top: 5px; display: flex; flex-direction: column; gap: 5px;">
@@ -2541,65 +2539,8 @@
 
       <!-- ======================================================== -->
       <!-- 0. KHO MEDIA TỔNG & BỘ NHỚ LƯU TRỮ TỰ ĐỘNG (PERSISTENT VAULT) -->
-      <!-- ======================================================== -->
-      <div class="card-box vault-card section-container" id="mediaVaultCard" data-category="media">
-        <div class="section-header-row" data-target="bodyMediaVault">
-          <span class="section-header-title">
-            <span class="collapse-icon">▶</span> 🗄️ Kho Media Đã Tải Lên (Bộ Nhớ Tự Động)
-          </span>
-          <div style="display: flex; gap: 4px; align-items: center;">
-            <span id="vaultBadgeCount" style="font-size: 9.5px; font-weight: 800; background: rgba(16,185,129,0.25); color: #A7F3D0; border: 1px solid #10B981; padding: 1px 7px; border-radius: 10px;">0 Media</span>
-            <button type="button" class="btn-toggle-section" data-target="bodyMediaVault">
-              <span class="toggle-text">Mở rộng</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="section-collapsible-body collapsed" id="bodyMediaVault">
-          <!-- Master Action Buttons -->
-          <div style="display: flex; gap: 4px; margin-bottom: 5px; flex-wrap: wrap;">
-            <button type="button" class="btn" id="btnRestoreVaultToTv" style="flex: 1.2; justify-content: center; background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 4px 6px; font-size: 10px; box-shadow: 0 2px 8px rgba(16,185,129,0.3);" title="Tự động nạp toàn bộ ảnh & video trong kho vào màn hình TV trường quay">
-              🔄 Khôi Phục Vào TV
-            </button>
-            <button type="button" class="btn" id="btnUploadToVault" style="flex: 1; justify-content: center; background: rgba(255,107,0,0.2); border: 1px solid #FF6B00; color: #FFB703; padding: 4px 6px; font-size: 10px;" title="Tải thêm ảnh/video từ máy tính vào kho lưu trữ">
-              ➕ Tải Vào Kho
-            </button>
-            <button type="button" class="btn" id="btnLoadSampleMediaPack" style="flex: 1; justify-content: center; background: rgba(56,189,248,0.2); border: 1px solid #38BDF8; color: #38BDF8; padding: 4px 6px; font-size: 10px;" title="Nạp nhanh 6 ảnh mẫu chất lượng cao TALK11 vào kho">
-              ⚡ 6 Ảnh Mẫu
-            </button>
-            <button type="button" class="btn" id="btnClearVault" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); color: #FCA5A5; padding: 4px 6px; font-size: 10px;" title="Xóa toàn bộ kho dữ liệu đã lưu">
-              🗑️
-            </button>
-            <input type="file" id="inputVaultMultiFile" accept="image/*,video/*" multiple style="display: none;">
-          </div>
-
-          <!-- Filter pills & View mode toggle for vault -->
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <div style="display: flex; gap: 3px;">
-              <button type="button" class="vault-filter-pill active" id="btnVaultFilterAll" data-vault-filter="all">Tất Cả</button>
-              <button type="button" class="vault-filter-pill" id="btnVaultFilterImg" data-vault-filter="image">🖼️ Ảnh</button>
-              <button type="button" class="vault-filter-pill" id="btnVaultFilterVid" data-vault-filter="video">🎬 Video</button>
-            </div>
-            <div style="display: flex; gap: 2px; background: rgba(15,23,42,0.85); border: 1px solid rgba(16,185,129,0.3); border-radius: 5px; padding: 1px;">
-              <button type="button" class="vault-view-btn active" id="btnVaultViewList" data-view="list" title="Hiển thị dạng danh sách hàng ngang gọn gàng (Khuyên dùng)">☰ List</button>
-              <button type="button" class="vault-view-btn" id="btnVaultViewGrid" data-view="grid" title="Hiển thị dạng lưới 3 cột thu nhỏ">⊞ Lưới</button>
-            </div>
-          </div>
-
-          <!-- Media Vault Content (List or Grid) -->
-          <div id="mediaVaultEmptyState" style="display: none; text-align: center; padding: 10px 4px; border: 1px dashed rgba(16,185,129,0.3); border-radius: 6px; background: rgba(6,10,20,0.5); font-size: 10px; color: #64748B;">
-            Chưa có media nào. Tải ảnh/video ở dưới hoặc bấm "➕ Tải Vào Kho".
-          </div>
-          <div id="mediaVaultGrid" class="vault-list-container" style="display: none;">
-            <!-- Dynamically populated rows or mini-cards -->
-          </div>
-        </div>
-      </div>
-
+      <!-- Kho Media Vault đã được tinh giản -->
       
-      <!-- ======================================================== -->
-      <!-- 0.5 XỬ LÝ VIDEO HỌC VIÊN TẢI LÊN (LƯU TRỮ, TÁCH PHÔNG XANH & LÀM ĐẸP NHÂN VẬT) -->
-      <!-- ======================================================== -->
       <div class="card-box section-container" id="cardStudentVideo" data-category="media">
         <div class="section-header-row" data-target="bodyStudentVideo">
           <span class="section-header-title">
@@ -2629,9 +2570,7 @@
                 ➕ Tải Video Học Viên
                 <input type="file" id="inputStudentVideoFile" accept="video/*" style="display: none;">
               </label>
-              <button type="button" class="btn btn-secondary" id="btnSelectStudentFromVault" style="flex: 1; justify-content: center; font-size: 10px; padding: 4px 6px; color: #38BDF8; border-color: rgba(56,189,248,0.4);" title="Chọn video học viên từ kho media lưu trữ">
-                🗄️ Chọn Từ Kho
-              </button>
+              
               <button type="button" class="btn btn-secondary" id="btnLoadSampleStudentVideo" style="flex: 1; justify-content: center; font-size: 10px; padding: 4px 6px; color: #FBBF24; border-color: rgba(251,191,36,0.4);" title="Nạp video học viên mẫu có sẵn của TALK11">
                 ⚡ Video Mẫu
               </button>
@@ -2724,7 +2663,7 @@
             <!-- CHẾ ĐỘ XEM TRƯỚC (PREVIEW MODES): STUDIO / VFX CHECKERBOARD / ALPHA MATTE / GREEN SCREEN -->
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 3px; font-size: 9px; color: #94A3B8;">
               <span style="font-weight: 700; color: #CBD5E1;">👁️ Xem trước:</span>
-              <div style="display: flex; gap: 2px; flex: 1; justify-content: flex-end;" id="aiMattingPreviewPills">
+              <div style="display: flex; gap: 2px; flex: 1; justify-content: flex-end;" id="aiMattingPreviewPills" style="display: none;">
                 <button type="button" class="btn-tint-pill active" id="btnPrevModeStudio" data-pmode="studio" style="padding: 1px 4px; font-size: 8.5px;">🏛️ Studio</button>
                 <button type="button" class="btn-tint-pill" id="btnPrevModeCheckerboard" data-pmode="checkerboard" style="padding: 1px 4px; font-size: 8.5px;">🏁 Trong Suốt</button>
                 <button type="button" class="btn-tint-pill" id="btnPrevModeAlpha" data-pmode="alpha_matte" style="padding: 1px 4px; font-size: 8.5px;">⬛ Alpha</button>
@@ -2737,9 +2676,7 @@
               <button type="button" id="btnQualityFast" style="flex: 1; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38BDF8; font-weight: 800; font-size: 9px; border-radius: 4px; padding: 4px 6px; cursor: pointer; text-align: center;">
                 ⚡ Nhanh 60FPS (Client AI)
               </button>
-              <button type="button" id="btnRunRvm4kBackend" style="flex: 1.3; background: linear-gradient(135deg, #F59E0B, #D97706); color: #0F172A; font-weight: 800; font-size: 9px; border: none; border-radius: 4px; padding: 4px 6px; cursor: pointer; text-align: center; box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);">
-                👑 RVM 4K ONNX (CapCut Pro)
-              </button>
+              
             </div>
 
             <!-- Sliders: Tolerance / AI Confidence, Feather, Despill -->
@@ -3261,9 +3198,7 @@
 
             <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #94A3B8;">
               <span>💡 Hỗ trợ kéo thả file font .ttf, .otf, .woff vào trang</span>
-              <button type="button" id="btnFontSocialGuide" style="background: none; border: none; color: #38BDF8; font-size: 9px; font-weight: 700; cursor: pointer; text-decoration: underline;">
-                Nguồn tải font đẹp ↗
-              </button>
+              
             </div>
             <div id="customFontsBadgeContainer" style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px;">
               <!-- Danh sách badge các font tự tải lên -->
@@ -3323,27 +3258,7 @@
           <!-- Tương thích ngược -->
           <input type="hidden" id="inputHeadline" value="BẢN TIN ĐẶC BIỆT: HÀNH TRÌNH VỀ QUÁ KHỨ – DI SẢN CHO TƯƠNG LAI">
 
-          <div class="form-group">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
-              <label style="font-size: 10px; color: #94A3B8; font-weight: 700;">Dải tin vắn chạy dưới chân (Ticker):</label>
-              <div style="display: flex; gap: 4px; align-items: center;">
-                <span style="font-size: 9px; color: #94A3B8;">Huy hiệu:</span>
-                <select id="selectTickerBadge" style="font-size: 9px; background: #0A1124; border: 1px solid rgba(255,107,0,0.4); color: #FFB703; border-radius: 4px; padding: 1px 3px;">
-                  <option value="● TALK11 NEWS" selected>● TALK11 NEWS</option>
-                  <option value="🔴 TIN NÓNG 24/7">🔴 TIN NÓNG 24/7</option>
-                  <option value="⚡ PHÓNG SỰ">⚡ PHÓNG SỰ</option>
-                  <option value="🇻🇳 VIỆT NAM">🇻🇳 VIỆT NAM</option>
-                </select>
-              </div>
-            </div>
-            <textarea class="form-control" id="inputTickerText" rows="2" style="resize: vertical; font-size: 11px;">BẢN TIN THỜI SỰ HỌC VIÊN TALK11 • PHÁT SÓNG TRỰC TIẾP TRÊN TOÀN HỆ THỐNG • CẬP NHẬT LIÊN TỤC 24/7 • TALK11 NEWS: CHƯƠNG TRÌNH PHÁT THANH ĐẶC BIỆT •</textarea>
-
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10px; color: #94A3B8; margin-top: 4px;">
-              <span>⚡ Tốc độ chạy chữ:</span>
-              <input type="range" id="sliderTickerSpeed" min="10" max="60" value="32" step="2" class="range-slider" style="width: 100%; accent-color: #FF6B00;">
-              <span id="valTickerSpeed" style="font-family: monospace; font-size: 9.5px; color: #FFB703; min-width: 32px; text-align: right;">1.0x</span>
-            </div>
-          </div>
+          <!-- Dải tin vắn Ticker đã được tinh giản -->
         </div>
       </div>
 
@@ -3421,10 +3336,7 @@
               <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; font-size: 10px;">
                 <span style="color: #94A3B8;">⏱️ Dịch giờ toàn bộ sub:</span>
                 <div style="display: flex; gap: 3px;">
-                  <button type="button" class="btn btn-secondary" id="btnShiftSubMinus1s" style="padding: 1px 6px; font-size: 9px; color: #F87171;">-1s</button>
-                  <button type="button" class="btn btn-secondary" id="btnShiftSubMinusHalf" style="padding: 1px 5px; font-size: 9px; color: #FCA5A5;">-0.5s</button>
-                  <button type="button" class="btn btn-secondary" id="btnShiftSubPlusHalf" style="padding: 1px 5px; font-size: 9px; color: #86EFAC;">+0.5s</button>
-                  <button type="button" class="btn btn-secondary" id="btnShiftSubPlus1s" style="padding: 1px 6px; font-size: 9px; color: #34D399;">+1s</button>
+                  
                 </div>
               </div>
             </div>
@@ -3438,9 +3350,7 @@
             <button type="button" class="btn-sub-view-tab" id="btnSubTabCards" style="flex: 1; padding: 4px 4px; font-size: 10px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; background: transparent; color: #94A3B8; display: flex; align-items: center; justify-content: center; gap: 3px;">
               <span>⏱️</span> 11 Thẻ Câu
             </button>
-            <button type="button" class="btn-sub-view-tab" id="btnSubTabVault" style="flex: 1; padding: 4px 4px; font-size: 10px; font-weight: 700; border-radius: 5px; border: none; cursor: pointer; background: transparent; color: #94A3B8; display: flex; align-items: center; justify-content: center; gap: 3px;" title="Kho các bản kịch bản transcript có sẵn & tải thêm">
-              <span>📚</span> Kho Transcript <span id="badgeVaultCount" style="background: rgba(56,189,248,0.25); color: #38BDF8; padding: 1px 5px; border-radius: 10px; font-size: 9px; font-weight: 800; margin-left: 1px;">6</span>
-            </button>
+            
           </div>
 
           <!-- VIEW 1: VĂN BẢN CUỘN (DỄ DÀNG COPY & TẢI FILE LÊN) -->
@@ -3476,9 +3386,7 @@
                 <button type="button" class="btn btn-secondary" id="btnExportTxtCurrent" style="padding: 2px 6px; font-size: 9.5px; color: #67E8F9; border-color: rgba(103,232,249,0.4);" title="Tải file văn bản thuần .TXT">
                   📄 Xuất .TXT
                 </button>
-                <button type="button" class="btn btn-secondary" id="btnSaveToVaultFromText" style="padding: 2px 6px; font-size: 9.5px; color: #FBBF24; border-color: rgba(251,191,36,0.4);" title="Lưu văn bản này vào Thư Viện Kho Transcript">
-                  ⭐ Lưu Kho
-                </button>
+                
               </div>
             </div>
 
@@ -3524,53 +3432,11 @@
           </div>
 
           <!-- VIEW 3: KHO TRANSCRIPT & TẢI THÊM CÁC BẢN KỊCH BẢN -->
-          <div id="subTranscriptVaultView" style="display: none; flex-direction: column; gap: 7px; margin-top: 6px;">
-            <!-- Thanh tác vụ Kho: Tải thêm file, Lưu hiện tại, Reset mẫu -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; flex-wrap: wrap;">
-              <div style="display: flex; gap: 4px; align-items: center;">
-                <label class="btn btn-video" style="padding: 3px 8px; font-size: 10px; cursor: pointer; margin-bottom: 0; display: inline-flex; align-items: center; gap: 4px;" title="Tải thêm nhiều file .txt, .srt hoặc .json từ máy tính">
-                  <span>➕</span> Tải Thêm File
-                  <input type="file" id="inputBatchTranscriptFiles" accept=".txt,.srt,.json" multiple style="display: none;">
-                </label>
-                <button type="button" class="btn btn-secondary" id="btnSaveCurrentScriptToVault" style="padding: 3px 8px; font-size: 10px; color: #38BDF8; border-color: rgba(56,189,248,0.4);" title="Lưu văn bản đang soạn thảo thành một bản transcript mới trong thư viện">
-                  💾 Lưu Bản Này
-                </button>
-              </div>
-              <button type="button" class="btn btn-secondary" id="btnResetTranscriptVault" style="padding: 3px 6px; font-size: 9.5px; color: #FBBF24;" title="Khôi phục lại danh sách 6 kịch bản thời sự mẫu ban đầu">
-                🔄 Đặt Lại Mẫu
-              </button>
-            </div>
-
-            <!-- Tìm kiếm kịch bản theo từ khóa -->
-            <div style="display: flex; gap: 5px; align-items: center;">
-              <input type="text" id="inputSearchVault" class="form-control" placeholder="🔍 Tìm kịch bản trong kho theo từ khóa..." style="font-size: 10px; padding: 4px 8px; flex: 1; background: #070D1E; border: 1px solid rgba(56,189,248,0.3); border-radius: 5px; color: #F8FAFC;">
-            </div>
-
-            <!-- Các nút lọc chủ đề (Pill Filters) -->
-            <div style="display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px;" id="vaultCategoryFilterPills">
-              <button type="button" class="vault-filter-pill active" data-cat="all">Tất Cả</button>
-              <button type="button" class="vault-filter-pill" data-cat="thoisu">Thời Sự</button>
-              <button type="button" class="vault-filter-pill" data-cat="congnghe">Công Nghệ AI</button>
-              <button type="button" class="vault-filter-pill" data-cat="kinhte">Kinh Tế</button>
-              <button type="button" class="vault-filter-pill" data-cat="thethao_thoitiet">Thể Thao & Thời Tiết</button>
-              <button type="button" class="vault-filter-pill" data-cat="custom">Tải Lên / Tự Lưu</button>
-            </div>
-
-            <!-- Kéo thả file trực tiếp vào kho -->
-            <div class="transcript-vault-dropzone" id="vaultDragDropZone" title="Kéo thả một hoặc nhiều file .txt, .srt vào đây">
-              <div style="font-size: 10.5px; color: #38BDF8; font-weight: 700;">📂 Kéo thả file .txt, .srt vào đây để nạp thêm</div>
-              <div style="font-size: 9px; color: #64748B; margin-top: 2px;">Tự động phân tách 11 câu và lưu vĩnh viễn vào bộ nhớ trình duyệt</div>
-            </div>
-
-            <!-- Danh sách các bản Transcript trong kho (Dạng cuộn thẻ) -->
-            <div class="transcript-vault-grid" id="transcriptVaultGrid" style="display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow-y: auto; padding-right: 4px;">
-              <!-- Generated dynamically by JS -->
-            </div>
+          <!-- Kho Transcript Vault đã được tinh giản -->
           </div>
         </div>
       </div>
 
-      <!-- 4. HIỆU ỨNG ÂM THANH (DI CHUYỂN, ẨN/TẮT & 10 SOUND FX) -->
       <div class="section-container" id="cardSoundFX" data-category="audio">
         <div class="section-header-row" data-target="bodySoundFX">
           <span class="section-header-title">
@@ -3634,9 +3500,7 @@
                 <span>📥</span>
                 <span>TẢI THÊM SOUND FX TỪ MẠNG XÃ HỘI:</span>
               </div>
-              <button type="button" id="btnSfxSocialGuide" style="background: none; border: none; color: #38BDF8; font-size: 9px; font-weight: 700; cursor: pointer; text-decoration: underline;">
-                Nguồn tải âm thanh ↗
-              </button>
+              
             </div>
 
             <div style="display: flex; gap: 4px;">
@@ -3644,9 +3508,7 @@
                 <span>➕ Tải Sound FX (.MP3, .WAV)</span>
                 <input type="file" id="inputCustomSfxFile" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.weba" multiple style="display: none;">
               </label>
-              <button type="button" class="btn btn-secondary" id="btnImportSfxFromUrl" style="flex: 1; justify-content: center; font-size: 9.5px; color: #38BDF8; border-color: rgba(56,189,248,0.4);" title="Nhập link trực tiếp tải file âm thanh từ web">
-                🔗 Nhập Link URL
-              </button>
+              
             </div>
             <div style="font-size: 8.5px; color: #94A3B8; margin-top: 4px;">
               💡 Kéo thả trực tiếp file .mp3, .wav vào màn hình để nạp nhanh!
@@ -3700,22 +3562,7 @@
             </div>
           </div>
           <!-- Hạt sương nhỏ bay lên & Đèn LED di chuyển/nháy -->
-          <div style="background: rgba(255, 107, 0, 0.08); border: 1px solid rgba(255, 107, 0, 0.25); border-radius: 6px; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; margin-bottom: 6px;">
-            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; color: #FBBF24;">
-              <input type="checkbox" id="chkDewParticles" checked style="accent-color: #F59E0B; width: 14px; height: 14px;">
-              <span>✨ Hạt sương nhỏ bay lên (Sinh động)</span>
-            </label>
-            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; color: #38BDF8;">
-              <input type="checkbox" id="chkDynamicLeds" checked style="accent-color: #38BDF8; width: 14px; height: 14px;">
-              <span>💡 Đèn LED di chuyển & nháy</span>
-            </label>
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10.5px; color: #94A3B8; margin-top: 2px;">
-              <span>🌟 Độ sáng LED:</span>
-              <input type="range" class="range-slider" id="sliderLedGlow" min="0" max="150" step="5" value="100">
-              <span id="valLedGlow" style="font-family: monospace; font-size: 10px; min-width: 38px; text-align: right; color: #FBBF24;">100%</span>
-            </div>
-          </div>
-
+          <!-- Hạt sương và đèn LED đã được tinh giản -->
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10.5px;">
             <span>🎥 Lia máy:</span>
             <input type="range" class="range-slider" id="sliderCamDrift" min="0" max="200" step="5" value="100">
@@ -3787,24 +3634,16 @@
             <button type="button" class="btn btn-secondary" id="btnTimelineAutoCutout" style="padding: 3px 9px; font-size: 11px; font-weight: 800; border-color: #10B981; color: #34D399; background: rgba(16, 185, 129, 0.2);" title="Bật/Tắt tự động tách nền AI chuẩn CapCut (Clip đang chọn)">
               ✨ Tự Động Tách Nền (BẬT)
             </button>
-            <button type="button" class="btn btn-secondary" id="btnTimelineSplit" style="padding: 3px 8px; font-size: 11px; font-weight: 700; border-color: rgba(255, 107, 0, 0.4); color: #FFB703;" title="Cắt clip tại vị trí con trỏ (Phím C hoặc Ctrl+B)">
-              ✂️ Cắt (C)
-            </button>
-            <button type="button" class="btn btn-secondary" id="btnTimelineDelete" style="padding: 3px 8px; font-size: 11px; font-weight: 700; border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5;" title="Xóa clip/phụ đề đang chọn (Phím Delete)">
-              🗑️ Xóa (Del)
-            </button>
+            
+            
             <button type="button" class="btn btn-secondary" id="btnTimelineAutoMatch" style="padding: 3px 8px; font-size: 11px; font-weight: 700; border-color: rgba(16, 185, 129, 0.4); color: #6EE7B7;" title="Tự động cân đối thời lượng các clip khớp thời gian tổng">
               ⚡ Khớp Tự Động
             </button>
-            <button type="button" class="btn btn-secondary" id="btnTimelineShortcuts" style="padding: 3px 8px; font-size: 11px; font-weight: 700; border-color: rgba(6, 182, 212, 0.4); color: #67E8F9;" title="Xem danh sách phím tắt CapCut PC (Phím ?)">
-              ⌨️ Phím Tắt
-            </button>
+            
             <button type="button" class="btn btn-secondary" id="btnTimelineLoop" style="padding: 3px 7px; font-size: 11px; font-weight: 700; border-color: rgba(255, 107, 0, 0.3); color: #CBD5E1;" title="Bật/Tắt phát lặp lại video">
               🔁 Lặp
             </button>
-            <button type="button" class="btn btn-secondary" id="btnTimelineSnap" style="padding: 3px 7px; font-size: 11px; font-weight: 700; border-color: rgba(16, 185, 129, 0.3); color: #6EE7B7;" title="Bật/Tắt hít nam châm (Snapping) khi kéo clip">
-              🧲 Hít
-            </button>
+            
           </div>
 
           <div style="display: flex; align-items: center; gap: 6px;">
@@ -3995,139 +3834,7 @@
   </div>
 
   <!-- KEYBOARD SHORTCUTS MODAL (CAPCUT PC PRO STYLE) -->
-  <div class="modal-backdrop" id="shortcutsModal">
-    <div class="modal-card" style="max-width: 720px; border: 2px solid #06B6D4; box-shadow: 0 12px 50px rgba(6, 182, 212, 0.35); background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(11, 15, 25, 0.99));">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(6, 182, 212, 0.15); border: 1px solid #06B6D4; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-            ⌨️
-          </div>
-          <div>
-            <h3 style="font-size: 16px; font-weight: 800; color: #67E8F9; margin: 0; line-height: 1.2;">
-              BẢNG PHÍM TẮT CHUẨN CAPCUT PC PRO
-            </h3>
-            <p style="font-size: 11px; color: #94A3B8; margin: 2px 0 0 0;">
-              Tối ưu thao tác dựng tin tức thời sự TALK11 thần tốc & chuẩn chuyên nghiệp
-            </p>
-          </div>
-        </div>
-        <button type="button" class="btn btn-secondary" onclick="document.getElementById('shortcutsModal').classList.remove('show')" style="padding: 4px 10px; font-size: 12px; border-radius: 6px;">✕</button>
-      </div>
-
-      <!-- SECTION 1: CHỈNH SỬA & CẮT GHÉP TIMELINE -->
-      <div style="margin-bottom: 12px;">
-        <div style="font-size: 11px; font-weight: 700; color: #F59E0B; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-          <span>✂️</span> 1. Cắt Ghép & Chỉnh Sửa Clip (CapCut NLE)
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11.5px;">
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Cắt clip tại con trỏ (Split)</span>
-            <kbd style="background: #1E293B; border: 1px solid #FF6B00; padding: 2px 6px; border-radius: 4px; color: #FF9E00; font-family: monospace; font-weight: 700;">C / Ctrl+B</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Cắt bỏ đầu clip bên trái (Trim Left)</span>
-            <kbd style="background: #1E293B; border: 1px solid #06B6D4; padding: 2px 6px; border-radius: 4px; color: #38BDF8; font-family: monospace; font-weight: 700;">Q</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Cắt bỏ đuôi clip bên phải (Trim Right)</span>
-            <kbd style="background: #1E293B; border: 1px solid #06B6D4; padding: 2px 6px; border-radius: 4px; color: #38BDF8; font-family: monospace; font-weight: 700;">W</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Xóa clip / phụ đề đang chọn</span>
-            <kbd style="background: #1E293B; border: 1px solid #EF4444; padding: 2px 6px; border-radius: 4px; color: #F87171; font-family: monospace; font-weight: 700;">Del / Backspace</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Gộp Clip Tổ Hợp (Compound Clip)</span>
-            <kbd style="background: #1E293B; border: 1px solid #8B5CF6; padding: 2px 6px; border-radius: 4px; color: #C084FC; font-family: monospace; font-weight: 700;">Alt + G</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Hủy Gộp / Khớp đều clip</span>
-            <kbd style="background: #1E293B; border: 1px solid #8B5CF6; padding: 2px 6px; border-radius: 4px; color: #C084FC; font-family: monospace; font-weight: 700;">Alt + Shift + G</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Nhân bản clip đang chọn (Duplicate)</span>
-            <kbd style="background: #1E293B; border: 1px solid #10B981; padding: 2px 6px; border-radius: 4px; color: #34D399; font-family: monospace; font-weight: 700;">Ctrl + D</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Hoàn tác / Làm lại (Undo / Redo)</span>
-            <kbd style="background: #1E293B; border: 1px solid #64748B; padding: 2px 6px; border-radius: 4px; color: #E2E8F0; font-family: monospace; font-weight: 700;">Ctrl+Z / Ctrl+Y</kbd>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 2: ĐIỀU HƯỚNG & PHÁT LẠI -->
-      <div style="margin-bottom: 12px;">
-        <div style="font-size: 11px; font-weight: 700; color: #38BDF8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-          <span>⏱️</span> 2. Điều Hướng & Điều Khiển Phát Lại
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11.5px;">
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Phát / Tạm dừng Preview</span>
-            <kbd style="background: #1E293B; border: 1px solid #475569; padding: 2px 6px; border-radius: 4px; color: #FBBF24; font-family: monospace; font-weight: 700;">Space</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Đổi tốc độ phát (0.5x, 1x, 1.5x, 2x)</span>
-            <kbd style="background: #1E293B; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px; color: #FBBF24; font-family: monospace; font-weight: 700;">R</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Nhảy tới điểm cắt tiếp / trước</span>
-            <kbd style="background: #1E293B; border: 1px solid #38BDF8; padding: 2px 6px; border-radius: 4px; color: #38BDF8; font-family: monospace; font-weight: 700;">↓ / ↑</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Tua từng khung (0.1s / Shift: 1s)</span>
-            <kbd style="background: #1E293B; border: 1px solid #38BDF8; padding: 2px 6px; border-radius: 4px; color: #38BDF8; font-family: monospace; font-weight: 700;">← / →</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Về đầu timeline (0s)</span>
-            <kbd style="background: #1E293B; border: 1px solid #10B981; padding: 2px 6px; border-radius: 4px; color: #10B981; font-family: monospace; font-weight: 700;">Home / Shift+R</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Đến cuối timeline</span>
-            <kbd style="background: #1E293B; border: 1px solid #10B981; padding: 2px 6px; border-radius: 4px; color: #10B981; font-family: monospace; font-weight: 700;">End</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Đánh dấu nhịp thời sự (Add Marker)</span>
-            <kbd style="background: #1E293B; border: 1px solid #EC4899; padding: 2px 6px; border-radius: 4px; color: #F472B6; font-family: monospace; font-weight: 700;">M</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Toàn màn hình Preview (Fullscreen)</span>
-            <kbd style="background: #1E293B; border: 1px solid #A855F7; padding: 2px 6px; border-radius: 4px; color: #C084FC; font-family: monospace; font-weight: 700;">F</kbd>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 3: CÔNG CỤ & HỆ THỐNG -->
-      <div style="margin-bottom: 14px;">
-        <div style="font-size: 11px; font-weight: 700; color: #10B981; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-          <span>🚀</span> 3. Công Cụ Nâng Cao & Xuất Bản
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11.5px;">
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Kịch bản & Phụ đề tự động (Text)</span>
-            <kbd style="background: #1E293B; border: 1px solid #F59E0B; padding: 2px 6px; border-radius: 4px; color: #FCD34D; font-family: monospace; font-weight: 700;">T</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Mở bảng Xuất Video (Export)</span>
-            <kbd style="background: #1E293B; border: 1px solid #10B981; padding: 2px 6px; border-radius: 4px; color: #6EE7B7; font-family: monospace; font-weight: 700;">Ctrl + E</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Bật / Tắt bảng phím tắt này</span>
-            <kbd style="background: #1E293B; border: 1px solid #06B6D4; padding: 2px 6px; border-radius: 4px; color: #67E8F9; font-family: monospace; font-weight: 700;">? / /</kbd>
-          </div>
-          <div style="background: rgba(15,23,42,0.7); padding: 7px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #CBD5E1;">Đóng các hộp thoại (Modal Escape)</span>
-            <kbd style="background: #1E293B; border: 1px solid #64748B; padding: 2px 6px; border-radius: 4px; color: #94A3B8; font-family: monospace; font-weight: 700;">Esc</kbd>
-          </div>
-        </div>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px;">
-        <span style="font-size: 11px; color: #64748B;">💡 Mẹo: Nhấp chuột vào dòng timeline bất kỳ để kích hoạt phím tắt CapCut ngay tức thì.</span>
-        <button class="btn btn-secondary" onclick="document.getElementById('shortcutsModal').classList.remove('show')" style="padding: 6px 18px; font-size: 11.5px; border-radius: 6px;">Đóng</button>
-      </div>
-    </div>
-  </div>
-
+  <!-- Modal phím tắt CapCut PC đã được tinh giản -->
   <!-- AUTO SCRIPT TO SUBTITLES MODAL (AI / AUTOMATION WORKFLOW) -->
   <div class="modal-backdrop" id="autoScriptModal">
     <div class="modal-card" style="max-width: 650px; border: 2px solid #FF6B00; box-shadow: 0 10px 40px rgba(255, 107, 0, 0.35);">
@@ -5523,8 +5230,8 @@
     let lastPlayedSfxTimeSec = -1;
 
     // Hiệu ứng Hạt Sương Nhỏ Bay Lên & Đèn LED Di Chuyển / Nháy
-    let showDewParticles = true;
-    let showDynamicLeds = true;
+    let showDewParticles = false;
+    let showDynamicLeds = false;
     let ledGlowIntensity = 100; // 0% - 150%
 
     const canvas = document.getElementById('mainCanvas');
@@ -14413,7 +14120,7 @@
 
       // 8. Bottom Ticker (Only when in studio broadcast mode)
       if (isStudioThemeAllowed) {
-        drawScrollingTicker(h - 56, 56, inputTickerText.value, 3.2, timeSec);
+        // drawScrollingTicker bypassed
       }
 
       // Interactive Brush Cursor Ring on Canvas (Only during preview, never in export recording)
