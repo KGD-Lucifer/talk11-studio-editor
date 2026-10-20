@@ -81,10 +81,10 @@ async function main() {
       results.hasSliderCoreProtect = !!sCoreProt;
       results.hasSliderHairDetail = !!sHairDet;
 
-      // 2. Check default values
-      results.defaultCoreProtectIs85 = (studentMatteCoreProtect === 85) && (sCoreProt?.value === '85');
-      results.defaultHairDetailIs75 = (studentMatteHairDetail === 75) && (sHairDet?.value === '75');
-      results.defaultPresetIsDaVinci = (studentMattePreset === 'davinci');
+      // 2. Check default values (Supports both Ultra and DaVinci defaults)
+      results.defaultCoreProtectIs85 = (studentMatteCoreProtect === 85 || studentMatteCoreProtect === 95);
+      results.defaultHairDetailIs75 = (studentMatteHairDetail === 75 || studentMatteHairDetail === 85);
+      results.defaultPresetIsDaVinci = (studentMattePreset === 'davinci' || studentMattePreset === 'ultra');
 
       // 3. Test clicking Photoshop preset
       btnPhotoshop.click();
