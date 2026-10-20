@@ -12112,11 +12112,10 @@
             hasValidAiMask = true;
             latestSegmentMask = aiMaskCanvas;
 
-            // Invalidate cache immediately so frame is updated with neural mask
+            // Invalidate cache immediately so frame is updated with neural mask on next rAF tick
             hasChromaCachedFrame = false;
             forceChromaReprocess = true;
             hasValidStudentCachedFrame = false;
-            try { render(previewCurrentSec); } catch(e) {}
           }
 
           const statusBadge = document.getElementById('badgeAiSegmentStatus');
@@ -12158,7 +12157,6 @@
                 hasChromaCachedFrame = false;
                 forceChromaReprocess = true;
                 hasValidStudentCachedFrame = false;
-                try { render(previewCurrentSec); } catch(e) {}
               }
             });
             selfieSegmentation.initialize().then(() => {
@@ -12561,13 +12559,17 @@
 
         const now = performance.now();
         // Tự động mở khóa watchdog nếu frame trước bị delay hoặc drop
-        if (isSegmentingFrame && (now - lastSegmentTime > 350)) {
+        if (isSegmentingFrame && (now - lastSegmentTime > 250)) {
           isSegmentingFrame = false;
         }
 
         const selectFpsElem = document.getElementById('selectExportFps');
         const curFps = selectFpsElem ? (parseInt(selectFpsElem.value, 10) || 60) : 60;
-        const minInferInterval = (curFps >= 120) ? 8 : 14;
+        // BẢO VỆ CHỐNG TRÀN TÁC VỤ (ANTI-STARVATION 30FPS INFERENCE PIPELINE):
+        // Mạng nơ-ron MediaPipe chạy tối ưu ở 30FPS (~33ms).
+        // Vòng lặp rAF 60FPS kết hợp bộ đệm thời gian aiTemporalAlphaBuffer nội suy mượt mà 60/120FPS,
+        // ngăn chặn hoàn toàn hiện tượng ứ đọng WebGL microtasks gây lỗi "Trang không phản hồi".
+        const minInferInterval = 33;
 
         if (selfieSegmentation && selfieSegmentationReady && !isSegmentingFrame && (now - lastSegmentTime >= minInferInterval)) {
           if (studentVideoElem.readyState >= 2 && studentVideoElem.videoWidth > 0) {
@@ -12877,21 +12879,22 @@
                   const a = srcMask[p];
                   if (a > 0) {
                     // Nếu là da bàn tay/ngón tay ở nửa dưới: bảo toàn không cho erode thu nhỏ
-                    const idx = p * 4;
-                    const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
-                    const cb = 128 - 0.168736 * vr - 0.331264 * vg + 0.5 * vb;
-                    const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
-                    const isHandSkin = (y > handZoneMinY && vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
-
-                    if (isHandSkin) {
-                      dstMask[p] = a;
-                      continue;
-                    }
-
                     const minCross = Math.min(srcMask[p - 1], srcMask[p + 1], srcMask[p - procW], srcMask[p + procW]);
                     const minDiag = Math.min(srcMask[p - 1 - procW], srcMask[p + 1 - procW], srcMask[p - 1 + procW], srcMask[p + 1 + procW]);
                     const min8 = Math.min(minCross, minDiag);
                     if (min8 < a) {
+                      // Nếu là da bàn tay/ngón tay ở nửa dưới: bảo toàn không cho erode thu nhỏ
+                      if (y > handZoneMinY) {
+                        const idx = p * 4;
+                        const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
+                        const cb = 128 - 0.168736 * vr - 0.331264 * vg + 0.5 * vb;
+                        const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
+                        const isHandSkin = (vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
+                        if (isHandSkin) {
+                          dstMask[p] = a;
+                          continue;
+                        }
+                      }
                       dstMask[p] = Math.round(minCross * 0.65 + minDiag * 0.35);
                     } else {
                       dstMask[p] = a;
@@ -13050,28 +13053,15 @@
             }
           }
 
-          // 7. Khử ám màu viền (Despill) an toàn
-          if (despillStrength > 0) {
-            for (let p = 0; p < totalPix; p++) {
-              const idx = p * 4;
-              const a = fData[idx + 3];
-              if (a > 0 && a < 255) {
-                const r = fData[idx], g = fData[idx + 1], b = fData[idx + 2];
-                const maxRB = Math.max(r, b);
-                if (g > maxRB) {
-                  fData[idx + 1] = Math.round(g * (1 - despillStrength * 0.75) + maxRB * (despillStrength * 0.75));
-                }
-              }
-            }
-          }
-
           offscreenKeyCtx.putImageData(finalVidImgData, 0, 0);
           return finalizeChromaCache();
         }
 
         // Khi MediaPipe đang tính toán vài chục miligiây đầu tiên:
-        // Giữ nguyên khung hình video tự nhiên không cắt hộp hình học sắc nhọn, không bẫy cache để frame tiếp theo áp dụng ngay mặt nạ AI
-        forceChromaReprocess = true;
+        // Giữ nguyên khung hình video tự nhiên không cắt hộp hình học sắc nhọn
+        if (!studentVideoElem.paused) {
+          forceChromaReprocess = true;
+        }
         return offscreenKeyCanvas;
       }
 
