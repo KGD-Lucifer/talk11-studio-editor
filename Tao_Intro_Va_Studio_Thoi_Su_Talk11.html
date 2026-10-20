@@ -2292,8 +2292,8 @@
                 🎯 Độ ôm sát người:
               </span>
               <div style="display: flex; align-items: center; gap: 4px; flex: 1; max-width: 170px;">
-                <input type="range" class="range-slider" id="sliderWizCutoutTightness" min="30" max="99" value="92" step="1" style="accent-color: #10B981; flex: 1;">
-                <span id="valWizCutoutTightness" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #34D399; min-width: 32px; text-align: right;">92%</span>
+                <input type="range" class="range-slider" id="sliderWizCutoutTightness" min="30" max="99" value="95" step="1" style="accent-color: #10B981; flex: 1;">
+                <span id="valWizCutoutTightness" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #34D399; min-width: 32px; text-align: right;">95%</span>
               </div>
             </div>
 
@@ -2303,8 +2303,8 @@
                 ✂️ Gọt sâu mép viền:
               </span>
               <div style="display: flex; align-items: center; gap: 4px; flex: 1; max-width: 170px;">
-                <input type="range" class="range-slider" id="sliderWizAiErode" min="0" max="12" value="2" step="1" style="accent-color: #F59E0B; flex: 1;">
-                <span id="valWizAiErode" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #F59E0B; min-width: 32px; text-align: right;">2px</span>
+                <input type="range" class="range-slider" id="sliderWizAiErode" min="0" max="12" value="3" step="1" style="accent-color: #F59E0B; flex: 1;">
+                <span id="valWizAiErode" style="font-family: monospace; font-size: 9px; font-weight: 800; color: #F59E0B; min-width: 32px; text-align: right;">3px</span>
               </div>
             </div>
 
@@ -2682,14 +2682,14 @@
             <!-- Sliders: Tolerance / AI Confidence, Feather, Despill -->
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
               <span style="min-width: 90px;" id="lblChromaTolerance" title="Kéo tăng để ôm sát dính người hơn nữa, triệt tiêu toàn bộ viền lem nền">🎯 Độ ôm sát người:</span>
-              <input type="range" class="range-slider" id="sliderChromaTolerance" min="30" max="99" value="92" step="1" style="accent-color: #10B981; flex: 1;">
-              <span id="valChromaTolerance" style="font-family: monospace; font-size: 9.5px; color: #34D399; min-width: 28px; text-align: right;">92%</span>
+              <input type="range" class="range-slider" id="sliderChromaTolerance" min="30" max="99" value="95" step="1" style="accent-color: #10B981; flex: 1;">
+              <span id="valChromaTolerance" style="font-family: monospace; font-size: 9.5px; color: #34D399; min-width: 28px; text-align: right;">95%</span>
             </div>
 
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10px; color: #94A3B8;">
               <span style="min-width: 90px;" title="Tự động gọt ôm sát mép người, triệt tiêu 100% viền trắng tường phòng (Chuẩn CapCut Pro)">✂️ Gọt viền mép CapCut:</span>
-              <input type="range" class="range-slider" id="sliderAiErode" min="0" max="12" value="2" step="1" style="accent-color: #F59E0B; flex: 1;">
-              <span id="valAiErode" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">2px</span>
+              <input type="range" class="range-slider" id="sliderAiErode" min="0" max="12" value="3" step="1" style="accent-color: #F59E0B; flex: 1;">
+              <span id="valAiErode" style="font-family: monospace; font-size: 9.5px; color: #F59E0B; min-width: 28px; text-align: right;">3px</span>
             </div>
 
             <!-- PHOTOSHOP CORE MATTE PROTECTION: KHÓA ÁO TRẮNG ĐỒNG PHỤC HỌC SINH -->
@@ -5073,7 +5073,7 @@
     let studentChromaEnabled = true;
     let studentChromaMode = 'ai_auto'; // 'ai_auto' | 'green' | 'blue' | 'custom' | 'room' // 'green' | 'blue' | 'custom'
     let studentCustomKeyColor = '#00FF00';
-    let studentChromaTolerance = 0.92; // 0.30 to 0.99 (mặc định 92% cắt siêu sát ôm dính viền da & tóc)
+    let studentChromaTolerance = 0.95; // 0.30 to 0.99 (mặc định 95% cắt siêu sát ôm dính viền da & tóc)
     let studentChromaFeather = 2; // 1 to 8 (mặc định 2px mịn viền tự nhiên)
     let studentChromaDespill = 0.5; // 0.0 to 1.0
     let studentCropLeft = 0;
@@ -5086,7 +5086,7 @@
     let beautyWarmth = 0.0; // 0°: Tông màu tự nhiên, không làm bợt da bé
     let beautyContrast = 1.04; // 1.04: Tương phản rõ nét, tóc đen sâu, môi đỏ tươi như CapCut
     let beautySaturation = 1.03; // 1.03: Màu sắc tươi tắn tự nhiên
-    let studentAiErodeRadius = 2; // Mặc định 2px: Gọt sâu mép viền dán chặt vào trong người, bóc sạch quầng trắng tường
+    let studentAiErodeRadius = 3; // Mặc định 3px: Gọt sâu mép viền dán chặt vào trong người, bóc sạch quầng trắng tường
     let studentMatteCoreProtect = 95; // 0..100% Khóa lõi áo trắng học sinh & mặt (Photoshop Core Protection)
     let studentMatteHairDetail = 85; // 0..100% Khôi phục chi tiết tóc tơ DaVinci Magic Mask
     let studentMattePreset = 'ultra'; // Unified All-In-One Ultra Studio Matting
@@ -12631,7 +12631,7 @@
           // 3. TÍNH TOÁN THAM SỐ PHÂN TÁCH ÔM SÁT VIỀN DA & TÓC (VFX STUDIO MATTING)
           const tol = (typeof studentChromaTolerance === 'number')
             ? (studentChromaTolerance > 1 ? studentChromaTolerance / 100 : studentChromaTolerance)
-            : 0.92;
+            : 0.95;
 
           // Ngưỡng phân tách xác suất AI ôm sát tự nhiên (Balanced Human Boundary):
           // tol = 0.50 -> cutoff 122 (ngưỡng 50% tự nhiên của mạng nơ-ron)
@@ -12763,6 +12763,12 @@
           const smCornerH = Math.max(10, Math.floor(procH * 0.10));
           for (let sy = 0; sy < smCornerH; sy++) {
             const sRow = sy * procW;
+            // Góc trên bên trái
+            for (let sx = 0; sx < smCornerW; sx++) {
+              const sIdx = (sRow + sx) * 4;
+              sWallR += fData[sIdx]; sWallG += fData[sIdx + 1]; sWallB += fData[sIdx + 2]; sWallCount++;
+            }
+            // Góc trên bên phải
             for (let sx = procW - smCornerW; sx < procW; sx++) {
               const sIdx = (sRow + sx) * 4;
               sWallR += fData[sIdx]; sWallG += fData[sIdx + 1]; sWallB += fData[sIdx + 2]; sWallCount++;
@@ -12847,25 +12853,20 @@
                   continue;
                 }
 
-                // Kiểm tra áo cam/ấm màu của học viên trong thân người
-                if (isTorsoZone && (vr > vg && vg > vb && vr > 65) && a >= 35) {
-                  fData[idx + 3] = 255;
-                  if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 255;
-                  continue;
-                }
-
-                // Kiểm tra màu nền phòng / mảng tường trắng dính giữa các kẽ ngón tay hoặc mép vai
+                // Kiểm tra màu nền phòng / mảng tường sáng, kem dính giữa các kẽ ngón tay hoặc mép vai
                 if (!isSkinColor && !isGreenScreenWallAI) {
                   const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
                   const distWall = Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw);
-                  if (distWall < 30 && a < 210) {
-                    if (distWall <= 16) {
-                      // Rất sát màu tường phòng: Triệt tiêu hoàn toàn
+                  // Nhận diện mảng tường sáng / kem / trung tính điển hình phòng học (R > 180, G > 175, B > 165 và độ lệch màu thấp)
+                  const isNeutralBrightWall = (vr > 180 && vg > 175 && vb > 165 && Math.abs(vr - vg) < 35 && Math.abs(vg - vb) < 35);
+                  if ((distWall < 36 || isNeutralBrightWall) && a < 235) {
+                    if (distWall <= 20 || isNeutralBrightWall) {
+                      // Rất sát màu tường phòng hoặc là tường sáng trung tính: Triệt tiêu hoàn toàn
                       fData[idx + 3] = 0;
                       if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
                     } else {
                       // Vùng chuyển tiếp: Giảm alpha mượt mà theo khoảng cách, không tạo gãy biên nhấp nháy
-                      const wallFade = (distWall - 16) / 14;
+                      const wallFade = (distWall - 20) / 16;
                       const attenuatedA = Math.round(fData[idx + 3] * wallFade);
                       fData[idx + 3] = attenuatedA;
                       if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = attenuatedA;
@@ -13041,7 +13042,7 @@
                       fData[idx + 3] = Math.round(fData[idx + 3] * 0.6);
                     }
                   }
-                } else if (a < 50) {
+                } else if (a < 185) {
                   // Mép mờ bán trong suốt trôi nổi không có ruột gần: triệt tiêu hoàn toàn
                   fData[idx + 3] = 0;
                   if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
