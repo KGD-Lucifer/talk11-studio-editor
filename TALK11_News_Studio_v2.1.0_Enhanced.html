@@ -12106,16 +12106,15 @@
               aiMaskCanvas.width = mW;
               aiMaskCanvas.height = mH;
             }
-            aiMaskCtx.globalCompositeOperation = 'source-over';
-            aiMaskCtx.clearRect(0, 0, mW, mH);
+            aiMaskCtx.globalCompositeOperation = 'copy';
             aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
+            aiMaskCtx.globalCompositeOperation = 'source-over';
             hasValidAiMask = true;
             latestSegmentMask = aiMaskCanvas;
 
             // Invalidate cache immediately so frame is updated with neural mask on next rAF tick
             hasChromaCachedFrame = false;
             forceChromaReprocess = true;
-            hasValidStudentCachedFrame = false;
           }
 
           const statusBadge = document.getElementById('badgeAiSegmentStatus');
@@ -12148,15 +12147,14 @@
                   aiMaskCanvas.width = mW;
                   aiMaskCanvas.height = mH;
                 }
-                aiMaskCtx.globalCompositeOperation = 'source-over';
-                aiMaskCtx.clearRect(0, 0, mW, mH);
+                aiMaskCtx.globalCompositeOperation = 'copy';
                 aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
+                aiMaskCtx.globalCompositeOperation = 'source-over';
                 hasValidAiMask = true;
                 latestSegmentMask = aiMaskCanvas;
 
                 hasChromaCachedFrame = false;
                 forceChromaReprocess = true;
-                hasValidStudentCachedFrame = false;
               }
             });
             selfieSegmentation.initialize().then(() => {
@@ -12619,6 +12617,15 @@
           }
 
           if (maxProbInMask < 20) {
+            // KHÔNG BAO GIỜ hiển thị chớp nháy toàn bộ nền phòng gốc!
+            // Tái sử dụng khung hình nhân vật đã tách sạch gần nhất để đảm bảo liền mạch
+            if (hasValidStudentCachedFrame && lastValidStudentFrameCanvas.width > 0) {
+              offscreenKeyCtx.globalCompositeOperation = 'copy';
+              offscreenKeyCtx.drawImage(lastValidStudentFrameCanvas, 0, 0, procW, procH);
+              offscreenKeyCtx.globalCompositeOperation = 'source-over';
+              return finalizeChromaCache();
+            }
+            // Nếu là frame khởi động đầu tiên chưa có cache: giữ nguyên video
             offscreenKeyCtx.putImageData(finalVidImgData, 0, 0);
             return finalizeChromaCache();
           }
@@ -13201,8 +13208,10 @@
 
       // KHẮC PHỤC TRIỆT ĐỂ LỖI NHẤP NHÁY / BIẾN MẤT NHÂN VẬT KHI KHỰNG FPS HOẶC CẮT KHOẢNG LẶNG (SEEKING):
       let processedCanvas = null;
-      if (studentVideoElem.readyState >= 2 && !studentVideoElem.seeking) {
-        processedCanvas = processStudentChromaKey();
+      if (studentVideoElem.readyState >= 2) {
+        if (!studentVideoElem.seeking) {
+          processedCanvas = processStudentChromaKey();
+        }
         if (processedCanvas && processedCanvas.width > 0 && processedCanvas.height > 0) {
           if (!hasValidStudentCachedFrame || forceChromaReprocess || (studentVideoElem && !studentVideoElem.paused)) {
             if (lastValidStudentFrameCanvas.width !== processedCanvas.width || lastValidStudentFrameCanvas.height !== processedCanvas.height) {
@@ -14248,14 +14257,15 @@
               }
             }
             const isClipBoundaryJump = (curPlaybackClipIdx !== lastKnownPlaybackClipIdx && curPlaybackClipIdx >= 0);
-            const isDriftTooLarge = Math.abs(studentVideoElem.currentTime - targetVidTime) > 0.35;
+            const isDriftTooLarge = Math.abs(studentVideoElem.currentTime - targetVidTime) > 0.45;
 
             if (!studentVideoElem.seeking && (isClipBoundaryJump || isDriftTooLarge)) {
               lastKnownPlaybackClipIdx = curPlaybackClipIdx;
               studentVideoElem.currentTime = targetVidTime;
             }
           } else {
-            if (!studentVideoElem.seeking && Math.abs(studentVideoElem.currentTime - targetVidTime) > 0.35) {
+            // Khi không cắt khoảng lặng: chỉ seek lại khi độ lệch lớn (> 1.2s) để tránh vòng lặp seeking gây giật khung hình
+            if (!studentVideoElem.seeking && Math.abs(studentVideoElem.currentTime - targetVidTime) > 1.2) {
               studentVideoElem.currentTime = targetVidTime;
             }
           }
