@@ -2058,7 +2058,7 @@
     <div class="header-top-row">
       <div class="brand">
         <div class="brand-logo-box">TALK11</div>
-        <h1>TRƯỜNG QUAY THỜI SỰ 3D & TIMELINE NLE CHUYÊN NGHIỆP</h1>
+        <h1>TALK11 NEWS STUDIO — TẠO BẢN TIN 3 BƯỚC</h1>
       </div>
     </div>
     
@@ -2071,11 +2071,7 @@
       </div>
 
       <!-- Resolution Selector -->
-      <select id="selectExportResolution" class="form-control" style="width: auto; padding: 4px 7px; font-size: 10.5px; font-weight: 700; background: #0F172A; color: #FBBF24; border: 1px solid rgba(251,191,36,0.4); border-radius: 6px;" title="Độ phân giải xuất video">
-        <option value="1080p" selected>1080p Full HD</option>
-        <option value="720p">720p HD (Nhanh)</option>
-        <option value="4k">4K UHD (Cực nét)</option>
-      </select>
+      <span id="exportResolutionBadge" style="font-size: 11px; font-weight: 700; color: #FBBF24;" title="Xuất theo độ phân giải Canvas Full HD">1080p Full HD</span>
 
       <!-- FPS Selector (60 - 120 FPS Siêu Mượt) -->
       <select id="selectExportFps" class="form-control" style="width: auto; padding: 4px 7px; font-size: 10.5px; font-weight: 700; background: #0F172A; color: #38BDF8; border: 1px solid rgba(56,189,248,0.4); border-radius: 6px;" title="Tốc độ khung hình (60 - 120 FPS siêu mượt)">
@@ -2525,7 +2521,7 @@
           <button type="button" class="sidebar-tab-pill" data-tab="media" title="Kho media, Studio và TV phóng sự">
             <span>🎬</span> Media
           </button>
-          <button type="button" class="sidebar-tab-pill" data-tab="text" title="Tiêu đề video, Ticker và Phụ đề">
+          <button type="button" class="sidebar-tab-pill" data-tab="text" title="Tiêu đề video và Phụ đề">
             <span>📝</span> Chữ & Sub
           </button>
           <button type="button" class="sidebar-tab-pill" data-tab="audio" title="Hiệu ứng âm thanh và Timeline SFX">
@@ -2657,17 +2653,6 @@
                 <span style="min-width: 65px;">Cỡ cọ vẽ:</span>
                 <input type="range" class="range-slider" id="sliderMatteBrushSize" min="6" max="80" value="24" step="2" style="accent-color: #38BDF8; flex: 1; height: 3px;">
                 <span id="valMatteBrushSize" style="font-family: monospace; font-size: 8.5px; color: #38BDF8; min-width: 22px; text-align: right;">24px</span>
-              </div>
-            </div>
-
-            <!-- CHẾ ĐỘ XEM TRƯỚC (PREVIEW MODES): STUDIO / VFX CHECKERBOARD / ALPHA MATTE / GREEN SCREEN -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 3px; font-size: 9px; color: #94A3B8;">
-              <span style="font-weight: 700; color: #CBD5E1;">👁️ Xem trước:</span>
-              <div style="display: flex; gap: 2px; flex: 1; justify-content: flex-end;" id="aiMattingPreviewPills" style="display: none;">
-                <button type="button" class="btn-tint-pill active" id="btnPrevModeStudio" data-pmode="studio" style="padding: 1px 4px; font-size: 8.5px;">🏛️ Studio</button>
-                <button type="button" class="btn-tint-pill" id="btnPrevModeCheckerboard" data-pmode="checkerboard" style="padding: 1px 4px; font-size: 8.5px;">🏁 Trong Suốt</button>
-                <button type="button" class="btn-tint-pill" id="btnPrevModeAlpha" data-pmode="alpha_matte" style="padding: 1px 4px; font-size: 8.5px;">⬛ Alpha</button>
-                <button type="button" class="btn-tint-pill" id="btnPrevModeGreen" data-pmode="greenscreen" style="padding: 1px 4px; font-size: 8.5px;">🟢 Phông</button>
               </div>
             </div>
 
@@ -3136,7 +3121,7 @@
       <div class="section-container" id="cardHeadline" data-category="text">
         <div class="section-header-row" data-target="bodyHeadline">
           <span class="section-header-title">
-            <span class="collapse-icon">▶</span> 🏷️ Tiêu Đề & Dải Tin Vắn (Ticker)
+            <span class="collapse-icon">▶</span> 🏷️ Tiêu Đề & Thanh Dẫn
           </span>
           <button type="button" class="btn-toggle-section" data-target="bodyHeadline">
             <span class="toggle-text">Mở rộng</span>
@@ -5038,7 +5023,9 @@
     let selectedTvTransitionFx = 'combo_zoom_flash';
     let selectedAspectRatio = '16:9'; // '16:9' | '9:16'
     let selectedExportResolution = '1080p'; // '1080p' | '720p' | '4k'
-    let selectedExportMode = 'full'; // 'full' | 'greenscreen'
+    let selectedExportMode = 'full'; // full | transparent_webm | alpha_matte | greenscreen
+    const selectExportModeElem = document.getElementById('selectExportMode');
+    selectExportModeElem?.addEventListener('change', () => { selectedExportMode = selectExportModeElem.value || 'full'; });
     let tvFitMode = 'cover'; // 'cover' | 'contain'
     let tvBorderColor = '#FF6B00';
     let tvBorderRadius = 14;
@@ -5047,8 +5034,6 @@
     let anchorName = 'MINH THÀNH';
     let anchorTitle = 'PHÓNG VIÊN NHÍ TALK11';
     let showBroadcastClock = true;
-    let tickerSpeedMultiplier = 1.0;
-    let tickerBadgeText = '● TALK11 NEWS';
     let subtitleStyle = 'glass'; // 'glass' | 'tiktok' | 'breaking' | 'karaoke'
     let bgmAudio = null;
     let bgmVolume = 0.4;
@@ -5216,7 +5201,7 @@
     let animFrame = 0;
     let lastAnimTimestamp = 0;
     let showSubtitles = true;
-    let subPosY = 960; // Default: above ticker (1080 - 120 = 960)
+    let subPosY = 960; // Default subtitle position
     let subPosX = 0;   // Centered
     let subFontSize = 24; // 24px
     let subScale = 1.0;
@@ -5230,9 +5215,6 @@
     let lastPlayedSfxTimeSec = -1;
 
     // Hiệu ứng Hạt Sương Nhỏ Bay Lên & Đèn LED Di Chuyển / Nháy
-    let showDewParticles = false;
-    let showDynamicLeds = false;
-    let ledGlowIntensity = 100; // 0% - 150%
 
     const canvas = document.getElementById('mainCanvas');
     const ctx = canvas.getContext('2d');
@@ -5242,7 +5224,6 @@
     const inputVideoTitle = document.getElementById('inputVideoTitle');
     const selectQuickTopic = document.getElementById('selectQuickTopic');
     const inputHeadline = document.getElementById('inputHeadline');
-    const inputTickerText = document.getElementById('inputTickerText');
 
     function syncHeadlineText() {
       const topic = inputVideoTopic ? inputVideoTopic.value.trim() : '';
@@ -5278,41 +5259,10 @@
       });
     }
 
-    if (inputTickerText) {
-      inputTickerText.addEventListener('input', () => {
-        try { render(previewCurrentSec); } catch(err) {}
-      });
-    }
     const sliderCamDrift = document.getElementById('sliderCamDrift');
     const sliderTvMotion = document.getElementById('sliderTvMotion');
     const valCamDrift = document.getElementById('valCamDrift');
     const valTvMotion = document.getElementById('valTvMotion');
-    const chkDewParticles = document.getElementById('chkDewParticles');
-    const chkDynamicLeds = document.getElementById('chkDynamicLeds');
-    const sliderLedGlow = document.getElementById('sliderLedGlow');
-    const valLedGlow = document.getElementById('valLedGlow');
-
-    if (chkDewParticles) {
-      chkDewParticles.addEventListener('change', (e) => {
-        showDewParticles = e.target.checked;
-        try { render(previewCurrentSec); } catch(err) {}
-      });
-    }
-
-    if (chkDynamicLeds) {
-      chkDynamicLeds.addEventListener('change', (e) => {
-        showDynamicLeds = e.target.checked;
-        try { render(previewCurrentSec); } catch(err) {}
-      });
-    }
-
-    if (sliderLedGlow) {
-      sliderLedGlow.addEventListener('input', (e) => {
-        ledGlowIntensity = parseInt(e.target.value) || 100;
-        if (valLedGlow) valLedGlow.textContent = `${ledGlowIntensity}%`;
-        try { render(previewCurrentSec); } catch(err) {}
-      });
-    }
     const chkShowSubtitles = document.getElementById('chkShowSubtitles');
     const sliderSubPosY = document.getElementById('sliderSubPosY');
     const sliderSubPosX = document.getElementById('sliderSubPosX');
@@ -7781,7 +7731,6 @@
 
     function handleFileForSlot(slot, file) {
       slot.fileName = file.name;
-      try { saveMediaToVault(file, 'tv_slot'); } catch(e) {}
       if (file.type.startsWith('video/')) {
         const vid = document.createElement('video');
         vid.src = URL.createObjectURL(file);
@@ -9370,7 +9319,6 @@
       let totalAddedSec = 0;
       for (let i = 0; i < files.length; i++) {
         const f = files[i];
-        try { saveMediaToVault(f, 'tv_slot_batch'); } catch(e) {}
         const newSlot = {
           id: 'slot_' + Date.now() + '_' + i,
           title: f.name,
@@ -9614,83 +9562,6 @@
       document.querySelectorAll('.timeline-block').forEach(b => b.classList.remove('selected-clip'));
     }
 
-    // 1. Cắt clip tại vị trí con trỏ (Phím C hoặc Ctrl+B)
-    function splitSlotAtPlayhead() {
-      const currentSec = Math.round(previewCurrentSec * 10) / 10;
-      
-      let targetSlot = null;
-      if (selectedTimelineItem && selectedTimelineItem.type === 'media') {
-        targetSlot = mediaSlots.find(s => s.id === selectedTimelineItem.id && s.startSec < currentSec && s.endSec > currentSec);
-      }
-      if (!targetSlot) {
-        targetSlot = mediaSlots.find(s => s.startSec < currentSec && s.endSec > currentSec);
-      }
-
-      if (!targetSlot) {
-        showToast(`⚠️ Đưa con trỏ (playhead) vào giữa một clip media để cắt (Hiện tại: ${currentSec}s)!`);
-        return;
-      }
-
-      const origEnd = targetSlot.endSec;
-      targetSlot.endSec = currentSec;
-
-      const newSlotId = 'slot_' + Date.now();
-      const splitSlot = {
-        id: newSlotId,
-        title: `${targetSlot.title} (Phần 2)`,
-        mediaType: targetSlot.mediaType,
-        fileName: targetSlot.fileName,
-        mediaElement: targetSlot.mediaElement,
-        startSec: currentSec,
-        endSec: origEnd,
-        effect: targetSlot.effect || selectedTvTransitionFx || 'tv_pop_bounce'
-      };
-
-      const idx = mediaSlots.findIndex(s => s.id === targetSlot.id);
-      mediaSlots.splice(idx + 1, 0, splitSlot);
-
-      renderTimelineTrackBlocks();
-      selectTimelineItem('media', newSlotId);
-      try { render(previewCurrentSec); } catch(e) {}
-      showToast(`✂️ Đã cắt clip tại giây ${currentSec}s (Phím C/Ctrl+B)!`);
-    }
-
-    // 2. Xóa clip/phụ đề đang chọn (Phím Delete / Backspace)
-    function deleteSelectedTimelineItem() {
-      if (!selectedTimelineItem) {
-        showToast('⚠️ Hãy nhấp chọn một clip trên timeline trước khi xóa (hoặc dùng phím Del)');
-        return;
-      }
-
-      if (selectedTimelineItem.type === 'media') {
-        if (mediaSlots.length <= 1) {
-          showToast('⚠️ Cần giữ ít nhất 1 clip media trong danh sách!');
-          return;
-        }
-        mediaSlots = mediaSlots.filter(s => s.id !== selectedTimelineItem.id);
-        clearTimelineSelection();
-        syncDurationUI();
-        renderTimelineTrackBlocks();
-        try { render(previewCurrentSec); } catch(e) {}
-        showToast('🗑️ Đã xóa clip media khỏi timeline!');
-      } else if (selectedTimelineItem.type === 'sub') {
-        const sub = subtitlesList.find(s => s.id === selectedTimelineItem.id);
-        if (sub) {
-          sub.text = '';
-          sub.hidden = true;
-          clearTimelineSelection();
-          renderSubtitlesUI();
-          try { render(previewCurrentSec); } catch(e) {}
-          showToast('🗑️ Đã xóa nội dung phụ đề!');
-        }
-      } else if (selectedTimelineItem.type === 'sfx') {
-        soundFxTimeline = soundFxTimeline.filter(s => s.id !== selectedTimelineItem.id);
-        clearTimelineSelection();
-        renderSoundFXUI();
-        showToast('🗑️ Đã xóa hiệu ứng âm thanh khỏi timeline!');
-      }
-    }
-
     // 3. Tự động cân đối thời lượng các clip khớp thời gian tổng
     function autoMatchDurations() {
       if (mediaSlots.length === 0) return;
@@ -9772,23 +9643,8 @@
       showToast(`✓ Đã tự động tạo và khớp ${finalSentences.length} phụ đề từ kịch bản (${totalWords} từ)!`);
     }
 
-    // NLE Toolbar Button Events
-    const btnTimelineSplit = document.getElementById('btnTimelineSplit');
-    if (btnTimelineSplit) btnTimelineSplit.addEventListener('click', () => splitSlotAtPlayhead());
-
-    const btnTimelineDelete = document.getElementById('btnTimelineDelete');
-    if (btnTimelineDelete) btnTimelineDelete.addEventListener('click', () => deleteSelectedTimelineItem());
-
     const btnTimelineAutoMatch = document.getElementById('btnTimelineAutoMatch');
     if (btnTimelineAutoMatch) btnTimelineAutoMatch.addEventListener('click', () => autoMatchDurations());
-
-    const btnTimelineShortcuts = document.getElementById('btnTimelineShortcuts');
-    if (btnTimelineShortcuts) {
-      btnTimelineShortcuts.addEventListener('click', () => {
-        const m = document.getElementById('shortcutsModal');
-        if (m) m.classList.add('show');
-      });
-    }
 
     // Auto Script Modal Elements & Events
     const btnOpenAutoScriptModal = document.getElementById('btnOpenAutoScriptModal');
@@ -10171,14 +10027,6 @@
         return;
       }
 
-      // 9. C hoặc Ctrl + B: Cắt clip tại vị trí Playhead (Split)
-      if ((!e.ctrlKey && !e.altKey && (e.key === 'c' || e.key === 'C')) || (e.ctrlKey && (e.key === 'b' || e.key === 'B'))) {
-        e.preventDefault();
-        saveTimelineState('Split Clip');
-        splitSlotAtPlayhead();
-        return;
-      }
-
       // 10. Q: Ripple Trim Left (Cắt bỏ phần bên trái tới đầu clip)
       if (!e.ctrlKey && !e.altKey && !e.shiftKey && (e.key === 'q' || e.key === 'Q')) {
         e.preventDefault();
@@ -10224,14 +10072,6 @@
       if (!e.ctrlKey && !e.altKey && !e.shiftKey && (e.key === 'm' || e.key === 'M')) {
         e.preventDefault();
         toggleTimelineMarker();
-        return;
-      }
-
-      // 15. Delete hoặc Backspace: Xóa clip / phụ đề đang chọn
-      if (e.key === 'Delete' || e.key === 'Backspace') {
-        e.preventDefault();
-        saveTimelineState('Delete Selected Item');
-        deleteSelectedTimelineItem();
         return;
       }
 
@@ -10306,14 +10146,7 @@
         return;
       }
 
-      // 23. ? hoặc /: Bật tắt bảng phím tắt
-      if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
-        e.preventDefault();
-        const m = document.getElementById('shortcutsModal');
-        if (m) m.classList.toggle('show');
-        return;
-      }
-    });
+          });
 
     // ----------------------------------------------------
     // INTERACTIVE DIRECT DRAGGING FOR SUBTITLE ON CANVAS
@@ -10805,284 +10638,6 @@
 
     // ----------------------------------------------------
     // ----------------------------------------------------
-    // HẠT SƯƠNG NHỎ LI TI BAY LÊN SINH ĐỘNG (DEW PARTICLES)
-    // ----------------------------------------------------
-    const DEW_PARTICLES_COUNT = 85;
-    let dewParticles = [];
-
-    function initDewParticles(w = 1920, h = 1080) {
-      dewParticles = [];
-      for (let i = 0; i < DEW_PARTICLES_COUNT; i++) {
-        dewParticles.push({
-          initX: Math.random() * w,
-          initY: Math.random() * (h + 40),
-          radius: 0.8 + Math.random() * 2.2, // Hạt nhỏ li ti 0.8px - 3.0px
-          speedY: 28 + Math.random() * 45, // Tốc độ bay lên (pixels/giây) mượt mà
-          wobbleSpeed: 0.8 + Math.random() * 1.6,
-          wobbleAmp: 0.5 + Math.random() * 2.2,
-          wobblePhase: Math.random() * Math.PI * 2,
-          pulseSpeed: 1.2 + Math.random() * 2.4,
-          pulsePhase: Math.random() * Math.PI * 2,
-          baseAlpha: 0.25 + Math.random() * 0.55,
-          colorType: Math.random() < 0.5 ? 'gold' : (Math.random() < 0.8 ? 'white' : 'amber')
-        });
-      }
-    }
-
-    function updateAndDrawDewParticles(w, h, time, timeSecOverride) {
-      if (!showDewParticles) return;
-      if (dewParticles.length === 0) initDewParticles(w, h);
-      const tSec = (typeof timeSecOverride === 'number') ? timeSecOverride : previewCurrentSec;
-      const totalH = h + 40;
-
-      ctx.save();
-      for (let i = 0; i < dewParticles.length; i++) {
-        const p = dewParticles[i];
-
-        // Tọa độ Y chuyển động mượt mà tuyệt đối 100% theo thời gian (giây)
-        const rawY = (p.initY - tSec * p.speedY) % totalH;
-        const curY = (rawY < 0 ? rawY + totalH : rawY) - 20;
-
-        // Dao động lượn sóng ngang nhẹ nhàng
-        const curX = p.initX + Math.sin(time * p.wobbleSpeed + p.wobblePhase) * p.wobbleAmp;
-
-        // Nhấp nháy / lung linh
-        const pulse = Math.sin(time * p.pulseSpeed + p.pulsePhase) * 0.3 + 0.7;
-        const alpha = Math.max(0.1, Math.min(1.0, p.baseAlpha * pulse));
-
-        let fillStyle, glowColor;
-        if (p.colorType === 'gold') {
-          fillStyle = `rgba(255, 215, 0, ${alpha})`;
-          glowColor = '#FBBF24';
-        } else if (p.colorType === 'white') {
-          fillStyle = `rgba(255, 255, 255, ${alpha * 0.95})`;
-          glowColor = '#FFFFFF';
-        } else {
-          fillStyle = `rgba(255, 140, 0, ${alpha})`;
-          glowColor = '#FF6B00';
-        }
-
-        if (!isRecording && p.radius > 1.8) {
-          ctx.shadowColor = glowColor;
-          ctx.shadowBlur = p.radius * 2.5;
-        } else {
-          ctx.shadowBlur = 0;
-        }
-        ctx.fillStyle = fillStyle;
-
-        ctx.beginPath();
-        ctx.arc(curX, curY, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    // ----------------------------------------------------
-    // ÁNH SÁNG LED DI CHUYỂN & NHÁY TRƯỜNG QUAY THỜI SỰ
-    // ----------------------------------------------------
-    function drawWhiteOrangeStudioDynamicLEDs(w, h, time) {
-      if (!showDynamicLeds) return;
-
-      const glowMult = (ledGlowIntensity / 100);
-      const breath = (Math.sin(time * 3.0) * 0.25 + 0.75) * glowMult;
-      const fastBlink = (Math.sin(time * 6.5) * 0.2 + 0.8) * glowMult;
-
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen'; // Additive blending for realistic glowing light
-
-      // 1. Slanted Neon Beams (2 dải LED chéo sáng rực trên vách kính)
-      const slantedBeams = [
-        { start: { x: 1525, y: 88 }, end: { x: 1215, y: 660 }, width: 4.5, baseColor: 'rgba(255, 140, 20, ', flareSpeed: 0.42 },
-        { start: { x: 1420, y: 88 }, end: { x: 1115, y: 660 }, width: 3.5, baseColor: 'rgba(255, 180, 50, ', flareSpeed: 0.5 }
-      ];
-
-      slantedBeams.forEach((beam, bIdx) => {
-        // Base breathing line
-        ctx.save();
-        ctx.strokeStyle = beam.baseColor + (0.55 * breath) + ')';
-        ctx.lineWidth = beam.width;
-        ctx.shadowColor = '#FF8C00';
-        ctx.shadowBlur = 14 * glowMult;
-        ctx.beginPath();
-        ctx.moveTo(beam.start.x, beam.start.y);
-        ctx.lineTo(beam.end.x, beam.end.y);
-        ctx.stroke();
-
-        // Inner bright white/yellow core
-        ctx.strokeStyle = `rgba(255, 250, 210, ${0.75 * breath})`;
-        ctx.lineWidth = beam.width * 0.45;
-        ctx.shadowBlur = 6 * glowMult;
-        ctx.stroke();
-        ctx.restore();
-
-        // Traveling Light Flares along the slant
-        [0, 0.5].forEach(offset => {
-          const flareT = (time * beam.flareSpeed + offset + bIdx * 0.25) % 1.0;
-          const fx = beam.start.x + (beam.end.x - beam.start.x) * flareT;
-          const fy = beam.start.y + (beam.end.y - beam.start.y) * flareT;
-
-          ctx.save();
-          // Outer aura
-          const aura = ctx.createRadialGradient(fx, fy, 2, fx, fy, 32);
-          aura.addColorStop(0, `rgba(255, 255, 240, ${0.95 * glowMult})`);
-          aura.addColorStop(0.35, `rgba(255, 180, 50, ${0.7 * glowMult})`);
-          aura.addColorStop(0.7, `rgba(255, 107, 0, ${0.35 * glowMult})`);
-          aura.addColorStop(1, 'rgba(255, 107, 0, 0)');
-          ctx.fillStyle = aura;
-          ctx.beginPath();
-          ctx.arc(fx, fy, 32, 0, Math.PI * 2);
-          ctx.fill();
-
-          // Sharp white core
-          ctx.fillStyle = `rgba(255, 255, 255, ${0.9 * glowMult})`;
-          ctx.shadowColor = '#FFFFFF';
-          ctx.shadowBlur = 10;
-          ctx.beginPath();
-          ctx.arc(fx, fy, 3.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-        });
-      });
-
-      // 2. Curved Screen Rims (2 dải LED viền màn hình BAN THỜI SỰ)
-      const curvedRims = [
-        { start: { x: 1545, y: 335 }, mid: { x: 1730, y: 318 }, end: { x: 1920, y: 310 }, speed: 0.55 },
-        { start: { x: 1535, y: 595 }, mid: { x: 1730, y: 580 }, end: { x: 1920, y: 570 }, speed: 0.48 }
-      ];
-
-      curvedRims.forEach((rim) => {
-        ctx.save();
-        ctx.strokeStyle = `rgba(255, 160, 40, ${0.65 * breath})`;
-        ctx.lineWidth = 3.5;
-        ctx.shadowColor = '#FF8C00';
-        ctx.shadowBlur = 12 * glowMult;
-        ctx.beginPath();
-        ctx.moveTo(rim.start.x, rim.start.y);
-        ctx.quadraticCurveTo(rim.mid.x, rim.mid.y, rim.end.x, rim.end.y);
-        ctx.stroke();
-
-        ctx.strokeStyle = `rgba(255, 255, 220, ${0.8 * breath})`;
-        ctx.lineWidth = 1.5;
-        ctx.shadowBlur = 5;
-        ctx.stroke();
-        ctx.restore();
-
-        // Traveling light flare across the curve
-        const flareT = (time * rim.speed) % 1.0;
-        const fx = (1 - flareT) * (1 - flareT) * rim.start.x + 2 * (1 - flareT) * flareT * rim.mid.x + flareT * flareT * rim.end.x;
-        const fy = (1 - flareT) * (1 - flareT) * rim.start.y + 2 * (1 - flareT) * flareT * rim.mid.y + flareT * flareT * rim.end.y;
-
-        ctx.save();
-        const flareGrad = ctx.createRadialGradient(fx, fy, 2, fx, fy, 24);
-        flareGrad.addColorStop(0, `rgba(255, 255, 255, ${0.9 * glowMult})`);
-        flareGrad.addColorStop(0.4, `rgba(255, 190, 60, ${0.65 * glowMult})`);
-        flareGrad.addColorStop(1, 'rgba(255, 107, 0, 0)');
-        ctx.fillStyle = flareGrad;
-        ctx.beginPath();
-        ctx.arc(fx, fy, 24, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      });
-
-      // 3. Concentric Radar HUD behind BAN THỜI SỰ
-      const hudCx = 1860;
-      const hudCy = 455;
-      ctx.save();
-      [75, 120].forEach((r, idx) => {
-        ctx.strokeStyle = `rgba(255, 190, 60, ${(0.35 + 0.25 * fastBlink) * glowMult})`;
-        ctx.lineWidth = idx === 0 ? 2 : 1.5;
-        ctx.shadowColor = '#FFB703';
-        ctx.shadowBlur = 8;
-        ctx.setLineDash([8, 6]);
-        ctx.beginPath();
-        ctx.arc(hudCx, hudCy, r + Math.sin(time * 2.5 + idx) * 2, 0, Math.PI * 2);
-        ctx.stroke();
-      });
-      ctx.setLineDash([]);
-
-      // Rotating Radar Sweep Arc
-      const sweepAngle = (time * 1.8) % (Math.PI * 2);
-      const sweepGrad = ctx.createRadialGradient(hudCx, hudCy, 10, hudCx, hudCy, 130);
-      sweepGrad.addColorStop(0, `rgba(255, 220, 80, ${0.25 * glowMult})`);
-      sweepGrad.addColorStop(1, 'rgba(255, 140, 0, 0)');
-      ctx.fillStyle = sweepGrad;
-      ctx.beginPath();
-      ctx.moveTo(hudCx, hudCy);
-      ctx.arc(hudCx, hudCy, 130, sweepAngle, sweepAngle + 0.65);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-
-      // 4. Desk Glowing Contour (Viền LED bàn BTV thời sự)
-      ctx.save();
-      ctx.strokeStyle = `rgba(255, 140, 0, ${0.65 * breath})`;
-      ctx.lineWidth = 3.5;
-      ctx.shadowColor = '#FF6B00';
-      ctx.shadowBlur = 15 * glowMult;
-      ctx.beginPath();
-      ctx.moveTo(1050, 840);
-      ctx.lineTo(1155, 680);
-      ctx.lineTo(1500, 680);
-      ctx.lineTo(1920, 710);
-      ctx.stroke();
-
-      ctx.strokeStyle = `rgba(255, 245, 200, ${0.8 * breath})`;
-      ctx.lineWidth = 1.5;
-      ctx.shadowBlur = 5;
-      ctx.stroke();
-      ctx.restore();
-
-      // 5. Ceiling LED Moving Strip
-      ctx.save();
-      ctx.strokeStyle = `rgba(255, 170, 50, ${0.5 * breath})`;
-      ctx.lineWidth = 3;
-      ctx.shadowColor = '#FFB703';
-      ctx.shadowBlur = 10 * glowMult;
-      ctx.beginPath();
-      ctx.moveTo(0, 60);
-      ctx.lineTo(w, 60);
-      ctx.stroke();
-
-      // Horizontal sweep flare along the ceiling
-      const ceilX = (time * 380) % (w + 400) - 200;
-      const ceilGrad = ctx.createRadialGradient(ceilX, 60, 2, ceilX, 60, 60);
-      ceilGrad.addColorStop(0, `rgba(255, 255, 255, ${0.85 * glowMult})`);
-      ceilGrad.addColorStop(0.35, `rgba(255, 200, 80, ${0.55 * glowMult})`);
-      ceilGrad.addColorStop(1, 'rgba(255, 107, 0, 0)');
-      ctx.fillStyle = ceilGrad;
-      ctx.beginPath();
-      ctx.arc(ceilX, 60, 60, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-
-      ctx.restore();
-    }
-
-    // ----------------------------------------------------
-    // ÁNH SÁNG LED DI CHUYỂN DỌC CÁC RÃNH ĐÈN CAM STUDIO
-    // ----------------------------------------------------
-    function drawLivestreamDynamicGlow(w, h, timeSec) {
-      if (!showDynamicLeds) return;
-      const glowMult = (ledGlowIntensity / 100);
-
-      ctx.save();
-      // Luồng ánh sáng di chuyển dọc 3 rãnh LED cam trên tường và phía trên bàn làm việc
-      const channelsX = [1160, 1370, 1630];
-      channelsX.forEach((cx, idx) => {
-        const streakY = ((timeSec * 85 + idx * 180) % 640) + 160;
-        const grad = ctx.createRadialGradient(cx, streakY, 2, cx, streakY, 32);
-        grad.addColorStop(0, `rgba(255, 255, 255, ${0.75 * glowMult})`);
-        grad.addColorStop(0.35, `rgba(255, 140, 20, ${0.45 * glowMult})`);
-        grad.addColorStop(1, 'rgba(255, 107, 0, 0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(cx, streakY, 32, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      ctx.restore();
-    }
-
     // NEON PARTICLES (TALK11 ORANGE & GOLD THEME)
     // ----------------------------------------------------
     const neonParticles = [];
@@ -11886,56 +11441,6 @@
         ctx.font = '700 10.5px sans-serif';
         ctx.fillText('✋ Kéo để di chuyển', boxX + boxW / 2, boxY - 13);
       }
-
-      ctx.restore();
-    }
-
-    // ----------------------------------------------------
-    // BOTTOM TICKER
-    // ----------------------------------------------------
-    function drawScrollingTicker(y, height, text, speed, timeSec) {
-      const w = canvas.width;
-      ctx.save();
-
-      const bgGrad = ctx.createLinearGradient(0, y, w, y);
-      bgGrad.addColorStop(0, 'rgba(8, 12, 24, 0.96)');
-      bgGrad.addColorStop(1, 'rgba(15, 23, 42, 0.98)');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, y, w, height);
-
-      // Top Orange Accent Line
-      ctx.fillStyle = '#FF6B00';
-      ctx.fillRect(0, y, w, 2.5);
-
-      const badgeW = 180;
-      ctx.fillStyle = '#FF6B00';
-      ctx.fillRect(0, y, badgeW, height);
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = `900 15px "${currentSelectedFont}", "Be Vietnam Pro", sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(tickerBadgeText || '● TALK11 NEWS', badgeW / 2, y + (height / 2));
-
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(badgeW + 10, y, w - badgeW - 10, height);
-      ctx.clip();
-
-      ctx.font = `700 20px "${currentSelectedFont}", "Be Vietnam Pro", sans-serif`;
-      ctx.fillStyle = '#F8FAFC';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-
-      const fullText = (text || '') + '     ★     ' + (text || '') + '     ★     ';
-      const textWidth = ctx.measureText(fullText).width;
-      const t = (typeof timeSec === 'number') ? timeSec : previewCurrentSec;
-      const scrollSpeedPx = (speed || 3.2) * 60 * (tickerSpeedMultiplier || 1.0); // 192px/giây trôi mượt mà tuyệt đối độc lập framerate
-      const halfW = Math.max(1, textWidth / 2);
-      const offset = (t * scrollSpeedPx) % halfW;
-
-      ctx.fillText(fullText, badgeW + 15 - offset, y + (height / 2));
-      ctx.restore();
 
       ctx.restore();
     }
@@ -13580,7 +13085,6 @@
         }
 
         // ĐÈN LED CHUYỂN ĐỘNG & ĐỒNG HỒ LIVE TRÊN KHUNG STREAM
-        drawLivestreamDynamicGlow(w, h, timeSec);
       } else if (selectedStudioTheme === 'white_orange_anchor') {
         // TRƯỜNG QUAY THỜI SỰ TRỰC DIỆN: BÀN BTV BÊN TRÁI, MÀN HÌNH TV BÊN PHẢI (CAM SÁNG & TRẮNG)
         if (imgStudioAnchor && (imgStudioAnchor._loaded || (imgStudioAnchor.complete && imgStudioAnchor.naturalWidth > 0))) {
@@ -13594,7 +13098,6 @@
         }
 
         // ĐÈN LED DI CHUYỂN & NHÁY TRỰC TIẾP TRÊN TRƯỜNG QUAY
-        drawWhiteOrangeStudioDynamicLEDs(w, h, timeSec);
       } else {
         // HẦM NEON CYBER 3D
         if (imgStudioCyber && (imgStudioCyber._loaded || (imgStudioCyber.complete && imgStudioCyber.naturalWidth > 0))) {
@@ -13624,11 +13127,6 @@
 
         // 3. Glowing Orange Fireflies / Floating Light Particles
         updateAndDrawNeonParticles(w, h, time, timeSec);
-      }
-
-      // HẠT SƯƠNG NHỎ LI TI BAY LÊN SINH ĐỘNG (TOÀN TRƯỜNG QUAY TRỪ GOOGLE MEET)
-      if (selectedStudioTheme !== 'talk11_classroom') {
-        updateAndDrawDewParticles(w, h, time, timeSec);
       }
 
       // 4. TV Frame & Dynamic Media Screen (Thu nhỏ 1 cỡ chuẩn 16:9: 1152 × 648)
@@ -14118,11 +13616,6 @@
         drawActiveSubtitles(w, h, timeSec);
       }
 
-      // 8. Bottom Ticker (Only when in studio broadcast mode)
-      if (isStudioThemeAllowed) {
-        // drawScrollingTicker bypassed
-      }
-
       // Interactive Brush Cursor Ring on Canvas (Only during preview, never in export recording)
       if (!isExportingRecording && canvasHoverScreenX >= 0 && canvasHoverScreenY >= 0 && (aiMattingTool === 'brush_keep' || aiMattingTool === 'brush_remove')) {
         ctx.save();
@@ -14360,6 +13853,7 @@
 
       isExportCancelled = false;
       isExportFinishing = false;
+      selectedExportMode = selectExportModeElem?.value || 'full';
       // Tự động kết xuất cho đến đoạn ảnh cuối cùng (Tự động cắt khoảng lặng nếu bật)
       const finalDur = getFinalExportDuration();
       let rawDur = Math.max(2, durationSec || finalDur);
@@ -14811,41 +14305,8 @@
     if (sliderTvMotion) sliderTvMotion.addEventListener('input', () => { valTvMotion.textContent = `${sliderTvMotion.value}%`; });
 
 
-    // WIRE UP MEDIA VAULT CONTROLS
-    const btnRestoreVaultToTv = document.getElementById('btnRestoreVaultToTv');
-    if (btnRestoreVaultToTv) {
-      btnRestoreVaultToTv.addEventListener('click', () => {
-        restoreVaultToTimeline();
-      });
-    }
-
-    const btnUploadToVault = document.getElementById('btnUploadToVault');
-    const inputVaultMultiFile = document.getElementById('inputVaultMultiFile');
-    if (btnUploadToVault && inputVaultMultiFile) {
-      btnUploadToVault.addEventListener('click', () => {
-        inputVaultMultiFile.click();
-      });
-      inputVaultMultiFile.addEventListener('change', async (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-          const fls = Array.from(e.target.files);
-          for (const f of fls) {
-            await saveMediaToVault(f, 'vault_direct');
-          }
-          showToast(`✓ Đã lưu ${fls.length} media vào kho!`);
-        }
-      });
-    }
-
-    const btnClearVault = document.getElementById('btnClearVault');
-    if (btnClearVault) {
-      btnClearVault.addEventListener('click', () => {
-        clearAllVault();
-      });
-    }
-
     // Initialize All Components
     initCollapsibleSections();
-    try { renderVaultUI(); } catch(eVault) {}
     renderWallScreensUI();
     syncDurationUI();
     renderRuler();
@@ -14938,9 +14399,6 @@
         showBroadcastClock,
         topic: inputVideoTopic?.value,
         title: inputVideoTitle?.value,
-        tickerText: inputTickerText?.value,
-        tickerSpeedMultiplier,
-        tickerBadgeText,
         subtitleStyle,
         subPosY,
         subPosX,
@@ -14980,7 +14438,10 @@
           }
           if (p.topic && inputVideoTopic) inputVideoTopic.value = p.topic;
           if (p.title && inputVideoTitle) inputVideoTitle.value = p.title;
-          if (p.tickerText && inputTickerText) inputTickerText.value = p.tickerText;
+          if (p.selectedExportMode && selectExportModeElem && ['full', 'transparent_webm', 'alpha_matte', 'greenscreen'].includes(p.selectedExportMode)) {
+            selectedExportMode = p.selectedExportMode;
+            selectExportModeElem.value = selectedExportMode;
+          }
           if (p.anchorName && document.getElementById('inputAnchorName')) document.getElementById('inputAnchorName').value = p.anchorName;
           if (p.subtitlesList) subtitlesList = p.subtitlesList;
           if (p.selectedAspectRatio) setAspectRatio(p.selectedAspectRatio);
@@ -14995,53 +14456,6 @@
         }
       };
       reader.readAsText(file);
-    });
-
-    // 5. NẠP 6 MEDIA MẪU VÀO KHO LƯU TRỮ (SAMPLE PACK)
-    document.getElementById('btnLoadSampleMediaPack')?.addEventListener('click', () => {
-      const samples = [
-        { name: 'topic_vietnam_history.jpg', img: imgTopicHistory },
-        { name: 'topic_science_space.jpg', img: imgTopicScience },
-        { name: 'intro_breaking_news.jpg', img: imgTopicBreaking },
-        { name: 'studio_history_gold.jpg', img: imgHistoryGold },
-        { name: 'studio_history_blue.jpg', img: imgHistoryBlue },
-        { name: 'studio_documentary_report.jpg', img: imgDocReport }
-      ];
-
-      samples.forEach(s => {
-        if (s.img && s.img.complete && s.img.naturalWidth > 0) {
-          const c = document.createElement('canvas');
-          c.width = 640; c.height = 360;
-          const cx = c.getContext('2d');
-          cx.drawImage(s.img, 0, 0, 640, 360);
-          c.toBlob(blob => {
-            if (blob) {
-              const file = new File([blob], s.name, { type: 'image/jpeg' });
-              saveMediaToVault(file, 'sample_pack');
-            }
-          }, 'image/jpeg', 0.85);
-        }
-      });
-      showToast('⚡ Đang nạp bộ ảnh mẫu TALK11 vào kho lưu trữ...');
-    });
-
-    // Filter pills & view mode toggle for vault
-    document.querySelectorAll('.vault-filter-pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.vault-filter-pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        vaultFilterType = btn.getAttribute('data-vault-filter') || 'all';
-        renderVaultUI();
-      });
-    });
-
-    document.querySelectorAll('.vault-view-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.vault-view-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        vaultViewMode = btn.getAttribute('data-view') || 'list';
-        renderVaultUI();
-      });
     });
 
     // 6. VISUAL STUDIO THEME SELECTOR & TINT & CUSTOM BG
@@ -15197,18 +14611,6 @@
       try { render(previewCurrentSec); } catch(err) {}
     });
 
-    document.getElementById('sliderTickerSpeed')?.addEventListener('input', (e) => {
-      const val = parseInt(e.target.value) || 32;
-      tickerSpeedMultiplier = val / 32;
-      const lbl = document.getElementById('valTickerSpeed');
-      if (lbl) lbl.textContent = `${tickerSpeedMultiplier.toFixed(1)}x`;
-    });
-
-    document.getElementById('selectTickerBadge')?.addEventListener('change', (e) => {
-      tickerBadgeText = e.target.value || '● TALK11 NEWS';
-      try { render(previewCurrentSec); } catch(err) {}
-    });
-
     // 9. SUBTITLE STYLE PILLS & BULK TIME SHIFT
     document.querySelectorAll('.btn-sub-style-pill').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -15218,21 +14620,6 @@
         try { render(previewCurrentSec); } catch(e) {}
       });
     });
-
-    function shiftAllSubtitles(deltaSec) {
-      subtitlesList.forEach(s => {
-        s.startSec = Math.max(0, Math.round((s.startSec + deltaSec) * 10) / 10);
-        s.endSec = Math.max(s.startSec + 1, Math.round((s.endSec + deltaSec) * 10) / 10);
-      });
-      renderSubtitlesUI();
-      try { render(previewCurrentSec); } catch(e) {}
-      showToast(`⏱️ Đã dịch chuyển phụ đề ${deltaSec > 0 ? '+' : ''}${deltaSec}s!`);
-    }
-
-    document.getElementById('btnShiftSubMinus1s')?.addEventListener('click', () => shiftAllSubtitles(-1.0));
-    document.getElementById('btnShiftSubMinusHalf')?.addEventListener('click', () => shiftAllSubtitles(-0.5));
-    document.getElementById('btnShiftSubPlusHalf')?.addEventListener('click', () => shiftAllSubtitles(0.5));
-    document.getElementById('btnShiftSubPlus1s')?.addEventListener('click', () => shiftAllSubtitles(1.0));
 
     // 10. BACKGROUND MUSIC & AUDIO MIXER
     document.getElementById('inputBgmAudioFile')?.addEventListener('change', (e) => {
@@ -15306,12 +14693,6 @@
       isLoopPlayback = !isLoopPlayback;
       document.getElementById('btnTimelineLoop')?.classList.toggle('btn-timeline-active', isLoopPlayback);
       showToast(isLoopPlayback ? '🔁 Đã bật chế độ lặp lại video' : '🔁 Đã tắt lặp lại');
-    });
-
-    document.getElementById('btnTimelineSnap')?.addEventListener('click', () => {
-      isTimelineSnapping = !isTimelineSnapping;
-      document.getElementById('btnTimelineSnap')?.classList.toggle('btn-timeline-active', isTimelineSnapping);
-      showToast(isTimelineSnapping ? '🧲 Đã bật chế độ hít nam châm (Snapping)' : '🧲 Đã tắt nam châm');
     });
 
     // 14. SIDEBAR SEARCH BOX
@@ -15481,22 +14862,7 @@
         return;
       }
       saveStudentVideoToStorage(f);
-      saveMediaToVault(f, 'student_upload');
       setupStudentVideoFromBlob(f, f.name);
-    });
-
-    // Chọn từ kho media đã lưu
-    document.getElementById('btnSelectStudentFromVault')?.addEventListener('click', async () => {
-      const items = await getAllVaultItems();
-      const videos = items.filter(it => it.type === 'video' || it.type === 'student_host_video');
-      if (videos.length === 0) {
-        showToast('⚠️ Chưa có video nào trong kho. Hãy bấm "Tải Vào Kho" trước!');
-        return;
-      }
-      const vid = videos[0];
-      setupStudentVideoFromBlob(vid.blob, vid.name);
-      saveStudentVideoToStorage(vid.blob);
-      showToast(`✓ Đã nạp video từ kho: ${vid.name}`);
     });
 
     // Nạp video mẫu
@@ -15645,86 +15011,6 @@
       }
     });
 
-    // 1-Click RVM 4K Backend Matting
-    async function triggerRvm4kBackendMatting() {
-      if (!studentVideoUrl && !currentStudentVideoBlob) {
-        showToast('⚠️ Vui lòng tải video học viên lên trước khi chạy tách nền 4K!');
-        return;
-      }
-      const btns = [
-        document.getElementById('btnRunRvm4kBackend'),
-        document.getElementById('btnWizRunRvm4k')
-      ].filter(Boolean);
-
-      btns.forEach(b => {
-        b.disabled = true;
-        b.innerHTML = '<span>⏳ Đang chạy AI RVM 4K... Vui lòng đợi</span>';
-      });
-      showToast('🚀 Đang gửi video đến máy chủ AI RVM (Robust Video Matting ONNX)...');
-
-      try {
-        let res;
-        const hairDetailParam = (typeof studentMatteHairDetail === 'number' ? studentMatteHairDetail / 100 : 0.75);
-        const coreProtectParam = (typeof studentMatteCoreProtect === 'number' ? studentMatteCoreProtect / 100 : 0.85);
-        const despillParam = (typeof studentChromaDespill === 'number' ? studentChromaDespill : 0.5);
-        const chokeParam = (typeof studentAiErodeRadius === 'number' ? studentAiErodeRadius : 2);
-
-        if (currentStudentVideoBlob) {
-          res = await fetch(`/api/upload-and-rvm-matte?hairDetail=${hairDetailParam}&coreProtect=${coreProtectParam}&despill=${despillParam}&choke=${chokeParam}`, {
-            method: 'POST',
-            body: currentStudentVideoBlob
-          });
-        } else {
-          res = await fetch('/api/rvm-matte', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              input: studentVideoFileName || 'student_input_sample.mp4',
-              hairDetail: hairDetailParam,
-              coreProtect: coreProtectParam,
-              despill: despillParam,
-              choke: chokeParam
-            })
-          });
-        }
-        const data = await res.json();
-        if (data.success && data.outputUrl) {
-          showToast('🎉 Tách nền AI RVM 4K hoàn tất! Đang nạp video vào timeline...');
-          studentVideoUrl = data.outputUrl;
-          studentChromaMode = 'green';
-          const selChroma = document.getElementById('selStudentChromaMode');
-          if (selChroma) selChroma.value = 'green';
-          const btnWizGreen = document.getElementById('btnWizBgGreen');
-          if (btnWizGreen) {
-            document.querySelectorAll('#wizBgModePills .btn-wiz-bg-mode').forEach(b => b.classList.remove('active'));
-            btnWizGreen.classList.add('active');
-          }
-          if (studentVideoElem) {
-            studentVideoElem.src = data.outputUrl;
-            studentVideoElem.load();
-          }
-          try { render(previewCurrentSec); } catch(err) {}
-        } else {
-          showToast('⚠️ Lỗi xử lý backend: ' + (data.error || 'Thử lại'));
-        }
-      } catch (err) {
-        console.error('RVM backend request failed:', err);
-        showToast('⚠️ Lỗi kết nối backend AI: ' + err.message);
-      } finally {
-        btns.forEach(b => {
-          b.disabled = false;
-          if (b.id === 'btnWizRunRvm4k') {
-            b.innerHTML = '<span>👑 Tách Nền RVM 4K Chuẩn CapCut (Khử Sạch Viền Trắng)</span>';
-          } else {
-            b.innerHTML = '<span>👑 Xuất Video Tách Nền RVM 4K Siêu Nét (AI Backend ONNX)</span>';
-          }
-        });
-      }
-    }
-
-    document.getElementById('btnRunRvm4kBackend')?.addEventListener('click', triggerRvm4kBackendMatting);
-    document.getElementById('btnWizRunRvm4k')?.addEventListener('click', triggerRvm4kBackendMatting);
-
     // Unified Matte Tool Switcher (Syncs Pro Mode & Wizard Mode)
     function setMatteTool(tool) {
       aiMattingTool = tool;
@@ -15792,27 +15078,6 @@
 
     document.getElementById('btnClearMatteStrokes')?.addEventListener('click', clearUserMatteStrokes);
     document.getElementById('btnWizClearBrush')?.addEventListener('click', clearUserMatteStrokes);
-
-    // Preview Mode Pills (Studio / Checkerboard / Alpha Matte / Green Screen)
-    const prevModeBtns = [
-      { id: 'btnPrevModeStudio', mode: 'studio' },
-      { id: 'btnPrevModeCheckerboard', mode: 'checkerboard' },
-      { id: 'btnPrevModeAlpha', mode: 'alpha_matte' },
-      { id: 'btnPrevModeGreen', mode: 'greenscreen' }
-    ];
-
-    prevModeBtns.forEach(({ id, mode }) => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.addEventListener('click', () => {
-          aiMattingPreviewMode = mode;
-          window.aiMattingPreviewMode = mode;
-          document.querySelectorAll('#aiMattingPreviewPills button').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          try { render(previewCurrentSec); } catch(err) {}
-        });
-      }
-    });
 
     const btnQualityFast = document.getElementById('btnQualityFast');
     if (btnQualityFast) {
@@ -16489,7 +15754,7 @@
           btnSimple.style.color = '#94A3B8';
           btnSimple.style.boxShadow = 'none';
         }
-        showToast('⚙️ Đã mở Chế Độ Chuyên Sâu Pro (Timeline, Kho Media, NLE)');
+        showToast('⚙️ Đã mở Chế Độ Chuyên Sâu (Timeline & Hiệu Chỉnh)');
       } else {
         document.body.classList.remove('app-mode-pro');
         document.body.classList.add('app-mode-simple');
@@ -16559,7 +15824,6 @@
         return;
       }
       saveStudentVideoToStorage(f);
-      saveMediaToVault(f, 'student_upload');
       setupStudentVideoFromBlob(f, f.name);
     });
 
@@ -17076,55 +16340,6 @@
       e.target.value = '';
     });
 
-    // Import SFX From Direct Web/Social URL
-    document.getElementById('btnImportSfxFromUrl')?.addEventListener('click', async () => {
-      const url = prompt('🌐 Dán đường link trực tiếp file âm thanh (.mp3, .wav) từ mạng xã hội/web:');
-      if (!url || !url.trim()) return;
-      try {
-        showToast('⏳ Đang tải file âm thanh từ link...');
-        const resp = await fetch(url.trim());
-        if (!resp.ok) throw new Error('HTTP ' + resp.status);
-        const blob = await resp.blob();
-        const fileName = url.split('/').pop().split('?')[0] || 'Web_Audio.mp3';
-        const fakeFile = new File([blob], fileName, { type: blob.type || 'audio/mpeg' });
-        await handleCustomSfxUpload([fakeFile]);
-      } catch (err) {
-        console.error('Fetch SFX URL error:', err);
-        alert('⚠️ Không thể tải trực tiếp file từ link do chính sách bảo mật (CORS) của trang web đó!\n\n💡 MẸO ĐƠN GIẢN:\n1. Tải file âm thanh về máy tính từ TikTok/CapCut/YouTube.\n2. Bấm nút "📁 Tải File SFX (.mp3, .wav)" hoặc Kéo thả file thẳng vào cửa sổ trang này là được ngay!');
-      }
-    });
-
-    // Font Social Guide button
-    document.getElementById('btnFontSocialGuide')?.addEventListener('click', () => {
-      alert(
-        '🔤 HƯỚNG DẪN TẢI & NẠP FONT TỪ CANVA, CAPCUT, TIKTOK, DAFONT:\n\n' +
-        '1. TẢI FONT:\n' +
-        '   - Vào DaFont.com, Google Fonts, hoặc xuất bộ font yêu thích từ CapCut/Canva.\n' +
-        '   - Chọn định dạng file font: .ttf, .otf, hoặc .woff, .woff2.\n\n' +
-        '2. NẠP VÀO TOOL:\n' +
-        '   - Bấm nút "📁 Nạp Thêm Font Mới" hoặc KÉO THẢ file font thẳng vào trang web.\n' +
-        '   - Hệ thống sẽ tự động lưu font vào bộ nhớ máy bạn (không mất khi F5 tải lại trang).\n\n' +
-        '3. ÁP DỤNG:\n' +
-        '   - Chọn font vừa nạp trong ô "Phông chữ", toàn bộ tiêu đề, phụ đề, tên bé sẽ đổi phông ngay lập tức!'
-      );
-    });
-
-    // SFX Social Guide button
-    document.getElementById('btnSfxSocialGuide')?.addEventListener('click', () => {
-      alert(
-        '🎵 HƯỚNG DẪN TẢI SOUND EFFECT TỪ TIKTOK, YOUTUBE, CAPCUT:\n\n' +
-        '1. TẢI ÂM THANH:\n' +
-        '   - Tìm các hiệu ứng âm thanh hot trên TikTok/YouTube Shorts (vd: sound meme vui nhộn, ting ting, vút gió,...).\n' +
-        '   - Tải về máy dạng file .mp3 hoặc .wav (hoặc dùng các trang web chuyển đổi video thành mp3).\n\n' +
-        '2. NẠP VÀO TOOL:\n' +
-        '   - Bấm nút "📁 Tải File SFX (.mp3, .wav)" hoặc KÉO THẢ file âm thanh thẳng vào cửa sổ trang.\n' +
-        '   - Tool tự động lưu vào Kho Âm Thanh Mạng Xã Hội vĩnh viễn trên máy tính của bạn.\n\n' +
-        '3. SỬ DỤNG:\n' +
-        '   - Bấm nút [▶️] để nghe thử.\n' +
-        '   - Bấm [+] để chèn vào thanh tiến trình Timeline ngay tại giây hiện tại của video!'
-      );
-    });
-
     // Drag and Drop files onto window
     window.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -17165,8 +16380,13 @@
       try {
         const db = await getVaultDB();
         const tx = db.transaction(VAULT_STORE, 'readwrite');
-        tx.objectStore(VAULT_STORE).clear();
-        
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error || new Error('Không thể xóa dữ liệu đã lưu'));
+          tx.onabort = () => reject(tx.error || new Error('Giao dịch xóa dữ liệu bị hủy'));
+          tx.objectStore(VAULT_STORE).clear();
+        });
+
         if (studentVideoElem) {
           studentVideoElem.pause();
           studentVideoElem.src = '';
