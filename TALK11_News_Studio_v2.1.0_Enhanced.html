@@ -12099,16 +12099,16 @@
 
           // SYNCHRONOUS PERSISTENT CAPTURE: Lưu mặt nạ nơ-ron ngay lập tức vào canvas 2D
           // trước khi WebGL texture bị MediaPipe tái sử dụng/xóa ở frame kế tiếp!
-          if (results.segmentationMask) {
-            const mW = results.segmentationMask.width || 256;
-            const mH = results.segmentationMask.height || 256;
+          if (results.segmentationMask && results.segmentationMask.width > 0 && results.segmentationMask.height > 0) {
+            const mW = results.segmentationMask.width;
+            const mH = results.segmentationMask.height;
             if (aiMaskCanvas.width !== mW || aiMaskCanvas.height !== mH) {
               aiMaskCanvas.width = mW;
               aiMaskCanvas.height = mH;
             }
-            aiMaskCtx.globalCompositeOperation = 'copy';
-            aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
             aiMaskCtx.globalCompositeOperation = 'source-over';
+            aiMaskCtx.clearRect(0, 0, mW, mH);
+            aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
             hasValidAiMask = true;
             latestSegmentMask = aiMaskCanvas;
 
@@ -12140,16 +12140,16 @@
             selfieSegmentation.onResults((results) => {
               isSegmentingFrame = false;
               selfieSegmentationReady = true;
-              if (results.segmentationMask) {
-                const mW = results.segmentationMask.width || 256;
-                const mH = results.segmentationMask.height || 256;
+              if (results.segmentationMask && results.segmentationMask.width > 0 && results.segmentationMask.height > 0) {
+                const mW = results.segmentationMask.width;
+                const mH = results.segmentationMask.height;
                 if (aiMaskCanvas.width !== mW || aiMaskCanvas.height !== mH) {
                   aiMaskCanvas.width = mW;
                   aiMaskCanvas.height = mH;
                 }
-                aiMaskCtx.globalCompositeOperation = 'copy';
-                aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
                 aiMaskCtx.globalCompositeOperation = 'source-over';
+                aiMaskCtx.clearRect(0, 0, mW, mH);
+                aiMaskCtx.drawImage(results.segmentationMask, 0, 0, mW, mH);
                 hasValidAiMask = true;
                 latestSegmentMask = aiMaskCanvas;
 
@@ -12491,10 +12491,10 @@
       const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
       const curParamsKey = `${studentChromaMode}_${studentChromaTolerance}_${studentChromaFeather}_${studentAiErodeRadius}_${studentMatteCoreProtect}_${studentMatteHairDetail}_${studentCropLeft}_${studentCropRight}_${studentCropBottom}_${enablePlantRemoval}_${enableAiAntiFlicker}_${aiMattingPromptPoints ? aiMattingPromptPoints.length : 0}_${hasUserMatteCorrections ? 1 : 0}`;
 
-      // FAST 120FPS CACHE BYPASS: If video is paused or static AND parameters unchanged, return cache immediately (0.0001ms)!
-      if (hasChromaCachedFrame && !isExportingRecording && !forceChromaReprocess) {
-        const isTimeStatic = studentVideoElem.paused || Math.abs(curVidTime - lastChromaProcessedVideoTime) < 0.015;
-        if (isTimeStatic && curParamsKey === lastChromaParamsKey) {
+      // FAST 120FPS CACHE BYPASS: Chỉ kích hoạt khi video đang PAUSED để giải phóng 100% CPU.
+      // Khi video đang phát (playing), mỗi frame video mới đều được xử lý mượt mà, không bao giờ bị đứng frame!
+      if (hasChromaCachedFrame && !isExportingRecording && !forceChromaReprocess && studentVideoElem.paused) {
+        if (curParamsKey === lastChromaParamsKey) {
           return offscreenKeyCanvas;
         }
       }
@@ -12617,17 +12617,15 @@
           }
 
           if (maxProbInMask < 20) {
-            // KHÔNG BAO GIỜ hiển thị chớp nháy toàn bộ nền phòng gốc!
-            // Tái sử dụng khung hình nhân vật đã tách sạch gần nhất để đảm bảo liền mạch
+            // Không bao giờ hiển thị chớp nháy nền phòng gốc
             if (hasValidStudentCachedFrame && lastValidStudentFrameCanvas.width > 0) {
               offscreenKeyCtx.globalCompositeOperation = 'copy';
               offscreenKeyCtx.drawImage(lastValidStudentFrameCanvas, 0, 0, procW, procH);
               offscreenKeyCtx.globalCompositeOperation = 'source-over';
-              return finalizeChromaCache();
+              return offscreenKeyCanvas;
             }
-            // Nếu là frame khởi động đầu tiên chưa có cache: giữ nguyên video
             offscreenKeyCtx.putImageData(finalVidImgData, 0, 0);
-            return finalizeChromaCache();
+            return offscreenKeyCanvas;
           }
 
           // 3. TÍNH TOÁN THAM SỐ PHÂN TÁCH ÔM SÁT VIỀN DA & TÓC (VFX STUDIO MATTING)
@@ -12697,16 +12695,21 @@
               const rawProb = Math.max(mData[idx], mData[idx + 1], mData[idx + 2], mData[idx + 3]);
               let targetA = aiHermiteLUT[rawProb];
 
-              // Lọc mượt thời gian chống rung nhấp nháy ở 60FPS
+              // Lọc mượt thời gian chống rung nhấp nháy ở 60FPS (Multi-Scale Temporal EMA Filter):
               if (enableAiAntiFlicker) {
                 const prevA = aiTemporalAlphaBuffer[p];
                 const diff = Math.abs(targetA - prevA);
-                if (diff > 18) {
-                  // Chuyển động nhanh: Cập nhật tức thì không trễ cử chỉ
+                if (diff > 85) {
+                  // Cử chỉ chuyển động cực nhanh (vung tay, quay đầu): cập nhật tức thì 100% không để lại bóng mờ
                   aiTemporalAlphaBuffer[p] = targetA;
+                } else if (diff > 35) {
+                  // Chuyển động vừa: bám theo 80%
+                  const smoothA = prevA * 0.20 + targetA * 0.80;
+                  aiTemporalAlphaBuffer[p] = smoothA;
+                  targetA = Math.round(smoothA);
                 } else {
-                  // Vùng tĩnh: Lọc mượt chống flicker
-                  const smoothA = prevA * 0.35 + targetA * 0.65;
+                  // Vùng biên tĩnh/rung nhẹ: lọc mượt 50/50 triệt tiêu hoàn toàn hiện tượng lấp lánh (anti-shimmer)
+                  const smoothA = prevA * 0.50 + targetA * 0.50;
                   aiTemporalAlphaBuffer[p] = smoothA;
                   targetA = Math.round(smoothA);
                 }
@@ -12855,10 +12858,18 @@
                 if (!isSkinColor && !isGreenScreenWallAI) {
                   const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
                   const distWall = Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw);
-                  if (distWall < 26 && a < 210) {
-                    // Dập tắt dứt khoát mảng tường trắng lem dính ở kẽ ngón tay và mép tóc!
-                    fData[idx + 3] = 0;
-                    if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
+                  if (distWall < 30 && a < 210) {
+                    if (distWall <= 16) {
+                      // Rất sát màu tường phòng: Triệt tiêu hoàn toàn
+                      fData[idx + 3] = 0;
+                      if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
+                    } else {
+                      // Vùng chuyển tiếp: Giảm alpha mượt mà theo khoảng cách, không tạo gãy biên nhấp nháy
+                      const wallFade = (distWall - 16) / 14;
+                      const attenuatedA = Math.round(fData[idx + 3] * wallFade);
+                      fData[idx + 3] = attenuatedA;
+                      if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = attenuatedA;
+                    }
                   }
                 }
               }
@@ -13213,7 +13224,8 @@
           processedCanvas = processStudentChromaKey();
         }
         if (processedCanvas && processedCanvas.width > 0 && processedCanvas.height > 0) {
-          if (!hasValidStudentCachedFrame || forceChromaReprocess || (studentVideoElem && !studentVideoElem.paused)) {
+          // Chỉ lưu khung hình vào lastValidStudentFrameCanvas khi đã được tách nền (tránh lưu nhầm frame phòng ban đầu)
+          if (hasValidAiMask || studentChromaMode !== 'ai_auto') {
             if (lastValidStudentFrameCanvas.width !== processedCanvas.width || lastValidStudentFrameCanvas.height !== processedCanvas.height) {
               lastValidStudentFrameCanvas.width = processedCanvas.width;
               lastValidStudentFrameCanvas.height = processedCanvas.height;
