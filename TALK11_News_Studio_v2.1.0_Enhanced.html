@@ -12491,10 +12491,14 @@
       const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
       const curParamsKey = `${studentChromaMode}_${studentChromaTolerance}_${studentChromaFeather}_${studentAiErodeRadius}_${studentMatteCoreProtect}_${studentMatteHairDetail}_${studentCropLeft}_${studentCropRight}_${studentCropBottom}_${enablePlantRemoval}_${enableAiAntiFlicker}_${aiMattingPromptPoints ? aiMattingPromptPoints.length : 0}_${hasUserMatteCorrections ? 1 : 0}`;
 
-      // FAST 120FPS CACHE BYPASS: Chỉ kích hoạt khi video đang PAUSED để giải phóng 100% CPU.
-      // Khi video đang phát (playing), mỗi frame video mới đều được xử lý mượt mà, không bao giờ bị đứng frame!
-      if (hasChromaCachedFrame && !isExportingRecording && !forceChromaReprocess && studentVideoElem.paused) {
-        if (curParamsKey === lastChromaParamsKey) {
+      // FAST 120FPS CACHE BYPASS:
+      // Tái sử dụng frame đã xử lý nếu frame video chưa thay đổi (30fps video trên màn hình 60/120Hz)
+      // hoặc khi video đang pause, giúp giải phóng 60% CPU và ngăn chặn hiện tượng drop frame / khựng hình
+      const isNewVideoFrame = (typeof lastChromaProcessedVideoTime === 'number')
+        ? Math.abs(curVidTime - lastChromaProcessedVideoTime) >= 0.020
+        : true;
+      if (hasChromaCachedFrame && !isExportingRecording && !forceChromaReprocess) {
+        if ((!isNewVideoFrame || studentVideoElem.paused) && curParamsKey === lastChromaParamsKey) {
           return offscreenKeyCanvas;
         }
       }
@@ -12555,6 +12559,10 @@
           return finalizeChromaCache();
         }
 
+        // Vẽ khung hình video hiện tại vào offscreenKeyCanvas (đã scale chuẩn procW x procH)
+        offscreenKeyCtx.globalCompositeOperation = 'source-over';
+        offscreenKeyCtx.drawImage(studentVideoElem, 0, 0, procW, procH);
+
         const now = performance.now();
         // Tự động mở khóa watchdog nếu frame trước bị delay hoặc drop
         if (isSegmentingFrame && (now - lastSegmentTime > 250)) {
@@ -12565,26 +12573,20 @@
         const curFps = selectFpsElem ? (parseInt(selectFpsElem.value, 10) || 60) : 60;
         // BẢO VỆ CHỐNG TRÀN TÁC VỤ (ANTI-STARVATION 30FPS INFERENCE PIPELINE):
         // Mạng nơ-ron MediaPipe chạy tối ưu ở 30FPS (~33ms).
-        // Vòng lặp rAF 60FPS kết hợp bộ đệm thời gian aiTemporalAlphaBuffer nội suy mượt mà 60/120FPS,
-        // ngăn chặn hoàn toàn hiện tượng ứ đọng WebGL microtasks gây lỗi "Trang không phản hồi".
         const minInferInterval = 33;
 
         if (selfieSegmentation && selfieSegmentationReady && !isSegmentingFrame && (now - lastSegmentTime >= minInferInterval)) {
           if (studentVideoElem.readyState >= 2 && studentVideoElem.videoWidth > 0) {
             isSegmentingFrame = true;
             lastSegmentTime = now;
-            selfieSegmentation.send({ image: studentVideoElem }).catch((err) => {
+            // Gửi offscreenKeyCanvas (đã scale sẵn 640x360) thay vì 1080p cồng kềnh, giảm 90% GPU texture upload stalls
+            const inferTarget = (offscreenKeyCanvas && offscreenKeyCanvas.width > 0) ? offscreenKeyCanvas : studentVideoElem;
+            selfieSegmentation.send({ image: inferTarget }).catch((err) => {
               console.warn('selfieSegmentation.send error:', err);
               isSegmentingFrame = false;
             });
           }
         }
-
-        // userMatteCorrectionCanvas already sized upfront
-
-        // Draw original video frame
-        offscreenKeyCtx.globalCompositeOperation = 'source-over';
-        offscreenKeyCtx.drawImage(studentVideoElem, 0, 0, procW, procH);
 
         if (hasValidAiMask && aiMaskCanvas.width > 0 && aiMaskCanvas.height > 0) {
           if (aiInterpolateCanvas.width !== procW || aiInterpolateCanvas.height !== procH) {
@@ -12930,8 +12932,11 @@
                   const p = row + x;
                   const a = srcMask[p];
                   if (a > 0) {
-                    // Nếu là da bàn tay/ngón tay ở nửa dưới: bảo toàn không cho erode thu nhỏ
                     const minCross = Math.min(srcMask[p - 1], srcMask[p + 1], srcMask[p - procW], srcMask[p + procW]);
+                    if (minCross === 255) {
+                      dstMask[p] = 255;
+                      continue;
+                    }
                     const minDiag = Math.min(srcMask[p - 1 - procW], srcMask[p + 1 - procW], srcMask[p - 1 + procW], srcMask[p + 1 + procW]);
                     const min8 = Math.min(minCross, minDiag);
                     if (min8 < a) {
@@ -14278,28 +14283,25 @@
         const prevSec = previewCurrentSec;
         const speed = (typeof currentPlaybackSpeed === 'number') ? currentPlaybackSpeed : 1.0;
 
-        // MASTER TIMELINE CLOCK (Delta-driven):
-        // Luôn luôn tiến tới nhịp nhàng theo thời gian thực (60FPS), không bao giờ bị khựng, đóng băng hoặc kẹt ở 00:00.1!
-        previewCurrentSec = previewCurrentSec + delta * speed;
-        if (previewCurrentSec >= totalDurationSec) {
-          previewCurrentSec = 0;
-          lastKnownPlaybackClipIdx = -1;
-          if (studentVideoElem) {
-            try {
-              studentVideoElem.currentTime = getStudentVideoPlaybackTime(0);
-            } catch(e) {}
-          }
-        }
-
-        // ĐỒNG BỘ VIDEO HỌC VIÊN THEO DÒNG THỜI GIAN MASTER
+        // MASTER TIMELINE CLOCK (Delta + Video Driven):
         if (studentVideoElem && (studentVideoDuration > 0 || rawStudentVideoDuration > 0)) {
-          if (studentVideoElem.paused && !studentVideoElem.ended) {
-            studentVideoElem.play().catch(() => {});
+          if (studentVideoElem.playbackRate !== speed) {
+            try { studentVideoElem.playbackRate = speed; } catch(eRate) {}
           }
-
-          const targetVidTime = getStudentVideoPlaybackTime(previewCurrentSec);
+          const offset = (studentTimeOffset || 0);
+          const dur = (studentVideoDuration > 0) ? studentVideoDuration : (rawStudentVideoDuration || 60);
 
           if (isSilenceCutEnabled && studentStitchedClips && studentStitchedClips.length > 0) {
+            previewCurrentSec = previewCurrentSec + delta * speed;
+            if (previewCurrentSec >= totalDurationSec) {
+              previewCurrentSec = 0;
+              lastKnownPlaybackClipIdx = -1;
+              try { studentVideoElem.currentTime = getStudentVideoPlaybackTime(0); } catch(e) {}
+            }
+            if (studentVideoElem.paused && !studentVideoElem.ended) {
+              studentVideoElem.play().catch(() => {});
+            }
+            const targetVidTime = getStudentVideoPlaybackTime(previewCurrentSec);
             let curPlaybackClipIdx = -1;
             for (let i = 0; i < studentStitchedClips.length; i++) {
               if (previewCurrentSec >= studentStitchedClips[i].timelineStart && previewCurrentSec < studentStitchedClips[i].timelineEnd) {
@@ -14308,17 +14310,39 @@
               }
             }
             const isClipBoundaryJump = (curPlaybackClipIdx !== lastKnownPlaybackClipIdx && curPlaybackClipIdx >= 0);
-            const isDriftTooLarge = Math.abs(studentVideoElem.currentTime - targetVidTime) > 0.45;
-
-            if (!studentVideoElem.seeking && (isClipBoundaryJump || isDriftTooLarge)) {
+            if (!studentVideoElem.seeking && isClipBoundaryJump) {
               lastKnownPlaybackClipIdx = curPlaybackClipIdx;
               studentVideoElem.currentTime = targetVidTime;
             }
           } else {
-            // Khi không cắt khoảng lặng: chỉ seek lại khi độ lệch lớn (> 1.2s) để tránh vòng lặp seeking gây giật khung hình
-            if (!studentVideoElem.seeking && Math.abs(studentVideoElem.currentTime - targetVidTime) > 1.2) {
-              studentVideoElem.currentTime = targetVidTime;
+            // CHẾ ĐỘ PHÁT BÌNH THƯỜNG (MƯỢT MÀ 60FPS, KHÔNG SEEK LẶP GÂY ĐỨNG HÌNH):
+            if (previewCurrentSec >= offset && previewCurrentSec < (offset + dur)) {
+              if (studentVideoElem.paused && !studentVideoElem.ended) {
+                studentVideoElem.play().catch(() => {});
+              }
+              // Đồng bộ tự nhiên theo tiến trình video mà không bao giờ ép seek liên tục
+              if (!studentVideoElem.seeking && studentVideoElem.readyState >= 2) {
+                previewCurrentSec = offset + studentVideoElem.currentTime;
+              } else {
+                previewCurrentSec = previewCurrentSec + delta * speed;
+              }
+            } else {
+              previewCurrentSec = previewCurrentSec + delta * speed;
+              if (studentVideoElem && !studentVideoElem.paused) {
+                studentVideoElem.pause();
+              }
             }
+            if (previewCurrentSec >= totalDurationSec) {
+              previewCurrentSec = 0;
+              if (studentVideoElem) {
+                try { studentVideoElem.currentTime = 0; } catch(e) {}
+              }
+            }
+          }
+        } else {
+          previewCurrentSec = previewCurrentSec + delta * speed;
+          if (previewCurrentSec >= totalDurationSec) {
+            previewCurrentSec = 0;
           }
         }
 
