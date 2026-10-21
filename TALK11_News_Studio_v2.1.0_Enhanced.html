@@ -12579,9 +12579,8 @@
           if (studentVideoElem.readyState >= 2 && studentVideoElem.videoWidth > 0) {
             isSegmentingFrame = true;
             lastSegmentTime = now;
-            // Gửi offscreenKeyCanvas (đã scale sẵn 640x360) thay vì 1080p cồng kềnh, giảm 90% GPU texture upload stalls
-            const inferTarget = (offscreenKeyCanvas && offscreenKeyCanvas.width > 0) ? offscreenKeyCanvas : studentVideoElem;
-            selfieSegmentation.send({ image: inferTarget }).catch((err) => {
+            // Luôn gửi video gốc nguyên bản (studentVideoElem) vào MediaPipe để triệt tiêu hoàn toàn vòng lặp phản hồi gây lan tràn tách nền
+            selfieSegmentation.send({ image: studentVideoElem }).catch((err) => {
               console.warn('selfieSegmentation.send error:', err);
               isSegmentingFrame = false;
             });
@@ -12706,20 +12705,25 @@
               // Lọc mượt thời gian chống rung nhấp nháy ở 60FPS (Multi-Scale Temporal EMA Filter):
               if (enableAiAntiFlicker) {
                 const prevA = aiTemporalAlphaBuffer[p];
-                const diff = Math.abs(targetA - prevA);
-                if (diff > 85) {
-                  // Cử chỉ chuyển động cực nhanh (vung tay, quay đầu): cập nhật tức thì 100% không để lại bóng mờ
-                  aiTemporalAlphaBuffer[p] = targetA;
-                } else if (diff > 35) {
-                  // Chuyển động vừa: bám theo 80%
-                  const smoothA = prevA * 0.20 + targetA * 0.80;
-                  aiTemporalAlphaBuffer[p] = smoothA;
-                  targetA = Math.round(smoothA);
+                if (targetA === 0) {
+                  // Nền phòng tuyệt đối: triệt tiêu ngay lập tức, ngăn ngừa hoàn toàn hiện tượng lan tỏa alpha ra ngoài
+                  aiTemporalAlphaBuffer[p] = 0;
                 } else {
-                  // Vùng biên tĩnh/rung nhẹ: lọc mượt 50/50 triệt tiêu hoàn toàn hiện tượng lấp lánh (anti-shimmer)
-                  const smoothA = prevA * 0.50 + targetA * 0.50;
-                  aiTemporalAlphaBuffer[p] = smoothA;
-                  targetA = Math.round(smoothA);
+                  const diff = Math.abs(targetA - prevA);
+                  if (diff > 85) {
+                    // Cử chỉ chuyển động cực nhanh (vung tay, quay đầu): cập nhật tức thì 100% không để lại bóng mờ
+                    aiTemporalAlphaBuffer[p] = targetA;
+                  } else if (diff > 35) {
+                    // Chuyển động vừa: bám theo 80%
+                    const smoothA = prevA * 0.20 + targetA * 0.80;
+                    aiTemporalAlphaBuffer[p] = smoothA;
+                    targetA = Math.round(smoothA);
+                  } else {
+                    // Vùng biên tĩnh/rung nhẹ: lọc mượt 50/50 triệt tiêu hoàn toàn hiện tượng lấp lánh (anti-shimmer)
+                    const smoothA = prevA * 0.50 + targetA * 0.50;
+                    aiTemporalAlphaBuffer[p] = smoothA;
+                    targetA = Math.round(smoothA);
+                  }
                 }
               }
 
@@ -12828,7 +12832,6 @@
                         // Chỉ lấp nếu KHÔNG PHẢI là nền tường giữa các ngón tay/kẽ tay
                         if (!isWallGap) {
                           fData[gp * 4 + 3] = 255;
-                          if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[gp] = 255;
                         }
                       }
                     }
@@ -12871,39 +12874,37 @@
                 const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
                 const isSkinColor = (vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
 
-                if (isGestureZone && isSkinColor && a >= 25) {
+                // Loại trừ màu nền tường phòng/mảng tường sáng khỏi nhận diện da (ngăn ngừa tuyệt đối lỗi nhận nhầm tường kem/be là da)
+                const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
+                const distWall = Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw);
+                const dRr = vr - curRightR, dGr = vg - curRightG, dBr = vb - curRightB;
+                const distRight = Math.sqrt(dRr * dRr + dGr * dGr + dBr * dBr);
+                const minDistBg = Math.min(distWall, distRight);
+                const isBrightCreamWall = (vr > 175 && vg > 165 && vb > 155 && Math.abs(vr - vg) < 35 && Math.abs(vg - vb) < 35);
+                const isWallColor = (!isGreenScreenWallAI && (minDistBg < 28 || isBrightCreamWall));
+                const isRealSkin = (isSkinColor && !isWallColor);
+
+                if (isGestureZone && isRealSkin && a >= 25) {
                   // Bàn tay & ngón tay: Khóa cứng 255 không cho phép erode làm mòn cụt ngón tay!
                   fData[idx + 3] = 255;
-                  if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 255;
                   continue;
                 }
 
                 // Kiểm tra màu nền phòng / mảng tường sáng, vách kem dính cạnh vai hoặc cổ
-                if (!isSkinColor && !isGreenScreenWallAI) {
+                if (!isRealSkin && !isGreenScreenWallAI) {
                   const isHeadZone = (y < Math.floor(procH * 0.45));
                   const isHair = isHeadZone && (vr < 135 && vg < 125 && vb < 120);
 
                   // TUYỆT ĐỐI không áp dụng khử tường lên tóc hoặc đỉnh đầu của học viên!
                   if (!isHair) {
-                    const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
-                    const distWall = Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw);
-                    const dRr = vr - curRightR, dGr = vg - curRightG, dBr = vb - curRightB;
-                    const distRight = Math.sqrt(dRr * dRr + dGr * dGr + dBr * dBr);
-                    const minDistBg = Math.min(distWall, distRight);
-
-                    // Nhận diện mảng tường sáng / kem điển hình phòng học (R > 175, G > 165, B > 155 và độ lệch màu thấp)
-                    const isBrightCreamWall = (vr > 175 && vg > 165 && vb > 155 && Math.abs(vr - vg) < 35 && Math.abs(vg - vb) < 35);
                     if ((minDistBg < 32 || isBrightCreamWall) && a < 225) {
                       if (minDistBg <= 18 || isBrightCreamWall) {
                         // Rất sát màu tường phòng: Triệt tiêu hoàn toàn
                         fData[idx + 3] = 0;
-                        if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = 0;
                       } else {
                         // Vùng chuyển tiếp: Giảm alpha mượt mà theo khoảng cách
                         const wallFade = (minDistBg - 18) / 14;
-                        const attenuatedA = Math.round(fData[idx + 3] * wallFade);
-                        fData[idx + 3] = attenuatedA;
-                        if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = attenuatedA;
+                        fData[idx + 3] = Math.round(fData[idx + 3] * wallFade);
                       }
                     }
                   }
@@ -12956,7 +12957,9 @@
                         const cb = 128 - 0.168736 * vr - 0.331264 * vg + 0.5 * vb;
                         const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
                         const isHandSkin = (vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
-                        if (isHandSkin) {
+                        const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
+                        const isWallColor = (!isGreenScreenWallAI && Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw) < 28);
+                        if (isHandSkin && !isWallColor) {
                           dstMask[p] = a;
                           continue;
                         }
@@ -13003,7 +13006,6 @@
                       const hairBoost = Math.min(25, Math.round(localLap * hairDetailFactor * 0.3));
                       const newA = Math.min(235, a + hairBoost);
                       fData[idx + 3] = newA;
-                      if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = newA;
                     }
                   }
                 }
@@ -13030,7 +13032,6 @@
                 const aBL = edgeBuf[p + procW - 1], aBR = edgeBuf[p + procW + 1];
                 const smoothVal = (a * 4 + (aTop + aBot + aLeft + aRight) * 2 + (aTL + aTR + aBL + aBR) * 1) >> 4;
                 fData[p * 4 + 3] = smoothVal;
-                if (aiTemporalAlphaBuffer) aiTemporalAlphaBuffer[p] = smoothVal;
               }
             }
           }
