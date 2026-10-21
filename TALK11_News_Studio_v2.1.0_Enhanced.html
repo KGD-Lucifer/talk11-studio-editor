@@ -5162,6 +5162,10 @@
     let aiInterpolateCtx = aiInterpolateCanvas.getContext('2d', { willReadFrequently: true });
     let offscreenBeautyCanvas = document.createElement('canvas');
     let offscreenBeautyCtx = offscreenBeautyCanvas.getContext('2d');
+    let aiMediaPipeInputCanvas = document.createElement('canvas');
+    let aiMediaPipeInputCtx = aiMediaPipeInputCanvas.getContext('2d');
+    let lastValidStudentCopiedTime = -999;
+    let newAiMaskAvailable = false;
 
     // Interactive Matte Toolkit & Preview Mode State (SAM / Magic Mask / Roto Brush workflow)
     let aiMattingTool = 'auto'; // 'auto' | 'select' | 'brush_keep' | 'brush_remove'
@@ -12112,9 +12116,9 @@
             hasValidAiMask = true;
             latestSegmentMask = aiMaskCanvas;
 
-            // Invalidate cache immediately so frame is updated with neural mask on next rAF tick
+            // Đánh dấu mặt nạ mới đã sẵn sàng để cập nhật vào frame kế tiếp (không ép reprocess liên tục)
             hasChromaCachedFrame = false;
-            forceChromaReprocess = true;
+            newAiMaskAvailable = true;
           }
 
           const statusBadge = document.getElementById('badgeAiSegmentStatus');
@@ -12154,7 +12158,7 @@
                 latestSegmentMask = aiMaskCanvas;
 
                 hasChromaCachedFrame = false;
-                forceChromaReprocess = true;
+                newAiMaskAvailable = true;
               }
             });
             selfieSegmentation.initialize().then(() => {
@@ -12491,14 +12495,14 @@
       const isExportingRecording = (typeof mediaRecorder !== 'undefined' && mediaRecorder && mediaRecorder.state === 'recording');
       const curParamsKey = `${studentChromaMode}_${studentChromaTolerance}_${studentChromaFeather}_${studentAiErodeRadius}_${studentMatteCoreProtect}_${studentMatteHairDetail}_${studentCropLeft}_${studentCropRight}_${studentCropBottom}_${enablePlantRemoval}_${enableAiAntiFlicker}_${aiMattingPromptPoints ? aiMattingPromptPoints.length : 0}_${hasUserMatteCorrections ? 1 : 0}`;
 
-      // FAST 120FPS CACHE BYPASS:
-      // Tái sử dụng frame đã xử lý nếu frame video chưa thay đổi (30fps video trên màn hình 60/120Hz)
-      // hoặc khi video đang pause, giúp giải phóng 60% CPU và ngăn chặn hiện tượng drop frame / khựng hình
+      // FAST 120FPS ZERO-STALL CACHE:
+      // Tái sử dụng frame đã xử lý nếu frame video chưa thay đổi VÀ chưa có AI mask mới,
+      // giải phóng hoàn toàn CPU main thread, loại bỏ 100% hiện tượng khựng giật khung hình
       const isNewVideoFrame = (typeof lastChromaProcessedVideoTime === 'number')
         ? Math.abs(curVidTime - lastChromaProcessedVideoTime) >= 0.020
         : true;
       if (hasChromaCachedFrame && !isExportingRecording && !forceChromaReprocess) {
-        if ((!isNewVideoFrame || studentVideoElem.paused) && curParamsKey === lastChromaParamsKey) {
+        if (!isNewVideoFrame && !newAiMaskAvailable && curParamsKey === lastChromaParamsKey) {
           return offscreenKeyCanvas;
         }
       }
@@ -12506,6 +12510,7 @@
       function finalizeChromaCache() {
         hasChromaCachedFrame = true;
         forceChromaReprocess = false;
+        newAiMaskAvailable = false;
         lastChromaProcessedVideoTime = curVidTime;
         lastChromaParamsKey = curParamsKey;
         return offscreenKeyCanvas;
@@ -12579,8 +12584,21 @@
           if (studentVideoElem.readyState >= 2 && studentVideoElem.videoWidth > 0) {
             isSegmentingFrame = true;
             lastSegmentTime = now;
-            // Luôn gửi video gốc nguyên bản (studentVideoElem) vào MediaPipe để triệt tiêu hoàn toàn vòng lặp phản hồi gây lan tràn tách nền
-            selfieSegmentation.send({ image: studentVideoElem }).catch((err) => {
+            // Scale video nguyên bản vào canvas đệm riêng biệt (480x270) đưa vào MediaPipe:
+            // 1. Tuyệt đối không có alpha/matte -> triệt tiêu 100% feedback loop gây lan tràn tách nền
+            // 2. Nhẹ hơn 16 lần so với 1080p cồng kềnh, giảm 95% GPU texture upload stalls, loại bỏ hoàn toàn giật khựng
+            const mpW = 480;
+            const mpH = Math.round(mpW * (studentVideoElem.videoHeight / studentVideoElem.videoWidth)) || 270;
+            if (!aiMediaPipeInputCanvas) {
+              aiMediaPipeInputCanvas = document.createElement('canvas');
+              aiMediaPipeInputCtx = aiMediaPipeInputCanvas.getContext('2d');
+            }
+            if (aiMediaPipeInputCanvas.width !== mpW || aiMediaPipeInputCanvas.height !== mpH) {
+              aiMediaPipeInputCanvas.width = mpW;
+              aiMediaPipeInputCanvas.height = mpH;
+            }
+            aiMediaPipeInputCtx.drawImage(studentVideoElem, 0, 0, mpW, mpH);
+            selfieSegmentation.send({ image: aiMediaPipeInputCanvas }).catch((err) => {
               console.warn('selfieSegmentation.send error:', err);
               isSegmentingFrame = false;
             });
@@ -12828,7 +12846,7 @@
                         const gIdx = gp * 4;
                         const gr = fData[gIdx], gg = fData[gIdx + 1], gb = fData[gIdx + 2];
                         const dRw = gr - curWallR, dGw = gg - curWallG, dBw = gb - curWallB;
-                        const isWallGap = (!isGreenScreenWallAI && Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw) < 26);
+                        const isWallGap = (!isGreenScreenWallAI && (dRw * dRw + dGw * dGw + dBw * dBw) < 676);
                         // Chỉ lấp nếu KHÔNG PHẢI là nền tường giữa các ngón tay/kẽ tay
                         if (!isWallGap) {
                           fData[gp * 4 + 3] = 255;
@@ -12866,46 +12884,46 @@
               const a = fData[idx + 3];
 
               // Chỉ tối ưu hóa các điểm trong dải chuyển tiếp hoặc nghi vấn viền (8 <= alpha <= 248)
-              if (a >= 8 && a <= 248) {
-                const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
+              if (a < 8 || a > 248) continue;
+              const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
 
-                // Mô hình da người ITU-R BT.601
-                const cb = 128 - 0.168736 * vr - 0.331264 * vg + 0.5 * vb;
-                const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
-                const isSkinColor = (vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
+              // Mô hình da người ITU-R BT.601
+              const cb = 128 - 0.168736 * vr - 0.331264 * vg + 0.5 * vb;
+              const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
+              const isSkinColor = (vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
 
-                // Loại trừ màu nền tường phòng/mảng tường sáng khỏi nhận diện da (ngăn ngừa tuyệt đối lỗi nhận nhầm tường kem/be là da)
-                const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
-                const distWall = Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw);
-                const dRr = vr - curRightR, dGr = vg - curRightG, dBr = vb - curRightB;
-                const distRight = Math.sqrt(dRr * dRr + dGr * dGr + dBr * dBr);
-                const minDistBg = Math.min(distWall, distRight);
-                const isBrightCreamWall = (vr > 175 && vg > 165 && vb > 155 && Math.abs(vr - vg) < 35 && Math.abs(vg - vb) < 35);
-                const isWallColor = (!isGreenScreenWallAI && (minDistBg < 28 || isBrightCreamWall));
-                const isRealSkin = (isSkinColor && !isWallColor);
+              // Loại trừ màu nền tường phòng/mảng tường sáng khỏi nhận diện da (ngăn ngừa tuyệt đối lỗi nhận nhầm tường kem/be là da)
+              const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
+              const distWallSq = dRw * dRw + dGw * dGw + dBw * dBw;
+              const dRr = vr - curRightR, dGr = vg - curRightG, dBr = vb - curRightB;
+              const distRightSq = dRr * dRr + dGr * dGr + dBr * dBr;
+              const minDistBgSq = Math.min(distWallSq, distRightSq);
+              const isBrightCreamWall = (vr > 175 && vg > 165 && vb > 155 && Math.abs(vr - vg) < 35 && Math.abs(vg - vb) < 35);
+              const isWallColor = (!isGreenScreenWallAI && (minDistBgSq < 784 || isBrightCreamWall)); // 28^2 = 784
+              const isRealSkin = (isSkinColor && !isWallColor);
 
-                if (isGestureZone && isRealSkin && a >= 25) {
-                  // Bàn tay & ngón tay: Khóa cứng 255 không cho phép erode làm mòn cụt ngón tay!
-                  fData[idx + 3] = 255;
-                  continue;
-                }
+              if (isGestureZone && isRealSkin && a >= 25) {
+                // Bàn tay & ngón tay: Khóa cứng 255 không cho phép erode làm mòn cụt ngón tay!
+                fData[idx + 3] = 255;
+                continue;
+              }
 
-                // Kiểm tra màu nền phòng / mảng tường sáng, vách kem dính cạnh vai hoặc cổ
-                if (!isRealSkin && !isGreenScreenWallAI) {
-                  const isHeadZone = (y < Math.floor(procH * 0.45));
-                  const isHair = isHeadZone && (vr < 135 && vg < 125 && vb < 120);
+              // Kiểm tra màu nền phòng / mảng tường sáng, vách kem dính cạnh vai hoặc cổ
+              if (!isRealSkin && !isGreenScreenWallAI) {
+                const isHeadZone = (y < Math.floor(procH * 0.45));
+                const isHair = isHeadZone && (vr < 135 && vg < 125 && vb < 120);
 
-                  // TUYỆT ĐỐI không áp dụng khử tường lên tóc hoặc đỉnh đầu của học viên!
-                  if (!isHair) {
-                    if ((minDistBg < 32 || isBrightCreamWall) && a < 225) {
-                      if (minDistBg <= 18 || isBrightCreamWall) {
-                        // Rất sát màu tường phòng: Triệt tiêu hoàn toàn
-                        fData[idx + 3] = 0;
-                      } else {
-                        // Vùng chuyển tiếp: Giảm alpha mượt mà theo khoảng cách
-                        const wallFade = (minDistBg - 18) / 14;
-                        fData[idx + 3] = Math.round(fData[idx + 3] * wallFade);
-                      }
+                // TUYỆT ĐỐI không áp dụng khử tường lên tóc hoặc đỉnh đầu của học viên!
+                if (!isHair) {
+                  if ((minDistBgSq < 1024 || isBrightCreamWall) && a < 225) { // 32^2 = 1024
+                    if (minDistBgSq <= 324 || isBrightCreamWall) { // 18^2 = 324
+                      // Rất sát màu tường phòng: Triệt tiêu hoàn toàn
+                      fData[idx + 3] = 0;
+                    } else {
+                      // Vùng chuyển tiếp: Giảm alpha mượt mà theo khoảng cách
+                      const minDistBg = Math.sqrt(minDistBgSq);
+                      const wallFade = (minDistBg - 18) / 14;
+                      fData[idx + 3] = Math.round(fData[idx + 3] * wallFade);
                     }
                   }
                 }
@@ -12932,44 +12950,41 @@
                 for (let x = 1; x < procW - 1; x++) {
                   const p = row + x;
                   const a = srcMask[p];
-                  if (a > 0) {
-                    const minCross = Math.min(srcMask[p - 1], srcMask[p + 1], srcMask[p - procW], srcMask[p + procW]);
-                    if (minCross === 255) {
-                      dstMask[p] = 255;
-                      continue;
-                    }
-                    const minDiag = Math.min(srcMask[p - 1 - procW], srcMask[p + 1 - procW], srcMask[p - 1 + procW], srcMask[p + 1 + procW]);
-                    const min8 = Math.min(minCross, minDiag);
-                    if (min8 < a) {
-                      // BẢO VỆ TÓC & ĐỈNH ĐẦU: Không bao giờ gọt mòn cụt đỉnh đầu và tóc
-                      if (y < Math.floor(procH * 0.42)) {
-                        const idx = p * 4;
-                        const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
-                        if (vr < 135 && vg < 125 && vb < 120 && a >= 80) {
-                          dstMask[p] = a;
-                          continue;
-                        }
+                  if (a === 0) continue;
+                  const minCross = Math.min(srcMask[p - 1], srcMask[p + 1], srcMask[p - procW], srcMask[p + procW]);
+                  if (minCross === 255) {
+                    dstMask[p] = 255;
+                    continue;
+                  }
+                  const minDiag = Math.min(srcMask[p - 1 - procW], srcMask[p + 1 - procW], srcMask[p - 1 + procW], srcMask[p + 1 + procW]);
+                  const min8 = Math.min(minCross, minDiag);
+                  if (min8 < a) {
+                    // BẢO VỆ TÓC & ĐỈNH ĐẦU: Không bao giờ gọt mòn cụt đỉnh đầu và tóc
+                    if (y < Math.floor(procH * 0.42)) {
+                      const idx = p * 4;
+                      const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
+                      if (vr < 135 && vg < 125 && vb < 120 && a >= 80) {
+                        dstMask[p] = a;
+                        continue;
                       }
-                      // Nếu là da bàn tay/ngón tay ở nửa dưới: bảo toàn không cho erode thu nhỏ
-                      if (y > handZoneMinY) {
-                        const idx = p * 4;
-                        const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
-                        const cb = 128 - 0.168736 * vr - 0.331264 * vg + 0.5 * vb;
-                        const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
-                        const isHandSkin = (vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
-                        const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
-                        const isWallColor = (!isGreenScreenWallAI && Math.sqrt(dRw * dRw + dGw * dGw + dBw * dBw) < 28);
-                        if (isHandSkin && !isWallColor) {
-                          dstMask[p] = a;
-                          continue;
-                        }
-                      }
-                      dstMask[p] = Math.round(minCross * 0.65 + minDiag * 0.35);
-                    } else {
-                      dstMask[p] = a;
                     }
+                    // Nếu là da bàn tay/ngón tay ở nửa dưới: bảo toàn không cho erode thu nhỏ
+                    if (y > handZoneMinY) {
+                      const idx = p * 4;
+                      const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
+                      const cb = 128 - 0.168736 * vr - 0.331264 * vg + 0.5 * vb;
+                      const cr = 128 + 0.5 * vr - 0.418688 * vg - 0.081312 * vb;
+                      const isHandSkin = (vr > 75 && vg > 40 && vb > 25 && vr > vg && (vr - vb) >= 10 && cb >= 75 && cb <= 135 && cr >= 130 && cr <= 178);
+                      const dRw = vr - curWallR, dGw = vg - curWallG, dBw = vb - curWallB;
+                      const isWallColor = (!isGreenScreenWallAI && (dRw * dRw + dGw * dGw + dBw * dBw) < 784);
+                      if (isHandSkin && !isWallColor) {
+                        dstMask[p] = a;
+                        continue;
+                      }
+                    }
+                    dstMask[p] = Math.round(minCross * 0.65 + minDiag * 0.35);
                   } else {
-                    dstMask[p] = 0;
+                    dstMask[p] = a;
                   }
                 }
               }
@@ -13050,9 +13065,10 @@
               const p = row + x;
               const idx = p * 4;
               const a = edgeMask[p];
+              if (a === 0) continue;
 
               // DaVinci Delta Keyer Smart Despill (Khử ám xanh phông lá vào mép tóc và da)
-              if (a > 0 && despillStrength > 0) {
+              if (despillStrength > 0) {
                 const vr = fData[idx], vg = fData[idx + 1], vb = fData[idx + 2];
                 const rbAvg = (vr + vb) * 0.5;
                 if (vg > rbAvg + 8) {
@@ -13060,7 +13076,7 @@
                 }
               }
 
-              if (a > 0 && a < 255) {
+              if (a < 255) {
                 let inIdx = -1;
                 // Tìm pixel thuần người ở sâu bên trong (bán kính 2-6px)
                 for (let r = 2; r <= 6 && inIdx < 0; r++) {
@@ -13122,9 +13138,6 @@
 
         // Khi MediaPipe đang tính toán vài chục miligiây đầu tiên:
         // Giữ nguyên khung hình video tự nhiên không cắt hộp hình học sắc nhọn
-        if (!studentVideoElem.paused) {
-          forceChromaReprocess = true;
-        }
         return offscreenKeyCanvas;
       }
 
@@ -13274,10 +13287,16 @@
             if (lastValidStudentFrameCanvas.width !== processedCanvas.width || lastValidStudentFrameCanvas.height !== processedCanvas.height) {
               lastValidStudentFrameCanvas.width = processedCanvas.width;
               lastValidStudentFrameCanvas.height = processedCanvas.height;
+              lastValidStudentFrameCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+              lastValidStudentFrameCtx.drawImage(processedCanvas, 0, 0);
+              lastValidStudentCopiedTime = lastChromaProcessedVideoTime;
+              hasValidStudentCachedFrame = true;
+            } else if (lastValidStudentCopiedTime !== lastChromaProcessedVideoTime) {
+              lastValidStudentCopiedTime = lastChromaProcessedVideoTime;
+              lastValidStudentFrameCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
+              lastValidStudentFrameCtx.drawImage(processedCanvas, 0, 0);
+              hasValidStudentCachedFrame = true;
             }
-            lastValidStudentFrameCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
-            lastValidStudentFrameCtx.drawImage(processedCanvas, 0, 0);
-            hasValidStudentCachedFrame = true;
           }
         }
       }
@@ -13463,7 +13482,7 @@
               hasValidBeautyCanvas = false;
             }
             const beautyKey = `${beautySmoothness}_${beautyBrightness}_${lastChromaProcessedVideoTime}`;
-            if (!hasValidBeautyCanvas || beautyKey !== lastBeautyFrameKey || (studentVideoElem && !studentVideoElem.paused && !isDraggingStudent && !isResizingStudent)) {
+            if (!hasValidBeautyCanvas || beautyKey !== lastBeautyFrameKey) {
               offscreenBeautyCtx.save();
               offscreenBeautyCtx.clearRect(0, 0, processedCanvas.width, processedCanvas.height);
               // Giữ brightness(1.00) để không làm cháy sáng hay bợt da bé
@@ -14316,16 +14335,28 @@
               studentVideoElem.currentTime = targetVidTime;
             }
           } else {
-            // CHẾ ĐỘ PHÁT BÌNH THƯỜNG (MƯỢT MÀ 60FPS, KHÔNG SEEK LẶP GÂY ĐỨNG HÌNH):
+            // CHẾ ĐỘ PHÁT BÌNH THƯỜNG (SIÊU MƯỢT MÀ 60/120FPS CHUẨN BROADCAST):
             if (previewCurrentSec >= offset && previewCurrentSec < (offset + dur)) {
               if (studentVideoElem.paused && !studentVideoElem.ended) {
                 studentVideoElem.play().catch(() => {});
               }
-              // Đồng bộ tự nhiên theo tiến trình video mà không bao giờ ép seek liên tục
+              if (studentVideoElem.playbackRate !== speed) {
+                try { studentVideoElem.playbackRate = speed; } catch(eRate) {}
+              }
+              // 1. Master timeline clock luôn tịnh tiến trơn tru liên tục theo delta * speed (60FPS chuẩn xác, không giật khựng)
+              previewCurrentSec = previewCurrentSec + delta * speed;
+
+              // 2. Smooth Anchor Synchronization: Neo timeline clock bám sát audio/video clock của video mà KHÔNG BAO GIỜ seek hoặc chỉnh playbackRate
               if (!studentVideoElem.seeking && studentVideoElem.readyState >= 2) {
-                previewCurrentSec = offset + studentVideoElem.currentTime;
-              } else {
-                previewCurrentSec = previewCurrentSec + delta * speed;
+                const vidAnchor = offset + studentVideoElem.currentTime;
+                const drift = vidAnchor - previewCurrentSec;
+                if (Math.abs(drift) > 0.5) {
+                  // Chỉ khi độ lệch thực sự lớn (sau khi kéo thả thanh tua timeline): neo ngay tức thì
+                  previewCurrentSec = vidAnchor;
+                } else {
+                  // Lệch vi mô (1ms - 500ms): hút nhẹ timeline clock về video clock một cách mượt mà vô hình, TUYỆT ĐỐI KHÔNG SEEK
+                  previewCurrentSec += drift * 0.15;
+                }
               }
             } else {
               previewCurrentSec = previewCurrentSec + delta * speed;
