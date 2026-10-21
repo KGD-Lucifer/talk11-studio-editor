@@ -12609,12 +12609,18 @@
           const fData = finalVidImgData.data;
           const totalPix = procW * procH;
 
-          // Kiểm tra xem mặt nạ có chứa điểm ảnh người không
+          // Kiểm tra xem mặt nạ có chứa điểm ảnh người không và định dạng kênh (RGB grayscale vs Alpha-only)
           let maxProbInMask = 0;
+          let maxRgbInMask = 0;
           for (let pIdx = 0; pIdx < totalPix; pIdx += 32) {
-            const m = Math.max(mData[pIdx * 4], mData[pIdx * 4 + 1], mData[pIdx * 4 + 2], mData[pIdx * 4 + 3]);
+            const r = mData[pIdx * 4], g = mData[pIdx * 4 + 1], b = mData[pIdx * 4 + 2], a = mData[pIdx * 4 + 3];
+            const rgb = Math.max(r, g, b);
+            if (rgb > maxRgbInMask) maxRgbInMask = rgb;
+            const m = Math.max(rgb, a);
             if (m > maxProbInMask) maxProbInMask = m;
           }
+          const maskInRgb = (maxRgbInMask > 0);
+          if (maskInRgb) maxProbInMask = maxRgbInMask;
 
           if (maxProbInMask < 20) {
             // Không bao giờ hiển thị chớp nháy nền phòng gốc
@@ -12691,8 +12697,8 @@
                 }
               }
 
-              // Xác suất chủ thể từ MediaPipe tra qua bảng Hermite LUT (Hỗ trợ toàn diện đa kênh Red / Alpha)
-              const rawProb = Math.max(mData[idx], mData[idx + 1], mData[idx + 2], mData[idx + 3]);
+              // Xác suất chủ thể từ MediaPipe tra qua bảng Hermite LUT (Tự động nhận diện RGB grayscale hoặc Alpha-only)
+              const rawProb = maskInRgb ? Math.max(mData[idx], mData[idx + 1], mData[idx + 2]) : mData[idx + 3];
               let targetA = aiHermiteLUT[rawProb];
 
               // Lọc mượt thời gian chống rung nhấp nháy ở 60FPS (Multi-Scale Temporal EMA Filter):
